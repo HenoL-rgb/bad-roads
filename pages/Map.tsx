@@ -1,11 +1,11 @@
 import { View, Text, Button, StyleSheet } from 'react-native'
 import React, { useRef, useState } from 'react'
 import YaMap, { Marker, Polyline } from 'react-native-yamap';
-import { useTestMutation } from '../store/api/auth.api';
+import { useGetAllRoutesQuery, useTestMutation } from '../store/api/auth.api';
 
 
 
-const API_URL = "192.168.100.9:5000";
+const API_URL = "192.168.100.9:7000";
 
 type RouteEvent = {
   routes: {
@@ -64,14 +64,18 @@ export default function Map() {
 
   const [points, setPoints] = useState<Point[]>([]);
   const [current, setCurrent] = useState(false);
-  const [routes, setRoutes] = useState<Route[]>([]);
+  const {data, isLoading} = useGetAllRoutesQuery({})
   const map = useRef<YaMap>(null);
-  const [test, {isLoading}] = useTestMutation();
-
+  const [test] = useTestMutation();
+  const routes = data;
+  
   async function testFetch() {
     console.log('response');
-    const response = await test({});
+    const response = await test(points);
     console.log(response);
+  }
+  if(isLoading) {
+    return <Text>Loading</Text>
   }
   return (
     <View style={{flex: 1}}>
@@ -123,15 +127,15 @@ export default function Map() {
           strokeWidth={4}
           zIndex={4}
         /> */}
-        {routes.map(route => (
+        {routes && routes.map((route: any) => (
           <Polyline
             key={route.id}
-            points={route.points}
+            points={JSON.parse(route.route)}
             strokeColor="#f11515"
             strokeWidth={4}
             zIndex={4}
             onPress={() => {
-              setRoutes(routes.filter(item => item.id !== route.id));
+             // setRoutes(routes.filter(item => item.id !== route.id));
             }}
           />
         ))}
@@ -157,6 +161,8 @@ export default function Map() {
                 [],
               );
               setPoints(points);
+              console.log(points);
+              
               //setRoutes([...routes, { points: points, id: e.routes[0].id }]);
             },
           )

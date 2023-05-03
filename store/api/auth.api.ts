@@ -7,7 +7,8 @@ import type {
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 
-const API_URL = "192.168.100.9:5000";
+//const API_URL = "192.168.100.9:7000";
+const API_URL = "192.168.194.72:7000";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `http://${API_URL}/api`,
@@ -67,12 +68,21 @@ export const authApi = createApi({
   endpoints: (build) => ({
     test: build.mutation({
         query: (body) => ({
-            url: '/'
+            url: '/routes',
+            method: 'POST',
+            body
         })
+    }),
+
+    getAllRoutes: build.query({
+      query: () => ({
+        url: '/routes'
+      })
     })
   }),
 });
 
 export const {
-  useTestMutation
+  useTestMutation,
+  useGetAllRoutesQuery,
 } = authApi;
