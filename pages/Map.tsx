@@ -1,99 +1,204 @@
-import { View, Text, Button, StyleSheet } from 'react-native'
-import React, { useRef, useState } from 'react'
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Button,
+  NativeSyntheticEvent,
+} from 'react-native';
+import React, { useCallback, useRef, useMemo, useState } from 'react';
 import YaMap, { Marker, Polyline } from 'react-native-yamap';
-import { useGetAllRoutesQuery, useTestMutation } from '../store/api/auth.api';
+import {
+  useDeleteRouteMutation,
+  useGetAllRoutesQuery,
+  useSaveRouteMutation,
+  useUpdateRouteMutation,
+} from '../store/api/routes.api';
+import RoutePopUp from '../components/RoutePopUp';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Point } from '../types/Point';
+import {
+  DataRoute,
+  MapCurrentRoute,
+  Route,
+  RouteSection,
+} from '../types/Route';
+import { YANDEX_API_KEY } from '@env';
+import MapButtons from '../components/MapButtons';
+import MapMarkers from '../components/MapMarkers';
+import MapRoutes from '../components/MapRoutes';
 
+enum modes {
+  IDLE,
+  ADD,
+  EDIT,
+  CREATE,
+  ROUTE_ADDED,
+  ROUTE_APPROVED,
+}
 
-
-const API_URL = "192.168.100.9:7000";
-
-type RouteEvent = {
-  routes: {
-    id: string;
-    sections: [];
-  }[];
-  status: string;
-};
-
-type Point = {
-  lat: number;
-  lon: number;
-};
-
-type Route = {
-  points: Point[];
-  id: string;
-};
-
-type RouteSection = {
-  points: Point[];
-
-  transports: {
-    [key: string]: string;
-  };
-
-  type: string;
-  stops: [];
-  routeIndex: number;
-  routeInfo: {
-    distance: number;
-    time: string;
-    timeWithTraffic: string;
-  };
-  sectionInfo: {
-    distance: number;
-    time: string;
-    timeWithTraffic: string;
-  };
-  sectionColor: string;
-};
-
+enum currentMarker {
+  START,
+  END,
+}
 
 export default function Map() {
-    YaMap.init('3b806cc7-d2e8-49ac-9f8d-fc2c721025b2');
- 
-
-  const [coords1, setCoords1] = useState({
-    lat: 55.171558085315624,
-    lon: 30.214888129711426,
+  YaMap.init(YANDEX_API_KEY);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [markersVisible, setMarkersVisible] = useState({
+    start: false,
+    end: false,
   });
-  const [coords2, setCoords2] = useState({
-    lat: 55.17176111359353,
-    lon: 30.2134098048991,
+  const [currentRoute, setCurrentRoute] = useState<MapCurrentRoute>({
+    start: null,
+    end: null,
+    id: 0,
   });
 
   const [points, setPoints] = useState<Point[]>([]);
-  const [current, setCurrent] = useState(false);
-  const {data, isLoading} = useGetAllRoutesQuery({})
+  const [current, setCurrent] = useState<number>(currentMarker.START);
+  const [mode, setMode] = useState<number>(modes.IDLE);
+  const { data, isLoading, refetch } = useGetAllRoutesQuery({});
   const map = useRef<YaMap>(null);
-  const [test] = useTestMutation();
-  const routes = data;
-  
-  async function testFetch() {
-    console.log('response');
-    const response = await test(points);
-    console.log(response);
+  const [saveRoute, { isLoading: saveLoading }] = useSaveRouteMutation();
+  const [delRoute, { isLoading: deleteLoading }] = useDeleteRouteMutation();
+  const [updateRoute, { isLoading: updateLoading }] = useUpdateRouteMutation();
+
+  const routes: Route[] = useMemo(
+    () =>
+      data
+        ? data.map((item: DataRoute) => ({
+            ...item,
+            route: JSON.parse(item.route),
+          }))
+        : [],
+    [data],
+  );
+
+  const hideModal: (mode?: number) => void = useCallback((mode?: number) => {
+    if (mode && mode !== modes.EDIT) {
+      setCurrentRoute({
+        start: null,
+        end: null,
+        id: 0,
+      });
+    }
+    setModalVisible(false);
+  }, []);
+
+  const deleteRoute: (routeId: number) => Promise<void> = useCallback(
+    async (routeId: number) => {
+      const response = await delRoute({ routeId });
+      await refetch();
+      closeRouteWork();
+      hideModal();
+    },
+    [delRoute, hideModal, refetch],
+  );
+
+  const editRoute: () => void = useCallback(() => {
+    setMode(modes.EDIT);
+    setMarkersVisible({ start: true, end: true });
+    hideModal(modes.EDIT);
+  }, [hideModal]);
+
+  function closeRouteWork(): void {
+    setMode(modes.IDLE);
+    setMarkersVisible({ start: false, end: false });
+    setCurrent(currentMarker.START);
+    setCurrentRoute({
+      start: null,
+      end: null,
+      id: 0,
+    });
+    setPoints([]);
   }
-  if(isLoading) {
-    return <Text>Loading</Text>
+
+  async function handleSaveRoute(): Promise<void> {
+    if (currentRoute.id) {
+      const response = await updateRoute({
+        points,
+        id: currentRoute.id,
+      });
+      console.log(response);
+      
+    } else {
+      const response = await saveRoute({
+        route: points,
+        userId: 4
+      });
+      console.log(response);
+      
+    }
+    await refetch();
+    closeRouteWork();
   }
+
+  function findRoute(): void {
+    if (!currentRoute.start || !currentRoute.end) return;
+
+    setMode(modes.ROUTE_ADDED);
+    map.current?.findDrivingRoutes(
+      [currentRoute.start, currentRoute.end],
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      (e: RouteEvent) => {
+        const points = e.routes[0].sections.reduce(
+          (acc: Point[], item: RouteSection) => [...acc, ...item.points],
+          [],
+        );
+
+        setPoints(points);
+      },
+    );
+  }
+
+  function handleMapPress(event: NativeSyntheticEvent<Point>) {
+    if (mode === modes.CREATE || mode === modes.EDIT) {
+      if (current === currentMarker.START) {
+        setCurrentRoute({
+          ...currentRoute,
+          start: {
+            lat: event.nativeEvent.lat,
+            lon: event.nativeEvent.lon,
+          },
+        });
+
+        if (!markersVisible.start) {
+          setCurrent(currentMarker.END);
+
+          setMarkersVisible({ ...markersVisible, start: true });
+        }
+      } else {
+        setCurrentRoute({
+          ...currentRoute,
+          end: {
+            lat: event.nativeEvent.lat,
+            lon: event.nativeEvent.lon,
+          },
+        });
+        if (!markersVisible.end)
+          setMarkersVisible({ ...markersVisible, end: true });
+      }
+    }
+  }
+
+  if (isLoading) {
+    return <Text>Loading</Text>;
+  }
+
   return (
-    <View style={{flex: 1}}>
-    <YaMap
+    <View style={{ flex: 1 }}>
+      <RoutePopUp
+        modalVisible={modalVisible}
+        hideModal={hideModal}
+        deleteRoute={deleteRoute}
+        editRoute={editRoute}
+        routeId={currentRoute.id}
+      />
+      <YaMap
         showUserPosition={false}
-        onMapPress={event => {
-          if (current) {
-            setCoords1({
-              lat: event.nativeEvent.lat,
-              lon: event.nativeEvent.lon,
-            });
-          } else {
-            setCoords2({
-              lat: event.nativeEvent.lat,
-              lon: event.nativeEvent.lon,
-            });
-          }
-        }}
+        onMapPress={handleMapPress}
         style={{ flex: 1 }}
         nightMode={true}
         mapType={'vector'}
@@ -104,112 +209,34 @@ export default function Map() {
           zoom: 17,
           azimuth: 0,
         }}>
-        <Marker point={coords2} scale={1}>
-          <View style={styles.marker}>
-            <View style={styles.markerTop}></View>
-            <View style={styles.markerBottom}></View>
-          </View>
-        </Marker>
-        <Marker point={coords1} scale={1}>
-          <View style={styles.marker}>
-            <View
-              style={{ ...styles.markerTop, backgroundColor: 'green' }}></View>
-            <View
-              style={{
-                ...styles.markerBottom,
-                backgroundColor: 'green',
-              }}></View>
-          </View>
-        </Marker>
-        {/* <Polyline
+        <MapMarkers
+          markersVisible={markersVisible}
+          current={current}
+          currentRoute={currentRoute}
+          setCurrent={setCurrent}
+        />
+
+        <MapRoutes
+          currentRoute={currentRoute}
+          routes={routes}
+          setModalVisible={setModalVisible}
+          setCurrentRoute={setCurrentRoute}
           points={points}
-          strokeColor="#466ca8"
-          strokeWidth={4}
-          zIndex={4}
-        /> */}
-        {routes && routes.map((route: any) => (
-          <Polyline
-            key={route.id}
-            points={JSON.parse(route.route)}
-            strokeColor="#f11515"
-            strokeWidth={4}
-            zIndex={4}
-            onPress={() => {
-             // setRoutes(routes.filter(item => item.id !== route.id));
-            }}
-          />
-        ))}
-        {points ? (
-          <Polyline
-            points={points}
-            strokeColor="#f11515"
-            strokeWidth={4}
-            zIndex={4}
-          />
-        ) : null}
+          mode={mode}
+        />
       </YaMap>
-      <Button
-        title="Route"
-        onPress={() =>
-          map.current?.findDrivingRoutes(
-            [coords1, coords2],
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            (e: RouteEvent) => {
-              const points = e.routes[0].sections.reduce(
-                (acc: Point[], item: RouteSection) => [...acc, ...item.points],
-                [],
-              );
-              setPoints(points);
-              console.log(points);
-              
-              //setRoutes([...routes, { points: points, id: e.routes[0].id }]);
-            },
-          )
-        }
+
+      <MapButtons
+        mode={mode}
+        setMode={setMode}
+        handleSaveRoute={handleSaveRoute}
+        setPoints={setPoints}
+        findRoute={findRoute}
+        markersVisible={markersVisible}
+        closeRouteWork={closeRouteWork}
       />
-      <Button title="Marker" onPress={() => setCurrent(!current)} />
-      <Button title="Save" onPress={() => testFetch()} />
     </View>
-  )
+  );
 }
 
-const styles = StyleSheet.create({
-    sectionContainer: {
-      marginTop: 32,
-      paddingHorizontal: 24,
-    },
-    sectionTitle: {
-      fontSize: 24,
-      fontWeight: '600',
-    },
-    sectionDescription: {
-      marginTop: 8,
-      fontSize: 18,
-      fontWeight: '400',
-    },
-    highlight: {
-      fontWeight: '700',
-    },
-    marker: {
-      height: 40,
-      width: 20,
-      position: 'relative',
-    },
-    markerBottom: {
-      height: 10,
-      width: 10,
-      backgroundColor: 'red',
-      transform: [{ rotate: '-45deg' }],
-      position: 'absolute',
-      bottom: 18,
-      left: 5,
-    },
-    markerTop: {
-      height: 20,
-      width: 20,
-      backgroundColor: 'red',
-      borderRadius: 50,
-      position: 'absolute',
-    },
-  });
+const styles = StyleSheet.create({});

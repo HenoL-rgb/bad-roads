@@ -1,8 +1,21 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
+import { Route } from '../../types/Route';
 
 interface UserData {
   isAuth: boolean;
-  user:  null;
+  user: User | null;
+}
+
+interface User {
+  email: string;
+  id: number;
+  banned: boolean;
+  banReason: string;
+  roles: {
+    value: string,
+    description: string,
+  }[];
+  routes: Route[];
 }
 
 const initialState: UserData = {
@@ -11,7 +24,7 @@ const initialState: UserData = {
 };
 
 export const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {
     setAuth(state, action) {
