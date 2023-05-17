@@ -10,7 +10,9 @@ import React, { useCallback, useRef, useMemo, useState } from 'react';
 import YaMap, { Marker, Polyline } from 'react-native-yamap';
 import {
   useDeleteRouteMutation,
+  useDislikeRouteMutation,
   useGetAllRoutesQuery,
+  useLikeRouteMutation,
   useSaveRouteMutation,
   useUpdateRouteMutation,
 } from '../store/api/routes.api';
@@ -27,6 +29,8 @@ import { YANDEX_API_KEY } from '@env';
 import MapButtons from '../components/MapButtons';
 import MapMarkers from '../components/MapMarkers';
 import MapRoutes from '../components/MapRoutes';
+import { TabNavParamList } from '../components/AppWrapper';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 enum modes {
   IDLE,
@@ -41,9 +45,13 @@ enum currentMarker {
   START,
   END,
 }
+type Props = NativeStackScreenProps<TabNavParamList, 'Map'>;
 
-export default function Map() {
+
+export default function Map({route, navigation}: Props) {
   YaMap.init(YANDEX_API_KEY);
+  const initialParams = route.params;
+  
   const [modalVisible, setModalVisible] = useState(false);
   const [markersVisible, setMarkersVisible] = useState({
     start: false,
@@ -204,8 +212,8 @@ export default function Map() {
         mapType={'vector'}
         ref={map}
         initialRegion={{
-          lat: 55.17,
-          lon: 30.2153,
+          lat: initialParams.lat,
+          lon: initialParams.lon,
           zoom: 17,
           azimuth: 0,
         }}>

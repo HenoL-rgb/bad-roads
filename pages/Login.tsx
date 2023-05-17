@@ -18,7 +18,7 @@ export default function Login({ navigation }: Props) {
   const [login, {isLoading}] = useLoginMutation();
 
   const onSubmit = async (data: { email: string; password: string }) => {
-    const response = await login(data);
+    const response = await login({...data, email: data.email.toLowerCase()});
   };
 
   return (

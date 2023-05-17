@@ -1,6 +1,6 @@
 import { RootState } from '../store';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { clearUser, setAuth, setUser, User } from '../slices/user.slice';
+import { clearUser, setAuth, setUser } from '../slices/user.slice';
 import type {
   BaseQueryFn,
   FetchArgs,
@@ -61,8 +61,8 @@ const baseQueryWithReauth: BaseQueryFn<
   return result;
 };
 
-export const authApi = createApi({
-  reducerPath: 'authApi',
+export const userApi = createApi({
+  reducerPath: 'userApi',
   baseQuery: baseQueryWithReauth,
 
   endpoints: build => ({
@@ -136,21 +136,15 @@ export const authApi = createApi({
           dispatch(setAuth(true));
           dispatch(
             setUser({
-              id: data.user.id,
-              email: data.user.email,
-              banned: data.user.banned,
-              banReason: data.user.banReason,
-              roles: data.user.roles,
-              //routes: Route[];
-              createdAt: data.user.createdAt,
-              // routes: data.user.routes.map(
-              //   (routeData: {
-              //     id: number;
-              //     createdAt: Date;
-              //     isApproved: boolean;
-              //     route: string;
-              //   }) => ({ ...routeData, route: JSON.parse(routeData.route) }),
-              // ),
+              ...data.user,
+              routes: data.user.routes.map(
+                (routeData: {
+                  id: number;
+                  createdAt: Date;
+                  isApproved: boolean;
+                  route: string;
+                }) => ({ ...routeData, route: JSON.parse(routeData.route) }),
+              ),
             }),
           );
         } catch (error) {
@@ -166,4 +160,4 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useRegisterMutation,
-} = authApi;
+} = userApi;

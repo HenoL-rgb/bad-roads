@@ -18,7 +18,7 @@ export default function Register({ navigation }: Props) {
   const [register] = useRegisterMutation();
 
   const onSubmit = async (data: { email: string; password: string }) => {
-    const response = await register(data);
+    const response = await register({...data, email: data.email.toLowerCase()});
   };
 
   return (

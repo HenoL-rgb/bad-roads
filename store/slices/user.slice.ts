@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Route } from '../../types/Route';
 
-interface UserData {
+export interface UserData {
   isAuth: boolean;
   user: User | null;
 }
 
-interface User {
+export interface User {
   email: string;
   id: number;
   banned: boolean;
@@ -15,7 +15,8 @@ interface User {
     value: string,
     description: string,
   }[];
-  routes: Route[];
+  //routes: Route[];
+  createdAt?: Date;
 }
 
 const initialState: UserData = {
@@ -32,6 +33,7 @@ export const userSlice = createSlice({
     },
 
     setUser(state, action) {
+      
       return { ...state, user: action.payload };
     },
 
