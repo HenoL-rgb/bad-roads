@@ -2,8 +2,8 @@ import { View, Text } from 'react-native';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from './Login';
-import Register from './Register';
+import Login from '../pages/Login';
+import Register from '../pages/Register';
 
 export type AuthStack = {
     Login: undefined,

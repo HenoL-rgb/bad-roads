@@ -15,6 +15,7 @@ import {
   useLikeRouteMutation,
   useSaveRouteMutation,
   useUpdateRouteMutation,
+  useGetLikedByUserIdQuery
 } from '../store/api/routes.api';
 import RoutePopUp from '../components/RoutePopUp';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -31,6 +32,7 @@ import MapMarkers from '../components/MapMarkers';
 import MapRoutes from '../components/MapRoutes';
 import { TabNavParamList } from '../components/AppWrapper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useAppSelector } from '../hooks/redux-hooks';
 
 enum modes {
   IDLE,
@@ -71,6 +73,7 @@ export default function Map({route, navigation}: Props) {
   const [saveRoute, { isLoading: saveLoading }] = useSaveRouteMutation();
   const [delRoute, { isLoading: deleteLoading }] = useDeleteRouteMutation();
   const [updateRoute, { isLoading: updateLoading }] = useUpdateRouteMutation();
+  const userId = useAppSelector(state => state.userReducer.user?.id)
 
   const routes: Route[] = useMemo(
     () =>
@@ -84,6 +87,7 @@ export default function Map({route, navigation}: Props) {
   );
 
   const hideModal: (mode?: number) => void = useCallback((mode?: number) => {
+    refetch()
     if (mode && mode !== modes.EDIT) {
       setCurrentRoute({
         start: null,
@@ -92,7 +96,7 @@ export default function Map({route, navigation}: Props) {
       });
     }
     setModalVisible(false);
-  }, []);
+  }, [refetch]);
 
   const deleteRoute: (routeId: number) => Promise<void> = useCallback(
     async (routeId: number) => {
@@ -123,6 +127,8 @@ export default function Map({route, navigation}: Props) {
   }
 
   async function handleSaveRoute(): Promise<void> {
+    if(!userId) return;
+
     if (currentRoute.id) {
       const response = await updateRoute({
         points,
@@ -133,7 +139,7 @@ export default function Map({route, navigation}: Props) {
     } else {
       const response = await saveRoute({
         route: points,
-        userId: 4
+        userId: userId
       });
       console.log(response);
       
@@ -203,6 +209,7 @@ export default function Map({route, navigation}: Props) {
         deleteRoute={deleteRoute}
         editRoute={editRoute}
         routeId={currentRoute.id}
+        refetchRoutes={refetch}
       />
       <YaMap
         showUserPosition={false}

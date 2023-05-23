@@ -4,7 +4,13 @@ export type Route = {
   route: Point[];
   id: number;
   userId: number;
-  isApproved: boolean
+  isApproved: boolean;
+  dislikedUsers: {
+    id: number;
+  }[],
+  likedUsers: {
+    id: number,
+  }[]
 };
 
 export type DataRoute = {

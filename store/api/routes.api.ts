@@ -2,6 +2,7 @@ import { RootState } from '../store';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { clearUser, setAuth, setUser } from '../slices/user.slice';
 import type {
+  Api,
   BaseQueryFn,
   FetchArgs,
   FetchBaseQueryError,
@@ -9,8 +10,9 @@ import type {
 import { HOST_IP_INNO } from '@env';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
-//const HOST_IP = "192.168.100.10:7000";
-const HOST_IP = '10.211.32.66:7000';
+const HOST_IP = HOST_IP_INNO;
+//const HOST_IP = "192.168.100.8:7000";
+//const HOST_IP = '10.211.32.66:7000';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `http://${HOST_IP}/api`,
@@ -93,6 +95,12 @@ export const routesApi = createApi({
       }),
     }),
 
+    getRouteById: build.query({
+      query: (id: number) => ({
+        url: `/routes/${id}`
+      })
+    }),
+
     getRoutesByUserId: build.query({
       query: (id: number) => ({
         url: `/routes/user/${id}`,
@@ -124,18 +132,24 @@ export const routesApi = createApi({
     }),
 
     likeRoute: build.mutation({
-      query: (id: number) => ({
-        url: `/routes/like/${id}`,
+      query: (body) => ({
+        url: `/routes/likes`,
         method: "POST",
-        id
+        body
+      })
+    }),
+
+    getLikedByUserId: build.query({
+      query: (id: number) => ({
+        url: `/routes/likes/user/${id}`
       })
     }),
 
     dislikeRoute: build.mutation({
-      query: (id: number) => ({
-        url: `/routes/dislike/${id}`,
+      query: (body) => ({
+        url: `/routes/dislikes`,
         method: "POST",
-        id
+        body
       })
     })
   }),
@@ -149,5 +163,7 @@ export const {
   useApproveRouteMutation,
   useGetRoutesByUserIdQuery,
   useLikeRouteMutation,
-  useDislikeRouteMutation
+  useDislikeRouteMutation,
+  useGetRouteByIdQuery,
+  useGetLikedByUserIdQuery
 } = routesApi;

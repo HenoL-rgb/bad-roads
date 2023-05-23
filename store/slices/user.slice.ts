@@ -12,10 +12,16 @@ export interface User {
   banned: boolean;
   banReason: string;
   roles: {
-    value: string,
-    description: string,
+    value: string;
+    description: string;
   }[];
-  //routes: Route[];
+  likes: {
+    id: number;
+  }[];
+  dislikes: {
+    id: number;
+  }[];
+  routes: Route[];
   createdAt?: Date;
 }
 
@@ -33,16 +39,40 @@ export const userSlice = createSlice({
     },
 
     setUser(state, action) {
-      
       return { ...state, user: action.payload };
     },
 
     clearUser() {
       return { ...initialState };
     },
+
+    setLike(state, action) {      
+      if (state.user?.likes.some(item => item.id === action.payload.id)) {
+        state.user.likes = state.user.likes.filter(
+          item => item.id !== action.payload.id,
+        );
+      } else {
+        if(state.user?.dislikes)
+          state.user.dislikes = state.user?.dislikes.filter(item => item.id !== action.payload.id)
+        state.user?.likes.push(action.payload);
+      }
+    },
+
+    setDislike(state, action) {      
+      if (state.user?.dislikes.some(item => item.id === action.payload.id)) {
+        state.user.dislikes = state.user.dislikes.filter(
+          item => item.id !== action.payload.id,
+        );
+      } else {
+        if(state.user?.likes)
+          state.user.likes = state.user?.likes.filter(item => item.id !== action.payload.id)
+        state.user?.dislikes.push(action.payload);
+      }
+    },
+
   },
 });
 
-export const { setUser, setAuth, clearUser } = userSlice.actions;
+export const { setUser, setAuth, clearUser, setLike, setDislike } = userSlice.actions;
 
 export default userSlice.reducer;

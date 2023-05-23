@@ -7,7 +7,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import Account from '../pages/Account';
-import AuthContainer from '../pages/AuthContainer';
+import AuthContainer from '../navigation/AuthContainer';
 import Login from '../pages/Login';
 import Map from '../pages/Map';
 import { useRefreshQuery } from '../store/api/auth.api';
@@ -38,12 +38,12 @@ function AppWrapper(): JSX.Element {
     return <Text>Loading</Text>;
   }
 
-  if (data && !data.accessToken || !isAuth) {
+  if ((data && !data.accessToken) || !isAuth) {
     return <AuthContainer />;
   }
 
   return (
-    <Tab.Navigator initialRouteName="Map">
+    <Tab.Navigator initialRouteName="Map" >
       <Tab.Screen
         name="Map"
         component={Map}

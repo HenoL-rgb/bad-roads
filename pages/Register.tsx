@@ -3,7 +3,7 @@ import React from 'react';
 import Form from '../components/Form';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AuthStack } from './AuthContainer';
+import { AuthStack } from '../navigation/AuthContainer';
 import { Pressable } from 'react-native';
 import { useRegisterMutation } from '../store/api/auth.api';
 

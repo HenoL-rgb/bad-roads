@@ -3,6 +3,7 @@ import React from 'react'
 import { Polyline } from 'react-native-yamap';
 import { MapCurrentRoute, Route } from '../types/Route';
 import { Point } from '../types/Point';
+import { getCurrentScope } from 'immer/dist/internal';
 
 
 enum modes {
@@ -24,6 +25,18 @@ type MapRoutesProps = {
 }
   
 export default function MapRoutes({routes, currentRoute, setModalVisible, setCurrentRoute, points, mode}: MapRoutesProps) {
+  function getRouteColor(route: Route): string {
+    if(route.likedUsers.length / route.dislikedUsers.length > 0.8) {
+      return '#1bfa07'
+    }
+
+    if(route.likedUsers.length / route.dislikedUsers.length > 0.6) {
+      return '#fad507'
+    }   
+
+    return '#e71313'
+
+  }  
   return (
     <>
     {routes &&
@@ -32,7 +45,7 @@ export default function MapRoutes({routes, currentRoute, setModalVisible, setCur
             <Polyline
               key={route.id}
               points={route.route}
-              strokeColor={route.id === currentRoute.id ? '#fff133' : '#f11515'}
+              strokeColor={getRouteColor(route)}
               strokeWidth={4}
               zIndex={4}
               onPress={() => {

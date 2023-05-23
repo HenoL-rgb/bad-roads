@@ -8,10 +8,10 @@ import type {
 } from '@reduxjs/toolkit/query';
 import { HOST_IP_INNO } from '@env';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import { expandTagDescription } from '@reduxjs/toolkit/dist/query/endpointDefinitions';
 
-const HOST_IP = '10.211.32.66:7000';
-//const HOST_IP = '192.168.100.10:7000';
+//const HOST_IP = '10.211.32.66:7000';
+//const HOST_IP = '192.168.100.8:7000';
+const HOST_IP = HOST_IP_INNO;
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `http://${HOST_IP}/auth`,
@@ -74,11 +74,26 @@ export const authApi = createApi({
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
-          const data = await queryFulfilled;
-
-          await EncryptedStorage.setItem('token', data.data.accessToken);
-          await EncryptedStorage.setItem('refresh', data.data.refreshToken);
-          dispatch(setUser(data.data.user));
+          const { data } = await queryFulfilled;
+          if (data.message) {
+            throw new Error(data.message);
+          }
+          console.log(data);
+          
+          await EncryptedStorage.setItem('token', data.accessToken);
+          await EncryptedStorage.setItem('refresh', data.refreshToken);
+          dispatch(
+            setUser({
+              id: data.user.id,
+              email: data.user.email,
+              banned: data.user.banned,
+              banReason: data.user.banReason,
+              roles: data.user.roles,
+              createdAt: data.user.createdAt,
+              likes: data.user.likes,
+              dislikes: data.user.dislikes,
+            }),
+          );
           dispatch(setAuth(true));
         } catch (error) {
           console.log(error);
@@ -96,7 +111,8 @@ export const authApi = createApi({
         try {
           const data = await queryFulfilled;
           await EncryptedStorage.setItem('token', data.data.accessToken);
-          dispatch(setUser(data.data.userDto));
+          await EncryptedStorage.setItem('refresh', data.data.refreshToken);
+          dispatch(setUser(data.data.user));
           dispatch(setAuth(true));
         } catch (error) {
           console.log(error);
@@ -134,6 +150,7 @@ export const authApi = createApi({
           await EncryptedStorage.setItem('token', data.accessToken);
           await EncryptedStorage.setItem('refresh', data.refreshToken);
           dispatch(setAuth(true));
+          
           dispatch(
             setUser({
               id: data.user.id,
@@ -143,6 +160,8 @@ export const authApi = createApi({
               roles: data.user.roles,
               //routes: Route[];
               createdAt: data.user.createdAt,
+              likes: data.user.likes,
+              dislikes: data.user.dislikes,
               // routes: data.user.routes.map(
               //   (routeData: {
               //     id: number;

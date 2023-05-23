@@ -4,7 +4,11 @@ import { Button } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { setAuth, UserData } from '../store/slices/user.slice';
-import { routesApi, useGetRoutesByUserIdQuery } from '../store/api/routes.api';
+import {
+  routesApi,
+  useGetLikedByUserIdQuery,
+  useGetRoutesByUserIdQuery,
+} from '../store/api/routes.api';
 import { StyleSheet } from 'react-native';
 import { Pressable } from 'react-native';
 import RouteListItem from '../components/RouteListItem';
@@ -18,23 +22,35 @@ type Props = NativeStackScreenProps<TabNavParamList, 'Account'>;
 export default function Account({ navigation }: Props) {
   const dispatch = useAppDispatch();
   const userData: UserData = useAppSelector(state => state.userReducer);
-  const { data, refetch, isLoading } = useGetRoutesByUserIdQuery(
-    userData.user?.id ?? 0,
-    {
-      skip: userData.user?.id ? false : true,
-    },
-  );
+  const {
+    data: routesData,
+    refetch,
+    isLoading,
+  } = useGetRoutesByUserIdQuery(userData.user?.id ?? 0, {
+    skip: userData.user ? false : true,
+  });
+
+  const {
+    data: likesData,
+    refetch: refetchLikes,
+    isLoading: isLikesLoading,
+  } = useGetLikedByUserIdQuery(userData.user?.id ?? 0, {
+    skip: userData.user ? false : true,
+  });
+
   const date = userData.user?.createdAt
     ? userData.user.createdAt.toString().split('T')[0]
     : 'no data';
 
   useFocusEffect(
     useCallback(() => {
-      refetch();
-    }, [refetch]),
+      if (routesData) {
+        refetch();
+      }
+    }, [routesData, refetch]),
   );
 
-  const routes = data?.map(
+  const routes = routesData?.map(
     (routeData: {
       id: number;
       createdAt: Date;
@@ -48,7 +64,7 @@ export default function Account({ navigation }: Props) {
       lat: lat,
       lon: lon,
     });
-  }
+  }  
 
   return (
     <View style={styles.wrapper}>
@@ -64,12 +80,18 @@ export default function Account({ navigation }: Props) {
           <Text style={styles.headerText}>Member since: {date}</Text>
         </View>
       </View>
-      <RouteList
-        routes={routes ?? []}
-        navigate={routeNavigate}
-        refetch={refetch}
-        loading={isLoading}
-      />
+      {routes && (
+        <RouteList
+          routes={routes}
+          navigate={routeNavigate}
+          refetch={refetch}
+          loading={isLoading}
+        />
+      )}
+
+      {likesData?.map((like: any) => (
+        <Text key={like.routeId}>{like.routeId}</Text>
+      ))}
     </View>
   );
 }
@@ -80,6 +102,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     paddingBottom: 10,
+    rowGap: 20,
   },
 
   header: {},
