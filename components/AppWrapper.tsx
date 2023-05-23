@@ -24,7 +24,7 @@ export type TabNavParamList = {
   Account: undefined;
 };
 
-const Tab = createBottomTabNavigator<TabNavParamList>();
+export const Tab = createBottomTabNavigator<TabNavParamList>();
 
 function AppWrapper(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';

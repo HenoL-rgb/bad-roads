@@ -79,7 +79,7 @@ export const authApi = createApi({
             throw new Error(data.message);
           }
           console.log(data);
-          
+
           await EncryptedStorage.setItem('token', data.accessToken);
           await EncryptedStorage.setItem('refresh', data.refreshToken);
           dispatch(
@@ -109,10 +109,21 @@ export const authApi = createApi({
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
-          const data = await queryFulfilled;
-          await EncryptedStorage.setItem('token', data.data.accessToken);
-          await EncryptedStorage.setItem('refresh', data.data.refreshToken);
-          dispatch(setUser(data.data.user));
+          const { data } = await queryFulfilled;
+          await EncryptedStorage.setItem('token', data.accessToken);
+          await EncryptedStorage.setItem('refresh', data.refreshToken);
+          dispatch(
+            setUser({
+              id: data.user.id,
+              email: data.user.email,
+              banned: data.user.banned,
+              banReason: data.user.banReason,
+              roles: data.user.roles,
+              createdAt: data.user.createdAt,
+              likes: data.user.likes,
+              dislikes: data.user.dislikes,
+            }),
+          );
           dispatch(setAuth(true));
         } catch (error) {
           console.log(error);
@@ -150,7 +161,7 @@ export const authApi = createApi({
           await EncryptedStorage.setItem('token', data.accessToken);
           await EncryptedStorage.setItem('refresh', data.refreshToken);
           dispatch(setAuth(true));
-          
+
           dispatch(
             setUser({
               id: data.user.id,

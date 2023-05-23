@@ -41,6 +41,7 @@ export default function RouteListItem({ route, navigate }: RouteListItem) {
         <View style={styles.geoInfo}>
           <Text style={styles.infoText}>lat: {route.route[0].lat.toFixed(5)}</Text>
           <Text style={styles.infoText}>lon: {route.route[0].lon.toFixed(5)}</Text>
+          <Text style={styles.infoText}>Status: {route.isApproved ? 'Approved' : 'Not approved'}</Text>
         </View>
         <Pressable
           onPress={() => navigate(route.route[0].lat, route.route[0].lon)}>

@@ -16,6 +16,7 @@ import { TabNavParamList } from '../components/AppWrapper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import RouteList from '../components/RouteList';
 import { useFocusEffect } from '@react-navigation/native';
+import AccountRoutesList from '../navigation/AccountRoutesList';
 
 type Props = NativeStackScreenProps<TabNavParamList, 'Account'>;
 
@@ -80,7 +81,8 @@ export default function Account({ navigation }: Props) {
           <Text style={styles.headerText}>Member since: {date}</Text>
         </View>
       </View>
-      {routes && (
+      <AccountRoutesList />
+      {/* {routes && (
         <RouteList
           routes={routes}
           navigate={routeNavigate}
@@ -91,7 +93,7 @@ export default function Account({ navigation }: Props) {
 
       {likesData?.map((like: any) => (
         <Text key={like.routeId}>{like.routeId}</Text>
-      ))}
+      ))} */}
     </View>
   );
 }
