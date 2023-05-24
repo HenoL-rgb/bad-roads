@@ -54,7 +54,7 @@ export default function MapButtons({
           onPress={closeRouteWork}
           style={{
             ...styles.addButton,
-            bottom: 100,
+            bottom: 80,
             backgroundColor: '#bd2727',
           }}>
           <Icon name="close" size={20} color="white" />
@@ -80,7 +80,7 @@ export default function MapButtons({
           style={{
             ...styles.addButton,
             backgroundColor: '#6e6e6e',
-            bottom: 220,
+            bottom: 190,
           }}>
           <Icon name="undo" size={20} color="white" />
         </Pressable>
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#2196F3',
         position: 'absolute',
         right: 20,
-        bottom: 160,
+        bottom: 140,
         elevation: 2,
         justifyContent: 'center',
         alignItems: 'center',

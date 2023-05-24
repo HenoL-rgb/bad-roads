@@ -80,7 +80,7 @@ function RoutePopUp({
   const { data, refetch, isLoading } = useGetRouteByIdQuery(routeId, {
     skip: routeId ? false : true,
     refetchOnMountOrArgChange: true,
-  });  
+  });
 
   const likes = useAppSelector(state => state.userReducer.user?.likes);
   const dislikes = useAppSelector(state => state.userReducer.user?.dislikes);
@@ -185,22 +185,25 @@ function RoutePopUp({
                     />
                   </Pressable>
                 </View>
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => editRoute(routeId)}>
-                  <Text style={styles.textStyle}>EDIT ROUTE</Text>
-                </Pressable>
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => deleteRoute(routeId)}>
-                  <Text style={styles.textStyle}>DELETE ROUTE</Text>
-                </Pressable>
+
                 {isAdmin && (
-                  <Pressable
-                    style={[styles.button, styles.buttonClose]}
-                    onPress={handleApprove}>
-                    <Text style={styles.textStyle}>APPROVE ROUTE</Text>
-                  </Pressable>
+                  <>
+                    <Pressable
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={() => editRoute(routeId)}>
+                      <Text style={styles.textStyle}>EDIT ROUTE</Text>
+                    </Pressable>
+                    <Pressable
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={() => deleteRoute(routeId)}>
+                      <Text style={styles.textStyle}>DELETE ROUTE</Text>
+                    </Pressable>
+                    <Pressable
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={handleApprove}>
+                      <Text style={styles.textStyle}>APPROVE ROUTE</Text>
+                    </Pressable>
+                  </>
                 )}
                 <Pressable
                   style={[styles.button, styles.buttonClose]}
