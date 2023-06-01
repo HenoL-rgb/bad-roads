@@ -1,12 +1,12 @@
 import {
   View,
   Text,
-  Alert,
   Modal,
   Pressable,
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from 'react-native';
 import React, { memo, useEffect, useState } from 'react';
 import {
@@ -16,37 +16,13 @@ import {
   useApproveRouteMutation,
 } from '../store/api/routes.api';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
-import {
-  BaseQueryFn,
-  FetchArgs,
-  FetchBaseQueryError,
-  QueryDefinition,
-} from '@reduxjs/toolkit/dist/query';
-import { QueryActionCreatorResult } from '@reduxjs/toolkit/dist/query/core/buildInitiate';
 import { setDislike, setLike } from '../store/slices/user.slice';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type RoutePopUpProps = {
-  modalVisible: boolean;
-  hideModal: () => void;
   deleteRoute: (id: number) => void;
   editRoute: (id: number) => void;
   routeId: number;
-  refetchRoutes: () => QueryActionCreatorResult<
-    QueryDefinition<
-      any,
-      BaseQueryFn<
-        string | FetchArgs,
-        unknown,
-        FetchBaseQueryError,
-        object,
-        object
-      >,
-      never,
-      any,
-      'routesApi'
-    >
-  >;
 };
 
 enum Marks {
@@ -55,13 +31,10 @@ enum Marks {
   NO_MARK,
 }
 
-function RoutePopUp({
-  modalVisible,
-  hideModal,
+function BottomSheetContent({
   editRoute,
   deleteRoute,
   routeId,
-  refetchRoutes,
 }: RoutePopUpProps) {
   const dispatch = useAppDispatch();
   const [likeRoute, { isLoading: likeLoading }] = useLikeRouteMutation();
@@ -88,7 +61,7 @@ function RoutePopUp({
   const [mark, setMark] = useState(Marks.NO_MARK);
 
   useEffect(() => {
-    const liked = likes?.some(item => item.id === routeId);
+    const liked = likes?.some((item: { id: number }) => item.id === routeId);
     const disliked = dislikes?.some(item => item.id === routeId);
     setMark(liked ? Marks.LIKE : disliked ? Marks.DISLIKE : Marks.NO_MARK);
   }, [dislikes, likes, routeId]);
@@ -127,20 +100,9 @@ function RoutePopUp({
   }
 
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => {
-        hideModal();
-      }}>
+    <>
       {data ? (
-        <TouchableOpacity
-          onPress={hideModal}
-          style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' }}
-          activeOpacity={1}>
           <View style={styles.centeredView}>
-            <TouchableWithoutFeedback>
               <View style={styles.modalView}>
                 <View>
                   <Text style={styles.modalText}>ROUTE {routeId} INFO</Text>
@@ -169,7 +131,7 @@ function RoutePopUp({
                   </Pressable>
                   <Pressable
                     style={[
-                      styles.likeButton,
+                      styles.dislikeButton,
                       { opacity: data.isApproved ? 1 : 0.5 },
                     ]}
                     onPress={handleDislike}
@@ -186,7 +148,8 @@ function RoutePopUp({
                   </Pressable>
                 </View>
 
-                {isAdmin && (
+                {(isAdmin ||
+                  (data.author.email === user?.email && !data.isApproved)) && (
                   <>
                     <Pressable
                       style={[styles.button, styles.buttonClose]}
@@ -198,52 +161,47 @@ function RoutePopUp({
                       onPress={() => deleteRoute(routeId)}>
                       <Text style={styles.textStyle}>DELETE ROUTE</Text>
                     </Pressable>
-                    <Pressable
-                      style={[styles.button, styles.buttonClose]}
-                      onPress={handleApprove}>
-                      <Text style={styles.textStyle}>APPROVE ROUTE</Text>
-                    </Pressable>
                   </>
                 )}
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={hideModal}>
-                  <Text style={styles.textStyle}>HIDE MODAL</Text>
-                </Pressable>
+                {isAdmin && (
+                  <Pressable
+                    style={[
+                      styles.button,
+                      styles.buttonClose,
+                      { opacity: data.isApproved ? 0.4 : 1 },
+                    ]}
+                    disabled={data.isApproved}
+                    onPress={handleApprove}>
+                    {approveLoading ? (
+                      <ActivityIndicator size="small" />
+                    ) : (
+                      <Text style={styles.textStyle}>APPROVE ROUTE</Text>
+                    )}
+                  </Pressable>
+                )}
               </View>
-            </TouchableWithoutFeedback>
           </View>
-        </TouchableOpacity>
       ) : (
-        <Text>Loading</Text>
+        <View style={styles.centeredView}>
+          <ActivityIndicator size="large" color="#2196F3" />
+        </View>
       )}
-    </Modal>
+    </>
   );
 }
 
-export default memo(RoutePopUp);
+export default memo(BottomSheetContent);
 
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
   },
   modalView: {
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
     rowGap: 6,
   },
   markButtonsContainer: {
@@ -262,7 +220,12 @@ const styles = StyleSheet.create({
   likeButton: {
     borderRadius: 24,
     padding: 10,
-    backgroundColor: '#2196F3',
+    backgroundColor: '#21f344',
+  },
+  dislikeButton: {
+    borderRadius: 24,
+    padding: 10,
+    backgroundColor: '#f32121',
   },
   buttonOpen: {
     backgroundColor: '#F194FF',

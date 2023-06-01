@@ -10,8 +10,8 @@ import type {
 import { HOST_IP_INNO } from '@env';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
-const HOST_IP = '192.168.194.72:7000';
-//const HOST_IP = "192.168.100.8:7000";
+//const HOST_IP = '192.168.194.72:7000';
+const HOST_IP = "192.168.100.8:7000";
 //const HOST_IP = '10.211.32.66:7000';
 
 const baseQuery = fetchBaseQuery({

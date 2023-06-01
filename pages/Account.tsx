@@ -1,41 +1,21 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text } from 'react-native';
 import React, { useCallback } from 'react';
-import { Button } from 'react-native';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
-import { setAuth, UserData } from '../store/slices/user.slice';
+import { useAppSelector } from '../hooks/redux-hooks';
+import { UserData } from '../store/slices/user.slice';
 import {
-  routesApi,
-  useGetLikedByUserIdQuery,
   useGetRoutesByUserIdQuery,
 } from '../store/api/routes.api';
 import { StyleSheet } from 'react-native';
-import { Pressable } from 'react-native';
-import RouteListItem from '../components/RouteListItem';
-import { TabNavParamList } from '../components/AppWrapper';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import RouteList from '../components/RouteList';
 import { useFocusEffect } from '@react-navigation/native';
-import AccountRoutesList from '../navigation/AccountRoutesList';
 
-type Props = NativeStackScreenProps<TabNavParamList, 'Account'>;
-
-export default function Account({ navigation }: Props) {
-  const dispatch = useAppDispatch();
+export default function Account() {
   const userData: UserData = useAppSelector(state => state.userReducer);
+  const theme = useAppSelector(state => state.themeReducer);
+  
   const {
     data: routesData,
     refetch,
-    isLoading,
   } = useGetRoutesByUserIdQuery(userData.user?.id ?? 0, {
-    skip: userData.user ? false : true,
-  });
-
-  const {
-    data: likesData,
-    refetch: refetchLikes,
-    isLoading: isLikesLoading,
-  } = useGetLikedByUserIdQuery(userData.user?.id ?? 0, {
     skip: userData.user ? false : true,
   });
 
@@ -49,51 +29,23 @@ export default function Account({ navigation }: Props) {
         refetch();
       }
     }, [routesData, refetch]),
-  );
-
-  const routes = routesData?.map(
-    (routeData: {
-      id: number;
-      createdAt: Date;
-      isApproved: boolean;
-      route: string;
-    }) => ({ ...routeData, route: JSON.parse(routeData.route) }),
-  );
-
-  function routeNavigate(lat: number, lon: number) {
-    navigation.navigate('Map', {
-      lat: lat,
-      lon: lon,
-    });
-  }  
+  ); 
 
   return (
-    <View style={styles.wrapper}>
+    <View style={[styles.wrapper, {backgroundColor: theme.colors.card}]}>
       <View style={styles.header}>
         <View style={styles.headerEmail}>
-          <Text style={{ ...styles.headerText, fontSize: 20 }}>
+          <Text style={[{ ...styles.headerText, fontSize: 20 }, {color: theme.colors.text}]}>
             {userData.user?.email}
           </Text>
         </View>
         <View style={styles.divider}></View>
         <View style={styles.info}>
-          <Text style={styles.headerText}>Id: {userData.user?.id}</Text>
-          <Text style={styles.headerText}>Member since: {date}</Text>
+          <Text style={[styles.headerText, {color: theme.colors.text}]}>Id: {userData.user?.id}</Text>
+          <Text style={[styles.headerText, {color: theme.colors.text}]}>Member since: {date}</Text>
         </View>
       </View>
-      <AccountRoutesList />
-      {/* {routes && (
-        <RouteList
-          routes={routes}
-          navigate={routeNavigate}
-          refetch={refetch}
-          loading={isLoading}
-        />
-      )}
-
-      {likesData?.map((like: any) => (
-        <Text key={like.routeId}>{like.routeId}</Text>
-      ))} */}
+      {/* <AccountRoutesList theme={theme} /> */}
     </View>
   );
 }

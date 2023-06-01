@@ -80,8 +80,8 @@ export default function MapButtons({
           style={{
             ...styles.addButton,
             backgroundColor: '#6e6e6e',
-            bottom: 190,
-          }}>
+            bottom: 200,
+          }}>                                                         
           <Icon name="undo" size={20} color="white" />
         </Pressable>
       )}

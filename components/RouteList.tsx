@@ -1,4 +1,10 @@
-import { View, Text, StyleSheet, RefreshControl } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  RefreshControl,
+  ActivityIndicator,
+} from 'react-native';
 import React, { useCallback } from 'react';
 import { Route } from '../types/Route';
 import RouteListItem from './RouteListItem';
@@ -38,7 +44,6 @@ export default function RouteList({
   loading,
   refetch,
 }: RouteListProps) {
-  
   const renderItem = useCallback(
     ({ item }: { item: Route }) => (
       <RouteListItem route={item} navigate={navigate} />
@@ -50,16 +55,21 @@ export default function RouteList({
 
   return (
     <View style={styles.wrapper}>
-      <FlashList
-        data={routes}
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={refetch} />
-        }
-        renderItem={renderItem}
-        estimatedItemSize={80}
-        keyExtractor={keyExtractor}
-        ItemSeparatorComponent={() => <View style={{ height: 5 }} />}
-      />
+      {routes.length > 0 ? (
+        <FlashList
+          data={routes}
+          refreshControl={
+            <RefreshControl refreshing={loading} onRefresh={refetch} />
+          }
+          renderItem={renderItem}
+          estimatedItemSize={80}
+          keyExtractor={keyExtractor}
+          ItemSeparatorComponent={() => <View style={{ height: 5 }} />}
+          ListEmptyComponent={
+            <ActivityIndicator size={'small'} color="#000000" />
+          }
+        />
+      ) : null}
     </View>
   );
 }

@@ -1,28 +1,36 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+} from 'react-native';
 import React, { useRef } from 'react';
 import { Route } from '../types/Route';
 import { Polyline, YaMap } from 'react-native-yamap';
-import { YANDEX_API_KEY } from '@env';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useAppSelector } from '../hooks/redux-hooks';
 
 type RouteListItem = {
   route: Route;
   navigate: (lat: number, lon: number) => void;
 };
 
-export default function RouteListItem({ route, navigate }: RouteListItem) {
+function RouteListItem({ route, navigate }: RouteListItem) {
   const map = useRef<YaMap>(null);
-  YaMap.init(YANDEX_API_KEY);
+  const theme = useAppSelector(state => state.themeReducer);
 
   return (
     <View style={styles.wrapper}>
       <YaMap
         showUserPosition={false}
-        onMapPress={() => navigate(route.route[0].lat, route.route[0].lon)}
         style={{ width: 80, height: 80 }}
         nightMode={true}
         mapType={'vector'}
         ref={map}
+        logoPadding={{
+          horizontal: 210,
+        }}
+        
         initialRegion={{
           lat: route.route[0].lat,
           lon: route.route[0].lon,
@@ -37,11 +45,18 @@ export default function RouteListItem({ route, navigate }: RouteListItem) {
           zIndex={4}
         />
       </YaMap>
-      <View style={styles.infoWrapper}>
+
+      <View style={[styles.infoWrapper, {backgroundColor: theme.colors.card}]}>
         <View style={styles.geoInfo}>
-          <Text style={styles.infoText}>lat: {route.route[0].lat.toFixed(5)}</Text>
-          <Text style={styles.infoText}>lon: {route.route[0].lon.toFixed(5)}</Text>
-          <Text style={styles.infoText}>Status: {route.isApproved ? 'Approved' : 'Not approved'}</Text>
+          <Text style={[styles.infoText, {color: theme.colors.text}]}>
+            lat: {route.route[0].lat.toFixed(5)}
+          </Text>
+          <Text style={[styles.infoText, {color: theme.colors.text}]}>
+            lon: {route.route[0].lon.toFixed(5)}
+          </Text>
+          <Text style={[styles.infoText, {color: theme.colors.text}]}>
+            Status: {route.isApproved ? 'Approved' : 'Not approved'}
+          </Text>
         </View>
         <Pressable
           onPress={() => navigate(route.route[0].lat, route.route[0].lon)}>
@@ -51,6 +66,8 @@ export default function RouteListItem({ route, navigate }: RouteListItem) {
     </View>
   );
 }
+
+export default RouteListItem;
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -69,10 +86,10 @@ const styles = StyleSheet.create({
   },
 
   geoInfo: {
-    rowGap: 5
+    rowGap: 5,
   },
 
   infoText: {
     color: '#000000',
-  }
+  },
 });

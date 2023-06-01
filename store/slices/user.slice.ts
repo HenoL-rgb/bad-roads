@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { Route } from '../../types/Route';
 
 export interface UserData {
-  isAuth: boolean;
+  isAuth: boolean | null;
   user: User | null;
 }
 
@@ -26,7 +26,7 @@ export interface User {
 }
 
 const initialState: UserData = {
-  isAuth: false,
+  isAuth: null,
   user: null,
 };
 

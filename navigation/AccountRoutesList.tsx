@@ -1,14 +1,12 @@
-import { View, Text } from 'react-native';
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import MyRoutes from '../components/MyRoutes';
 import RoutesToApprove from '../components/RoutesToApprove';
 import DangerRoutes from '../components/DangerRoutes';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { TabNavParamList } from '../components/AppWrapper';
+
 import { useAppSelector } from '../hooks/redux-hooks';
 import AllRoutes from '../components/AllRoutes';
+import { Theme } from '@react-navigation/native';
 
 export type RoutesTabNavParamList = {
   MyRoutes: {
@@ -25,9 +23,16 @@ export type AdminRoutesTabNavParamList = {
 const Tab = createMaterialTopTabNavigator<RoutesTabNavParamList>();
 const AdminTab = createMaterialTopTabNavigator<AdminRoutesTabNavParamList>();
 
-function AdminNavigator() {
+function AdminNavigator({ theme }: { theme: Theme }) {
   return (
-    <AdminTab.Navigator initialRouteName="Routes">
+    <AdminTab.Navigator
+      initialRouteName="Routes"
+      screenOptions={{
+        tabBarStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        tabBarActiveTintColor: theme.colors.text,
+      }}>
       <AdminTab.Screen
         name="Routes"
         component={AllRoutes}
@@ -53,9 +58,16 @@ function AdminNavigator() {
   );
 }
 
-function UserNavigator({ userId }: { userId: number }) {
+function UserNavigator({ userId, theme }: { userId: number; theme: Theme }) {
   return (
-    <Tab.Navigator initialRouteName="MyRoutes">
+    <Tab.Navigator
+      initialRouteName="MyRoutes"
+      screenOptions={{
+        tabBarStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        tabBarActiveTintColor: theme.colors.text,
+      }}>
       <Tab.Screen
         name="MyRoutes"
         component={MyRoutes}
@@ -70,15 +82,15 @@ function UserNavigator({ userId }: { userId: number }) {
   );
 }
 
-export default function AccountRoutesList() {
+export default function AccountRoutesList({ theme }: { theme: Theme }) {
   const user = useAppSelector(state => state.userReducer.user);
   const isAdmin = user?.roles.find(
     (item: { value: string; description: string }) => item.value === 'ADMIN',
   );
 
   return isAdmin ? (
-    <AdminNavigator />
+    <AdminNavigator theme={theme} />
   ) : (
-    <UserNavigator userId={user ? user.id : 0} />
+    <UserNavigator userId={user ? user.id : 0} theme={theme} />
   );
 }

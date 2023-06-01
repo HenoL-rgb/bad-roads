@@ -1,84 +1,41 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, useColorScheme } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import EncryptedStorage from 'react-native-encrypted-storage';
+import React from 'react';
 
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
-import Account from '../pages/Account';
-import AuthContainer from '../navigation/AuthContainer';
-import Login from '../pages/Login';
-import Map from '../pages/Map';
-import { useRefreshQuery } from '../store/api/auth.api';
-import { setAuth, setUser } from '../store/slices/user.slice';
-import Form from './Form';
-import { Pressable } from 'react-native';
-import LogoutButton from './LogoutButton';
+import { useAppSelector } from '../hooks/redux-hooks';
 
-export type TabNavParamList = {
-  Map: {
-    lat: number,
-    lon: number
-  };
-  Account: undefined;
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Home from '../pages/Home';
+import Settings from '../pages/Settings';
+
+export type StackParamList = {
+  Home: undefined;
+  Setting: undefined;
 };
 
-export const Tab = createBottomTabNavigator<TabNavParamList>();
+export const RootStack = createNativeStackNavigator<StackParamList>();
 
 function AppWrapper(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  const { data, isLoading: loadRefresh } = useRefreshQuery({});
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-  const { isAuth } = useAppSelector(state => state.userReducer);
-
-  if (loadRefresh) {
-    return <Text>Loading</Text>;
-  }
-
-  if ((data && !data.accessToken) || !isAuth) {
-    return <AuthContainer />;
-  }
-
+  const theme = useAppSelector(state => state.themeReducer);
   return (
-    <Tab.Navigator initialRouteName="Map" >
-      <Tab.Screen
-        name="Map"
-        component={Map}
+    <RootStack.Navigator screenOptions={{
+      animation: 'slide_from_right',
+      animationDuration: 100, // not working
+      headerStyle: {
+        backgroundColor: theme.colors.background,
+      },
+      headerTitleStyle: {
+        color: theme.colors.text,
+      },
+      headerTintColor: theme.colors.text,
+    }}>
+      <RootStack.Screen
+        name="Home"
+        component={Home}
         options={{
           headerShown: false,
-          tabBarIcon: (props: {
-            focused: boolean;
-            color: string;
-            size: number;
-          }) => <Icon name="explore" size={20} color={props.color} />,
-        }}
-        initialParams={{
-          lat: 55.17,
-          lon: 30.2153,
         }}
       />
-      <Tab.Screen
-        name="Account"
-        component={Account}
-        options={{
-          tabBarIcon: (props: {
-            focused: boolean;
-            color: string;
-            size: number;
-          }) => <Icon name="person" size={18} color={props.color} />,
-          headerRight: (props: {
-            tintColor?: string | undefined;
-            pressColor?: string | undefined;
-            pressOpacity?: number | undefined;
-          }) => (
-            <LogoutButton {...props} />
-          ),
-        }}
-      />
-    </Tab.Navigator>
+      <RootStack.Screen name="Setting" component={Settings} />
+    </RootStack.Navigator>
   );
 }
 

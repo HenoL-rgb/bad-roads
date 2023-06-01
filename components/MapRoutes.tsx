@@ -1,11 +1,8 @@
-import { View, Text } from 'react-native';
 import React from 'react';
 import { Polyline } from 'react-native-yamap';
 import { MapCurrentRoute, Route } from '../types/Route';
 import { Point } from '../types/Point';
-import { getCurrentScope } from 'immer/dist/internal';
 import { useAppSelector } from '../hooks/redux-hooks';
-import useGetUserRoutes from '../hooks/useGetUserRoutes';
 
 enum modes {
   IDLE,
@@ -27,7 +24,6 @@ type MapRoutesProps = {
 
 export default function MapRoutes({
   routes,
-  currentRoute,
   setModalVisible,
   setCurrentRoute,
   points,

@@ -2,23 +2,18 @@ import {
   View,
   Text,
   StyleSheet,
-  Pressable,
-  Button,
   NativeSyntheticEvent,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useCallback, useRef, useMemo, useState } from 'react';
-import YaMap, { Marker, Polyline } from 'react-native-yamap';
+import YaMap from 'react-native-yamap';
 import {
   useDeleteRouteMutation,
-  useDislikeRouteMutation,
   useGetAllRoutesQuery,
-  useLikeRouteMutation,
   useSaveRouteMutation,
   useUpdateRouteMutation,
-  useGetLikedByUserIdQuery
 } from '../store/api/routes.api';
-import RoutePopUp from '../components/RoutePopUp';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import RoutePopUp from '../components/BottomSheetContent';
 import { Point } from '../types/Point';
 import {
   DataRoute,
@@ -30,9 +25,11 @@ import { YANDEX_API_KEY } from '@env';
 import MapButtons from '../components/MapButtons';
 import MapMarkers from '../components/MapMarkers';
 import MapRoutes from '../components/MapRoutes';
-import { TabNavParamList } from '../components/AppWrapper';
+import { TabNavParamList } from '../pages/Home';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useAppSelector } from '../hooks/redux-hooks';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import BottomSheet from '../components/BottomSheet';
 
 enum modes {
   IDLE,
@@ -49,11 +46,9 @@ enum currentMarker {
 }
 type Props = NativeStackScreenProps<TabNavParamList, 'Map'>;
 
-
-export default function Map({route, navigation}: Props) {
-  YaMap.init(YANDEX_API_KEY);
+export default function Map({ route }: Props) {
   const initialParams = route.params;
-  
+
   const [modalVisible, setModalVisible] = useState(false);
   const [markersVisible, setMarkersVisible] = useState({
     start: false,
@@ -73,7 +68,7 @@ export default function Map({route, navigation}: Props) {
   const [saveRoute, { isLoading: saveLoading }] = useSaveRouteMutation();
   const [delRoute, { isLoading: deleteLoading }] = useDeleteRouteMutation();
   const [updateRoute, { isLoading: updateLoading }] = useUpdateRouteMutation();
-  const userId = useAppSelector(state => state.userReducer.user?.id)
+  const userId = useAppSelector(state => state.userReducer.user?.id);
 
   const routes: Route[] = useMemo(
     () =>
@@ -86,17 +81,20 @@ export default function Map({route, navigation}: Props) {
     [data],
   );
 
-  const hideModal: (mode?: number) => void = useCallback((mode?: number) => {
-    refetch()
-    if (mode && mode !== modes.EDIT) {
-      setCurrentRoute({
-        start: null,
-        end: null,
-        id: 0,
-      });
-    }
-    setModalVisible(false);
-  }, [refetch]);
+  const hideModal: (mode?: number) => void = useCallback(
+    (mode?: number) => {
+      refetch();
+      if (mode && mode !== modes.EDIT) {
+        setCurrentRoute({
+          start: null,
+          end: null,
+          id: 0,
+        });
+      }
+      setModalVisible(false);
+    },
+    [refetch],
+  );
 
   const deleteRoute: (routeId: number) => Promise<void> = useCallback(
     async (routeId: number) => {
@@ -127,7 +125,7 @@ export default function Map({route, navigation}: Props) {
   }
 
   async function handleSaveRoute(): Promise<void> {
-    if(!userId) return;
+    if (!userId) return;
 
     if (currentRoute.id) {
       const response = await updateRoute({
@@ -135,14 +133,14 @@ export default function Map({route, navigation}: Props) {
         id: currentRoute.id,
       });
       console.log(response);
-      
     } else {
+      console.log(points);
+
       const response = await saveRoute({
         route: points,
-        userId: userId
+        userId: userId,
       });
       console.log(response);
-      
     }
     await refetch();
     closeRouteWork();
@@ -198,59 +196,64 @@ export default function Map({route, navigation}: Props) {
   }
 
   if (isLoading) {
-    return <Text>Loading</Text>;
+    return (
+      <View style={{ flex: 1 }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      <RoutePopUp
-        modalVisible={modalVisible}
-        hideModal={hideModal}
-        deleteRoute={deleteRoute}
-        editRoute={editRoute}
-        routeId={currentRoute.id}
-        refetchRoutes={refetch}
-      />
-      <YaMap
-        showUserPosition={false}
-        onMapPress={handleMapPress}
-        style={{ flex: 1 }}
-        nightMode={true}
-        mapType={'vector'}
-        ref={map}
-        initialRegion={{
-          lat: initialParams.lat,
-          lon: initialParams.lon,
-          zoom: 17,
-          azimuth: 0,
-        }}>
-        <MapMarkers
-          markersVisible={markersVisible}
-          current={current}
-          currentRoute={currentRoute}
-          setCurrent={setCurrent}
-        />
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
+        <YaMap
+          showUserPosition={false}
+          onMapPress={handleMapPress}
+          style={{ flex: 1 }}
+          nightMode={true}
+          mapType={'vector'}
+          ref={map}
+          initialRegion={{
+            lat: initialParams.lat,
+            lon: initialParams.lon,
+            zoom: 17,
+            azimuth: 0,
+          }}>
+          <MapMarkers
+            markersVisible={markersVisible}
+            current={current}
+            currentRoute={currentRoute}
+            setCurrent={setCurrent}
+          />
 
-        <MapRoutes
-          currentRoute={currentRoute}
-          routes={routes}
-          setModalVisible={setModalVisible}
-          setCurrentRoute={setCurrentRoute}
-          points={points}
+          <MapRoutes
+            currentRoute={currentRoute}
+            routes={routes}
+            setModalVisible={setModalVisible}
+            setCurrentRoute={setCurrentRoute}
+            points={points}
+            mode={mode}
+          />
+        </YaMap>
+
+        <MapButtons
           mode={mode}
+          setMode={setMode}
+          handleSaveRoute={handleSaveRoute}
+          setPoints={setPoints}
+          findRoute={findRoute}
+          markersVisible={markersVisible}
+          closeRouteWork={closeRouteWork}
         />
-      </YaMap>
-
-      <MapButtons
-        mode={mode}
-        setMode={setMode}
-        handleSaveRoute={handleSaveRoute}
-        setPoints={setPoints}
-        findRoute={findRoute}
-        markersVisible={markersVisible}
-        closeRouteWork={closeRouteWork}
-      />
-    </View>
+        <BottomSheet
+          modalVisible={modalVisible}
+          deleteRoute={deleteRoute}
+          editRoute={editRoute}
+          hideSheet={hideModal}
+          routeId={currentRoute.id}
+        />
+      </View>
+    </GestureHandlerRootView>
   );
 }
 

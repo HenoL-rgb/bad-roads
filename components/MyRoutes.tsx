@@ -1,25 +1,22 @@
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import React from 'react';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RoutesTabNavParamList } from '../navigation/AccountRoutesList';
-import { useGetRoutesByUserIdQuery } from '../store/api/routes.api';
 import { useNavigation } from '@react-navigation/native';
-import { Tab, TabNavParamList } from './AppWrapper';
+import { TabNavParamList } from '../pages/Home';
 import RouteList from './RouteList';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import useGetUserRoutes from '../hooks/useGetUserRoutes';
+import { useAppSelector } from '../hooks/redux-hooks';
 
-type Props = NativeStackScreenProps<RoutesTabNavParamList, 'MyRoutes'>;
 type RootProps = BottomTabNavigationProp<TabNavParamList>;
 
 enum RootStack {
   Map = 'Map',
 }
 
-export default function MyRoutes({ route }: Props) {
+export default function MyRoutes() {
   const navigation = useNavigation<RootProps>();
-  const userId = route.params.userId;
-  const {routes, refetch, isLoading} = useGetUserRoutes();
+  const { routes, refetch, isLoading } = useGetUserRoutes();
+  const theme = useAppSelector(state => state.themeReducer)
 
   function routeNavigate(lat: number, lon: number) {
     navigation.navigate(RootStack.Map, {
@@ -27,17 +24,15 @@ export default function MyRoutes({ route }: Props) {
       lon: lon,
     });
   }
-    
+
   return (
-    <View style={{ flex: 1, paddingTop: 10 }}>
-      {routes && (
-        <RouteList
-          routes={routes}
-          navigate={routeNavigate}
-          refetch={refetch}
-          loading={isLoading}
-        />
-      )}
+    <View style={{ flex: 1, paddingTop: 10, backgroundColor: theme.colors.card }}>
+      <RouteList
+        routes={routes}
+        navigate={routeNavigate}
+        refetch={refetch}
+        loading={isLoading}
+      />
     </View>
   );
 }

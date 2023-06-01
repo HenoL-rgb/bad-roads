@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { authApi } from './api/auth.api'
 import { routesApi } from './api/routes.api'
 import userReducer from "./slices/user.slice"
+import themeReducer from './slices/theme.slice'
 // ...
 
 export const store = configureStore({
@@ -9,6 +10,7 @@ export const store = configureStore({
     [routesApi.reducerPath]: routesApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     userReducer,
+    themeReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(routesApi.middleware, authApi.middleware)
