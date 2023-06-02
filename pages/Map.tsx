@@ -29,7 +29,8 @@ import { TabNavParamList } from '../pages/Home';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useAppSelector } from '../hooks/redux-hooks';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import BottomSheet from '../components/BottomSheet';
+import BottomSheet, { BottomSheetRefProps } from '../components/BottomSheet';
+import BottomSheetContent from '../components/BottomSheetContent';
 
 enum modes {
   IDLE,
@@ -48,8 +49,6 @@ type Props = NativeStackScreenProps<TabNavParamList, 'Map'>;
 
 export default function Map({ route }: Props) {
   const initialParams = route.params;
-
-  const [modalVisible, setModalVisible] = useState(false);
   const [markersVisible, setMarkersVisible] = useState({
     start: false,
     end: false,
@@ -65,6 +64,7 @@ export default function Map({ route }: Props) {
   const [mode, setMode] = useState<number>(modes.IDLE);
   const { data, isLoading, refetch } = useGetAllRoutesQuery({});
   const map = useRef<YaMap>(null);
+  const bottomSheetRef = useRef<BottomSheetRefProps>(null);
   const [saveRoute, { isLoading: saveLoading }] = useSaveRouteMutation();
   const [delRoute, { isLoading: deleteLoading }] = useDeleteRouteMutation();
   const [updateRoute, { isLoading: updateLoading }] = useUpdateRouteMutation();
@@ -81,36 +81,33 @@ export default function Map({ route }: Props) {
     [data],
   );
 
-  const hideModal: (mode?: number) => void = useCallback(
-    (mode?: number) => {
-      refetch();
-      if (mode && mode !== modes.EDIT) {
-        setCurrentRoute({
-          start: null,
-          end: null,
-          id: 0,
-        });
-      }
-      setModalVisible(false);
-    },
-    [refetch],
-  );
+  const openSheet: () => void = useCallback(() => {
+    bottomSheetRef.current?.scrollTo(-350);
+  }, []);
+
+  const sheetPressEdit: () => void = useCallback(() => {
+    bottomSheetRef.current?.scrollTo(0);
+    setMode(modes.EDIT);
+    setMarkersVisible({ start: true, end: true });
+  }, []);
+
+  const hideSheet: () => void = useCallback(() => {
+    setCurrentRoute({
+      start: null,
+      end: null,
+      id: 0,
+    });
+    refetch();
+  }, [refetch]);
 
   const deleteRoute: (routeId: number) => Promise<void> = useCallback(
     async (routeId: number) => {
       const response = await delRoute({ routeId });
       await refetch();
       closeRouteWork();
-      hideModal();
     },
-    [delRoute, hideModal, refetch],
+    [delRoute, refetch],
   );
-
-  const editRoute: () => void = useCallback(() => {
-    setMode(modes.EDIT);
-    setMarkersVisible({ start: true, end: true });
-    hideModal(modes.EDIT);
-  }, [hideModal]);
 
   function closeRouteWork(): void {
     setMode(modes.IDLE);
@@ -229,7 +226,7 @@ export default function Map({ route }: Props) {
           <MapRoutes
             currentRoute={currentRoute}
             routes={routes}
-            setModalVisible={setModalVisible}
+            openSheet={openSheet}
             setCurrentRoute={setCurrentRoute}
             points={points}
             mode={mode}
@@ -245,13 +242,13 @@ export default function Map({ route }: Props) {
           markersVisible={markersVisible}
           closeRouteWork={closeRouteWork}
         />
-        <BottomSheet
-          modalVisible={modalVisible}
-          deleteRoute={deleteRoute}
-          editRoute={editRoute}
-          hideSheet={hideModal}
-          routeId={currentRoute.id}
-        />
+        <BottomSheet hideSheet={hideSheet} ref={bottomSheetRef}>
+          <BottomSheetContent
+            deleteRoute={deleteRoute}
+            editRoute={sheetPressEdit}
+            routeId={currentRoute.id}
+          />
+        </BottomSheet>
       </View>
     </GestureHandlerRootView>
   );

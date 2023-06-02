@@ -1,48 +1,56 @@
-import { View, Text } from 'react-native';
-import React, { useCallback, useEffect } from 'react';
+import { View } from 'react-native';
+import React, {
+  forwardRef,
+  PropsWithChildren,
+  useCallback,
+  useImperativeHandle,
+} from 'react';
 import { StyleSheet } from 'react-native';
 import { Dimensions } from 'react-native';
-import { ComposedGesture, GestureDetector } from 'react-native-gesture-handler';
+import { GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   Extrapolate,
   interpolate,
+  runOnJS,
+  useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import { Gesture } from 'react-native-gesture-handler';
-import RoutePopUp from './BottomSheetContent';
-import BottomSheetContent from './BottomSheetContent';
+import { useFocusEffect } from '@react-navigation/native';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 150;
 
 type BottomSheetProps = {
-  modalVisible: boolean;
   hideSheet: () => void;
-  deleteRoute: (id: number) => void;
-  editRoute: (id: number) => void;
-  routeId: number;
 };
 
-export default function BottomSheet({
-    modalVisible,
-    hideSheet,
-    deleteRoute,
-    editRoute,
-    routeId
-} : BottomSheetProps) {
+export type BottomSheetRefProps = {
+  scrollTo: (destination: number) => void;
+};
+
+const BottomSheet = forwardRef<
+  BottomSheetRefProps,
+  PropsWithChildren<BottomSheetProps>
+>(({ hideSheet, children }, ref) => {
   const translateY = useSharedValue(0);
   const context = useSharedValue({ y: 0 });
+  const active = useSharedValue(false);
+
   const scrollTo = useCallback(
     (destination: number) => {
       'worklet';
-      translateY.value = withSpring(destination, { damping: 20 });
+      active.value = destination !== 0;
+      translateY.value = withSpring(destination, { damping: 10, mass: 0.4 });
     },
-    [translateY],
+    [translateY, active],
   );
+
+  useImperativeHandle(ref, () => ({ scrollTo }), [scrollTo]);
 
   const tap = Gesture.Pan()
     .onStart(() => {
@@ -53,19 +61,15 @@ export default function BottomSheet({
       translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
     })
     .onEnd(() => {
-      if (translateY.value > -SCREEN_HEIGHT / 4) {
+      if (translateY.value > -SCREEN_HEIGHT / 2.5) {
         scrollTo(0);
-      } else if (translateY.value < -SCREEN_HEIGHT / 1.7) {
+        runOnJS(hideSheet)();
+      } else if (translateY.value < -SCREEN_HEIGHT / 1.65) {
         scrollTo(MAX_TRANSLATE_Y);
-        hideSheet();
+      } else {
+        scrollTo(-350);
       }
     });
-
-  useEffect(() => {
-    if(modalVisible) {
-        scrollTo(-SCREEN_HEIGHT / 3);
-    }
-  }, [scrollTo, modalVisible]);
 
   const rBottomSheetStyle = useAnimatedStyle(() => {
     const borderRadius = interpolate(
@@ -79,15 +83,56 @@ export default function BottomSheet({
       transform: [{ translateY: translateY.value }],
     };
   });
+
+  const rBackdropStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(active.value ? 1 : 0, { duration: 350 }),
+    };
+  }, []);
+
+  const rBackdropProps = useAnimatedProps(() => {
+    return {
+      pointerEvents: active.value ? 'auto' : 'none',
+    } as any;
+  }, []);
+
+  useFocusEffect(useCallback(() => {
+    return () => {
+      hideSheet();
+      scrollTo(0);
+    }
+  }, [hideSheet, scrollTo]))
+
   return (
-    <GestureDetector gesture={tap}>
-      <Animated.View style={[styles.bottomSheetContainer, rBottomSheetStyle]}>
-        <View style={styles.line}></View>
-        <BottomSheetContent deleteRoute={deleteRoute} editRoute={editRoute} routeId={routeId} />
-      </Animated.View>
-    </GestureDetector>
+    <>
+      <Animated.View
+        onTouchStart={() => {
+          // Dismiss the BottomSheet
+          scrollTo(0);
+          runOnJS(hideSheet)();
+        }}
+        animatedProps={rBackdropProps}
+        style={[
+          {
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.4)',
+          },
+          rBackdropStyle,
+        ]}
+        pointerEvents="none"></Animated.View>
+      <GestureDetector gesture={tap}>
+        <Animated.View style={[styles.bottomSheetContainer, rBottomSheetStyle]}>
+          <View style={styles.line}></View>
+          {children}
+        </Animated.View>
+      </GestureDetector>
+    </>
   );
-}
+});
+
+BottomSheet.displayName = 'BottomSheet';
+
+export default BottomSheet;
 
 const styles = StyleSheet.create({
   bottomSheetContainer: {
@@ -106,4 +151,6 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     borderRadius: 2,
   },
+
+  backdrop: {},
 });

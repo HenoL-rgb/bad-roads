@@ -1,22 +1,110 @@
 import { Text, SafeAreaView, View, Switch, StyleSheet } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { setTheme } from '../store/slices/theme.slice';
-import { DarkTheme, DefaultTheme } from '@react-navigation/native';
+import {
+  DarkTheme,
+  DefaultTheme,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import { withTheme } from 'react-native-elements';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStack, StackParamList } from '../components/AppWrapper';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export default function Settings() {
+type Props = NativeStackScreenProps<StackParamList, 'Settings'>;
+
+const AnimatedIcon = Animated.createAnimatedComponent(Icon);
+
+export default function Settings({ navigation }: Props) {
   const dispatch = useAppDispatch();
   const { dark, colors } = useAppSelector(state => state.themeReducer);
+
+  const progress = useDerivedValue(() => {
+    return dark ? withTiming(1, { duration: 200 }) : withTiming(0, {duration: 300});
+  }, [dark]);
 
   const toggleSwitch = () => {
     dispatch(setTheme(dark ? DefaultTheme : DarkTheme));
     EncryptedStorage.setItem('theme', dark ? 'light' : 'dark');
   };
+
+  const rWrapperStyle = useAnimatedStyle(() => {
+    const backgroundColor = interpolateColor(
+      progress.value,
+      [0, 1],
+      [DefaultTheme.colors.card, DarkTheme.colors.card],
+    );
+
+    return {
+      backgroundColor,
+    };
+  });
+
+  const rHeaderStyle = useAnimatedStyle(() => {
+    const backgroundColor = interpolateColor(
+      progress.value,
+      [0, 1],
+      [DefaultTheme.colors.background, DarkTheme.colors.background],
+    );
+
+    return {
+      backgroundColor,
+    };
+  });
+
+  const rTextStyle = useAnimatedStyle(() => {
+    const color = interpolateColor(
+      progress.value,
+      [0, 1],
+      [DefaultTheme.colors.text, DarkTheme.colors.text],
+    );
+
+    return {
+      color,
+    };
+  });
+
+  useFocusEffect(() => {
+    navigation.setOptions({
+      headerBackground: () => (
+        <Animated.View
+          style={[
+            { ...StyleSheet.absoluteFillObject },
+            rHeaderStyle,
+          ]}></Animated.View>
+      ),
+      headerTitle: () => (
+        <Animated.Text style={[styles.text, rTextStyle]}>
+          Settings
+        </Animated.Text>
+      ),
+      headerLeft: props => (
+        <AnimatedIcon
+          name="arrow-back"
+          style={[{ paddingRight: 20, justifyContent: 'center' }, rTextStyle]}
+          size={24}
+          {...props}
+          onPress={() => navigation.goBack()}></AnimatedIcon>
+      ),
+    });
+  });
+
   return (
-    <SafeAreaView style={[styles.wrapper, {backgroundColor: colors.card}]}>
+    <Animated.View style={[styles.wrapper, rWrapperStyle]}>
       <View style={styles.item}>
-        <Text style={[styles.text, {color: colors.text}]}>Dark mode</Text>
+        <Animated.Text style={[styles.text, rTextStyle]}>
+          Dark mode
+        </Animated.Text>
         <Switch
           trackColor={{ false: '#8a8a8a', true: '#c0c0c0' }}
           thumbColor={dark ? '#e9e9e9' : '#a7a7a7'}
@@ -24,27 +112,26 @@ export default function Settings() {
           onValueChange={toggleSwitch}
           value={dark}
           style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
-        
         />
       </View>
-    </SafeAreaView>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-    wrapper: {
-        flex: 1,
-        paddingLeft: 10,
-        paddingRight: 10,
-        paddingTop: 10,
-    },
-    text: {
-        fontSize: 18,
-    },
-    item: {
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexDirection: 'row',
-        height: 50,
-    }
-})
+  wrapper: {
+    flex: 1,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 10,
+  },
+  text: {
+    fontSize: 18,
+  },
+  item: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: 50,
+  },
+});

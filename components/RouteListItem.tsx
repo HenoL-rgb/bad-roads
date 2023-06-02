@@ -21,7 +21,7 @@ function RouteListItem({ route, navigate }: RouteListItem) {
 
   return (
     <View style={styles.wrapper}>
-      <YaMap
+      {/* <YaMap
         showUserPosition={false}
         style={{ width: 80, height: 80 }}
         nightMode={true}
@@ -44,7 +44,10 @@ function RouteListItem({ route, navigate }: RouteListItem) {
           strokeWidth={4}
           zIndex={4}
         />
-      </YaMap>
+      </YaMap> */}
+      <View style={{width: 80, height: 80, backgroundColor: 'pink'}}>
+
+      </View>
 
       <View style={[styles.infoWrapper, {backgroundColor: theme.colors.card}]}>
         <View style={styles.geoInfo}>

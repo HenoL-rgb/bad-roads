@@ -1,11 +1,8 @@
 import {
   View,
   Text,
-  Modal,
   Pressable,
   StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
   ActivityIndicator,
 } from 'react-native';
 import React, { memo, useEffect, useState } from 'react';
@@ -102,85 +99,94 @@ function BottomSheetContent({
   return (
     <>
       {data ? (
-          <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <View>
-                  <Text style={styles.modalText}>ROUTE {routeId} INFO</Text>
-                </View>
-                <Text style={styles.modalText}>
-                  Created by: {data.author.email}
-                </Text>
-                <Text style={styles.modalText}>
-                  Status: {data.isApproved ? 'Approved' : 'Not approved'}
-                </Text>
-                <View style={styles.markButtonsContainer}>
-                  <Pressable
-                    style={[
-                      styles.likeButton,
-                      { opacity: data.isApproved ? 1 : 0.5 },
-                    ]}
-                    onPress={handleLike}
-                    disabled={!data.isApproved}>
-                    <Icon
-                      name={
-                        mark === Marks.LIKE ? 'thumb-up' : 'thumb-up-off-alt'
-                      }
-                      size={24}
-                      color="#ffffff"
-                    />
-                  </Pressable>
-                  <Pressable
-                    style={[
-                      styles.dislikeButton,
-                      { opacity: data.isApproved ? 1 : 0.5 },
-                    ]}
-                    onPress={handleDislike}
-                    disabled={!data.isApproved}>
-                    <Icon
-                      name={
-                        mark === Marks.DISLIKE
-                          ? 'thumb-down'
-                          : 'thumb-down-off-alt'
-                      }
-                      size={24}
-                      color="#ffffff"
-                    />
-                  </Pressable>
-                </View>
-
-                {(isAdmin ||
-                  (data.author.email === user?.email && !data.isApproved)) && (
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View style={styles.header}>
+              <View style={styles.sign}>
+                {data.isApproved ? (
                   <>
-                    <Pressable
-                      style={[styles.button, styles.buttonClose]}
-                      onPress={() => editRoute(routeId)}>
-                      <Text style={styles.textStyle}>EDIT ROUTE</Text>
-                    </Pressable>
-                    <Pressable
-                      style={[styles.button, styles.buttonClose]}
-                      onPress={() => deleteRoute(routeId)}>
-                      <Text style={styles.textStyle}>DELETE ROUTE</Text>
-                    </Pressable>
+                  <View style={styles.fillBg}></View>
+                    <Icon
+                      name="verified"
+                      size={24}
+                      color="#40ce08"
+                      style={styles.approved}
+                    />
                   </>
-                )}
-                {isAdmin && (
-                  <Pressable
-                    style={[
-                      styles.button,
-                      styles.buttonClose,
-                      { opacity: data.isApproved ? 0.4 : 1 },
-                    ]}
-                    disabled={data.isApproved}
-                    onPress={handleApprove}>
-                    {approveLoading ? (
-                      <ActivityIndicator size="small" />
-                    ) : (
-                      <Text style={styles.textStyle}>APPROVE ROUTE</Text>
-                    )}
-                  </Pressable>
+                ) : (
+                  <View style={styles.notApproved}></View>
                 )}
               </View>
+              <View style={styles.info}>
+                <Text style={styles.modalText}>{data.author.email}</Text>
+              </View>
+            </View>
+
+            <View style={styles.routeControls}>
+              {(isAdmin ||
+                (data.author.email === user?.email && !data.isApproved)) && (
+                <>
+                  <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() => editRoute(routeId)}>
+                    <Icon name="edit" size={24} color="#b3b3b3" />
+                  </Pressable>
+                  <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() => deleteRoute(routeId)}>
+                    <Icon name="delete" size={24} color="#b3b3b3" />
+                  </Pressable>
+                </>
+              )}
+              {isAdmin && (
+                <Pressable
+                  style={[
+                    styles.button,
+                    styles.buttonClose,
+                    { opacity: data.isApproved ? 0.4 : 1 },
+                  ]}
+                  disabled={data.isApproved}
+                  onPress={handleApprove}>
+                  {approveLoading ? (
+                    <ActivityIndicator size="small" />
+                  ) : (
+                    <Icon name="done" size={24} color="#b3b3b3" />
+                  )}
+                </Pressable>
+              )}
+            </View>
+            <View style={styles.markButtonsContainer}>
+              <Pressable
+                style={[
+                  styles.likeButton,
+                  { opacity: data.isApproved ? 1 : 0.5 },
+                ]}
+                onPress={handleLike}
+                disabled={!data.isApproved}>
+                <Icon
+                  name={mark === Marks.LIKE ? 'thumb-up' : 'thumb-up-off-alt'}
+                  size={24}
+                  color="#ffffff"
+                />
+              </Pressable>
+              <Pressable
+                style={[
+                  styles.dislikeButton,
+                  { opacity: data.isApproved ? 1 : 0.5 },
+                ]}
+                onPress={handleDislike}
+                disabled={!data.isApproved}>
+                <Icon
+                  name={
+                    mark === Marks.DISLIKE ? 'thumb-down' : 'thumb-down-off-alt'
+                  }
+                  size={24}
+                  color="#ffffff"
+                />
+              </Pressable>
+            </View>
           </View>
+        </View>
       ) : (
         <View style={styles.centeredView}>
           <ActivityIndicator size="large" color="#2196F3" />
@@ -195,14 +201,51 @@ export default memo(BottomSheetContent);
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    alignItems: 'center',
   },
   modalView: {
+    flex: 1,
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
-    alignItems: 'center',
     rowGap: 6,
+  },
+  fillBg: {
+    height: 10,
+    width: 12,
+    backgroundColor: 'white',
+    position: 'absolute',
+    right: -4,
+    bottom: -2,
+  },
+  header: {
+    flexDirection: 'row',
+    columnGap: 10,
+  },
+  info: {},
+
+  approved: {
+    position: 'absolute',
+    right: -10,
+    bottom: -8,
+  },
+  notApproved: {
+    height: 15,
+    width: 15,
+    backgroundColor: '#bdbdbd',
+    borderRadius: 10,
+    position: 'absolute',
+    right: -4,
+    bottom: -4,
+  },
+  sign: {
+    width: 60,
+    height: 60,
+    backgroundColor: 'pink',
+    position: 'relative',
+  },
+  routeControls: {
+    flexDirection: 'row',
+    columnGap: 10,
   },
   markButtonsContainer: {
     width: '100%',
@@ -213,9 +256,12 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    width: 150,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: '#b3b3b3',
+    borderWidth: 1,
   },
   likeButton: {
     borderRadius: 24,
@@ -230,9 +276,7 @@ const styles = StyleSheet.create({
   buttonOpen: {
     backgroundColor: '#F194FF',
   },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
+  buttonClose: {},
   textStyle: {
     color: 'white',
     fontWeight: 'bold',

@@ -25,7 +25,7 @@ export default function SettingsButton(props: any) {
     //   <Icon name="logout" size={20} color={props.tintColor ?? '#000000'} />
     // </Pressable>
     <Pressable
-      onPress={() => navigation.navigate('Setting')}
+      onPress={() => navigation.navigate('Settings')}
       style={({pressed}) => [{
         marginRight: 15,
         padding: 8,

@@ -7,6 +7,7 @@ import {
 } from '../store/api/routes.api';
 import { StyleSheet } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import AccountRoutesList from '../navigation/AccountRoutesList';
 
 export default function Account() {
   const userData: UserData = useAppSelector(state => state.userReducer);
@@ -45,7 +46,7 @@ export default function Account() {
           <Text style={[styles.headerText, {color: theme.colors.text}]}>Member since: {date}</Text>
         </View>
       </View>
-      {/* <AccountRoutesList theme={theme} /> */}
+      <AccountRoutesList theme={theme} />
     </View>
   );
 }

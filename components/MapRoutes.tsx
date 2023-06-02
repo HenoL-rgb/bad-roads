@@ -16,18 +16,18 @@ enum modes {
 type MapRoutesProps = {
   routes: Route[];
   currentRoute: MapCurrentRoute;
-  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentRoute: React.Dispatch<React.SetStateAction<MapCurrentRoute>>;
+  openSheet: () => void;
   points: Point[];
   mode: number;
 };
 
 export default function MapRoutes({
   routes,
-  setModalVisible,
   setCurrentRoute,
   points,
   mode,
+  openSheet
 }: MapRoutesProps) {
   const userId = useAppSelector(state => state.userReducer.user?.id);
   const roles = useAppSelector(state => state.userReducer.user?.roles);
@@ -72,8 +72,7 @@ export default function MapRoutes({
               zIndex={4}
               onPress={() => {
                 if (mode !== modes.IDLE) return;
-
-                setModalVisible(true);
+                openSheet();
                 setCurrentRoute({
                   start: route.route[0],
                   end: route.route[route.route.length - 1],
