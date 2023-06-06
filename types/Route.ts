@@ -5,6 +5,7 @@ export type Route = {
   id: number;
   userId: number;
   isApproved: boolean;
+  image: string;
   dislikedUsers: {
     id: number;
   }[],

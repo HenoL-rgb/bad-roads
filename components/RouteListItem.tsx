@@ -3,6 +3,7 @@ import {
   Text,
   StyleSheet,
   Pressable,
+  Image
 } from 'react-native';
 import React, { useRef } from 'react';
 import { Route } from '../types/Route';
@@ -46,8 +47,10 @@ function RouteListItem({ route, navigate }: RouteListItem) {
           zIndex={4}
         />
       </YaMap> */}
-      <View style={{width: 80, height: 80, backgroundColor: 'pink'}}>
-
+      <View style={{width: 80, height: 80, backgroundColor: '#132331'}}>
+        <Image style={{width: 80, height: 80}} source={{
+          uri: route.image
+        }} />
       </View>
 
       <View style={[styles.infoWrapper, {backgroundColor: theme.colors.card}]}>

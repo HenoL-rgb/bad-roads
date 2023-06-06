@@ -16,7 +16,7 @@ export function getUrl(points: Point[]) {
       +lon +
       ',' +
       lat +
-      '&size=450,450&z=17&l=skl&pl=c:ec473fFF,f:00FF00A0,w:7' +
+      '&size=300,300&z=17&l=skl&pl=c:ec473fFF,f:00FF00A0,w:7' +
       trace
     );
   }

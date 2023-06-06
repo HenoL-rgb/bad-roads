@@ -131,20 +131,6 @@ export default function Map({ route }: Props) {
 
   async function handleSaveRoute(): Promise<void> {
     if (!userId) return;
-    getUrl(points);
-
-    ref?.current
-      ?.capture()
-      .then((uri: string) => {
-        Share.open({
-          title: 'image',
-          url: uri,
-        }).catch(console.log);
-      })
-      .catch(() => {
-        console.log('save image error');
-        
-      });
 
     if (currentRoute.id) {
       const response = await updateRoute({
@@ -154,9 +140,13 @@ export default function Map({ route }: Props) {
       console.log(response);
     } else {
       console.log(points);
+      getUrl(points);
+
+      const uri = await ref?.current?.capture();
 
       const response = await saveRoute({
         route: points,
+        image: getUrl(points),
         userId: userId,
       });
       console.log(response);
@@ -226,21 +216,6 @@ export default function Map({ route }: Props) {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ViewShot
-        style={{ width: 200, height: 200, position: 'absolute' }}
-        ref={ref}
-        options={{ format: 'jpg', quality: 1 }}>
-        <View style={{ backgroundColor: '#132331' }}>
-          {points[0] && (
-            <Image
-              style={{ width: 200, height: 200 }}
-              source={{
-                uri: getUrl(points),
-              }}
-            />
-          )}
-        </View>
-      </ViewShot>
 
       <YaMap
         showUserPosition={false}
