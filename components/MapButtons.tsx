@@ -1,31 +1,14 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import React from 'react';
 import { Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Point } from '../types/Point';
 import Animated, {
-  BounceIn,
-  FadeIn,
   FadeInLeft,
   FadeInRight,
-  FadeOut,
-  FadeOutDown,
   FadeOutLeft,
   FadeOutRight,
-  FlipInEasyX,
-  FlipInXDown,
-  LightSpeedInLeft,
-  LightSpeedInRight,
-  PinwheelIn,
-  RotateInDownLeft,
-  SlideInDown,
-  SlideInLeft,
-  SlideInRight,
-  StretchInX,
   ZoomIn,
-  ZoomInEasyDown,
-  ZoomInEasyUp,
-  ZoomInRight,
   ZoomOut,
 } from 'react-native-reanimated';
 import { colors } from '../utils/colors';
