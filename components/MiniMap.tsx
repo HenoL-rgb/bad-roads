@@ -3,6 +3,7 @@ import React, { memo, useRef } from 'react';
 import { Route } from '../types/Route';
 import { YANDEX_API_KEY } from '@env';
 import YaMap, { Polyline } from 'react-native-yamap';
+import { colors } from '../utils/colors';
 
 type RouteListItem = {
   route: Route;
@@ -29,7 +30,7 @@ function MiniMap({ route, navigate }: RouteListItem) {
       <Polyline
         key={route.id}
         points={route.route}
-        strokeColor={'#f11515'}
+        strokeColor={colors.badRoute}
         strokeWidth={4}
         zIndex={4}
       />

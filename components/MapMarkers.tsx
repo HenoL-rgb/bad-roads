@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
 import { Marker } from 'react-native-yamap';
 import { MapCurrentRoute } from '../types/Route';
+import Animated, { BounceIn, BounceInDown, BounceOutDown, ZoomIn, ZoomInDown, ZoomOut, ZoomOutDown } from 'react-native-reanimated';
 
 type MapMarkersProps = {
   markersVisible: {
@@ -33,10 +34,10 @@ export default function MapMarkers({
           onPress={() => {
             setCurrent(currentMarker.END);
           }}>
-          <View style={styles.marker}>
+          <Animated.View entering={ZoomInDown.springify().mass(0.1).damping(10)} style={styles.marker}>
             <View style={styles.markerTop}></View>
             <View style={styles.markerBottom}></View>
-          </View>
+          </Animated.View>
         </Marker>
       )}
 

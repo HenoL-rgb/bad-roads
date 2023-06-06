@@ -1,9 +1,9 @@
 import {
   View,
-  Text,
   StyleSheet,
   NativeSyntheticEvent,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import React, { useCallback, useRef, useMemo, useState } from 'react';
 import YaMap from 'react-native-yamap';
@@ -13,7 +13,6 @@ import {
   useSaveRouteMutation,
   useUpdateRouteMutation,
 } from '../store/api/routes.api';
-import RoutePopUp from '../components/BottomSheetContent';
 import { Point } from '../types/Point';
 import {
   DataRoute,
@@ -21,7 +20,6 @@ import {
   Route,
   RouteSection,
 } from '../types/Route';
-import { YANDEX_API_KEY } from '@env';
 import MapButtons from '../components/MapButtons';
 import MapMarkers from '../components/MapMarkers';
 import MapRoutes from '../components/MapRoutes';
@@ -31,6 +29,12 @@ import { useAppSelector } from '../hooks/redux-hooks';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetRefProps } from '../components/BottomSheet';
 import BottomSheetContent from '../components/BottomSheetContent';
+import { ModalRefProps } from '../components/modals/Modal';
+import DeleteModal from '../components/modals/DeleteModal';
+import { colors } from '../utils/colors';
+import ViewShot from 'react-native-view-shot';
+import Share from 'react-native-share';
+import { getUrl } from '../utils/getUrl';
 
 enum modes {
   IDLE,
@@ -65,6 +69,7 @@ export default function Map({ route }: Props) {
   const { data, isLoading, refetch } = useGetAllRoutesQuery({});
   const map = useRef<YaMap>(null);
   const bottomSheetRef = useRef<BottomSheetRefProps>(null);
+  const modalRef = useRef<ModalRefProps>(null);
   const [saveRoute, { isLoading: saveLoading }] = useSaveRouteMutation();
   const [delRoute, { isLoading: deleteLoading }] = useDeleteRouteMutation();
   const [updateRoute, { isLoading: updateLoading }] = useUpdateRouteMutation();
@@ -105,8 +110,11 @@ export default function Map({ route }: Props) {
       const response = await delRoute({ routeId });
       await refetch();
       closeRouteWork();
+      modalRef.current?.setActive(false);
+      bottomSheetRef.current?.scrollTo(0);
+      hideSheet();
     },
-    [delRoute, refetch],
+    [delRoute, hideSheet, refetch],
   );
 
   function closeRouteWork(): void {
@@ -123,6 +131,20 @@ export default function Map({ route }: Props) {
 
   async function handleSaveRoute(): Promise<void> {
     if (!userId) return;
+    getUrl(points);
+
+    ref?.current
+      ?.capture()
+      .then((uri: string) => {
+        Share.open({
+          title: 'image',
+          url: uri,
+        }).catch(console.log);
+      })
+      .catch(() => {
+        console.log('save image error');
+        
+      });
 
     if (currentRoute.id) {
       const response = await updateRoute({
@@ -162,6 +184,8 @@ export default function Map({ route }: Props) {
     );
   }
 
+  const ref = useRef<any>(null);
+
   function handleMapPress(event: NativeSyntheticEvent<Point>) {
     if (mode === modes.CREATE || mode === modes.EDIT) {
       if (current === currentMarker.START) {
@@ -194,62 +218,81 @@ export default function Map({ route }: Props) {
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1 }}>
-        <ActivityIndicator size="large" />
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color={colors.blue} />
       </View>
     );
   }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
-        <YaMap
-          showUserPosition={false}
-          onMapPress={handleMapPress}
-          style={{ flex: 1 }}
-          nightMode={true}
-          mapType={'vector'}
-          ref={map}
-          initialRegion={{
-            lat: initialParams.lat,
-            lon: initialParams.lon,
-            zoom: 17,
-            azimuth: 0,
-          }}>
-          <MapMarkers
-            markersVisible={markersVisible}
-            current={current}
-            currentRoute={currentRoute}
-            setCurrent={setCurrent}
-          />
+      <ViewShot
+        style={{ width: 200, height: 200, position: 'absolute' }}
+        ref={ref}
+        options={{ format: 'jpg', quality: 1 }}>
+        <View style={{ backgroundColor: '#132331' }}>
+          {points[0] && (
+            <Image
+              style={{ width: 200, height: 200 }}
+              source={{
+                uri: getUrl(points),
+              }}
+            />
+          )}
+        </View>
+      </ViewShot>
 
-          <MapRoutes
-            currentRoute={currentRoute}
-            routes={routes}
-            openSheet={openSheet}
-            setCurrentRoute={setCurrentRoute}
-            points={points}
-            mode={mode}
-          />
-        </YaMap>
-
-        <MapButtons
-          mode={mode}
-          setMode={setMode}
-          handleSaveRoute={handleSaveRoute}
-          setPoints={setPoints}
-          findRoute={findRoute}
+      <YaMap
+        showUserPosition={false}
+        onMapPress={handleMapPress}
+        style={{ flex: 1 }}
+        nightMode={true}
+        mapType={'vector'}
+        ref={map}
+        initialRegion={{
+          lat: initialParams.lat,
+          lon: initialParams.lon,
+          zoom: 17,
+          azimuth: 0,
+        }}>
+        <MapMarkers
           markersVisible={markersVisible}
-          closeRouteWork={closeRouteWork}
+          current={current}
+          currentRoute={currentRoute}
+          setCurrent={setCurrent}
         />
-        <BottomSheet hideSheet={hideSheet} ref={bottomSheetRef}>
-          <BottomSheetContent
-            deleteRoute={deleteRoute}
-            editRoute={sheetPressEdit}
-            routeId={currentRoute.id}
-          />
-        </BottomSheet>
-      </View>
+
+        <MapRoutes
+          currentRoute={currentRoute}
+          routes={routes}
+          openSheet={openSheet}
+          setCurrentRoute={setCurrentRoute}
+          points={points}
+          mode={mode}
+        />
+      </YaMap>
+
+      <MapButtons
+        mode={mode}
+        setMode={setMode}
+        handleSaveRoute={handleSaveRoute}
+        setPoints={setPoints}
+        findRoute={findRoute}
+        markersVisible={markersVisible}
+        closeRouteWork={closeRouteWork}
+      />
+      <BottomSheet hideSheet={hideSheet} ref={bottomSheetRef}>
+        <BottomSheetContent
+          deleteRoute={() => modalRef.current?.setActive(true)}
+          editRoute={sheetPressEdit}
+          routeId={currentRoute.id}
+        />
+      </BottomSheet>
+      <DeleteModal
+        modalRef={modalRef}
+        deleteRoute={() => deleteRoute(currentRoute.id)}
+        deleteLoading={deleteLoading}
+      />
     </GestureHandlerRootView>
   );
 }

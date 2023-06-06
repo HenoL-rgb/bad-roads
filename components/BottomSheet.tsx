@@ -93,7 +93,7 @@ const BottomSheet = forwardRef<
   const rBackdropProps = useAnimatedProps(() => {
     return {
       pointerEvents: active.value ? 'auto' : 'none',
-    } as any;
+    } as never;
   }, []);
 
   useFocusEffect(useCallback(() => {

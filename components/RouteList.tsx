@@ -16,6 +16,7 @@ import {
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/dist/query';
 import { QueryActionCreatorResult } from '@reduxjs/toolkit/dist/query/core/buildInitiate';
+import { colors } from 'react-native-elements';
 
 type RouteListProps = {
   routes: Route[];
@@ -66,7 +67,7 @@ export default function RouteList({
           keyExtractor={keyExtractor}
           ItemSeparatorComponent={() => <View style={{ height: 5 }} />}
           ListEmptyComponent={
-            <ActivityIndicator size={'small'} color="#000000" />
+            <ActivityIndicator size={'small'} color={colors.black} />
           }
         />
       ) : null}

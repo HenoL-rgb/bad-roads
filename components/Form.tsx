@@ -2,6 +2,7 @@ import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { colors } from '../utils/colors';
 
 type FormProps = {
   onSubmit: (data: { email: string; password: string }) => void;
@@ -64,7 +65,7 @@ export default function Form({ onSubmit }: FormProps) {
             />
             <Pressable onPress={() => setShowPass(!showPass)} style={({pressed}) => [
               {
-                backgroundColor: pressed ? 'rgba(236, 236, 236, 0.288)' : 'transparent',
+                backgroundColor: pressed ? colors.eyePress : 'transparent',
                 padding: 5,
                 borderRadius: 30,
               }
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     width: 250,
     borderWidth: 1,
-    borderColor: '#ffffffa2',
+    borderColor: colors.gray,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     width: 250,
     borderWidth: 1,
-    borderColor: '#ffffffa2',
+    borderColor: colors.gray,
     borderRadius: 5,
   },
   submitBtn: {
@@ -132,13 +133,13 @@ const styles = StyleSheet.create({
     paddingRight: 12,
     paddingBottom: 10,
     paddingTop: 10,
-    backgroundColor: '#2196F3',
+    backgroundColor: colors.blue,
     borderRadius: 5,
     marginTop: 15,
   },
   btnText: {
     fontSize: 16,
-    color: '#ffffff',
+    color: colors.white,
   },
   showPassBtn: {
     

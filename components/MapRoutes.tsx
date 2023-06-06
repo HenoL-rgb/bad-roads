@@ -3,6 +3,7 @@ import { Polyline } from 'react-native-yamap';
 import { MapCurrentRoute, Route } from '../types/Route';
 import { Point } from '../types/Point';
 import { useAppSelector } from '../hooks/redux-hooks';
+import { colors } from '../utils/colors';
 
 enum modes {
   IDLE,
@@ -40,18 +41,18 @@ export default function MapRoutes({
 
   function getRouteColor(route: Route): string {
     if (!route.isApproved) {
-      return '#868686';
+      return colors.notApproved;
     }
 
     if (route.likedUsers.length / route.dislikedUsers.length > 1) {
-      return '#1bfa07';
+      return colors.verified;
     }
 
     if (route.likedUsers.length / route.dislikedUsers.length < 0.5) {
-      return '#e71313';
+      return colors.badRoute;
     }
 
-    return '#fad507';
+    return colors.midRoute;
   }
 
   return (
@@ -84,7 +85,7 @@ export default function MapRoutes({
       {points.length ? (
         <Polyline
           points={points}
-          strokeColor="#f11515"
+          strokeColor={colors.badRoute}
           strokeWidth={4}
           zIndex={4}
         />

@@ -7,6 +7,7 @@ import { setAuth } from '../store/slices/user.slice';
 import { useNavigation } from '@react-navigation/native';
 import { StackParamList } from './AppWrapper';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { colors } from '../utils/colors';
 
 type RootProp = NativeStackNavigationProp<StackParamList>;
 
@@ -32,10 +33,10 @@ export default function SettingsButton(props: any) {
         borderRadius: 30,
       },
       {
-        backgroundColor: pressed ? 'rgba(238, 238, 238, 0.192)' : 'transparent',
+        backgroundColor: pressed ? colors.eyePress : 'transparent',
       }
       ]}>
-      <Icon name="settings" size={20} color={props.tintColor ?? '#000000'} />
+      <Icon name="settings" size={20} color={props.tintColor ?? colors.black} />
     </Pressable>
   );
 }

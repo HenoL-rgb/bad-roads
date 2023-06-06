@@ -10,6 +10,7 @@ import Map from '../pages/Map';
 import { useRefreshQuery } from '../store/api/auth.api';
 import useGetTheme from '../hooks/useGetTheme.hook';
 import SettingsButton from '../components/SettingsButton';
+import { colors } from '../utils/colors';
 
 export type TabNavParamList = {
   Map: {
@@ -25,14 +26,14 @@ export const Tab = createBottomTabNavigator<TabNavParamList>();
 
 function Home(): JSX.Element {
   const { data, isLoading: loadRefresh } = useRefreshQuery({}, {});
-  const { colors } = useGetTheme();
+  const { colors: theme } = useGetTheme();
 
   const { isAuth } = useAppSelector(state => state.userReducer);
 
   if (loadRefresh) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#ffffff" />
+        <ActivityIndicator size="large" color={colors.blue} />
       </View>
     );
   }
@@ -44,16 +45,16 @@ function Home(): JSX.Element {
   return (
     <Tab.Navigator initialRouteName="Map" screenOptions={{
       tabBarStyle: {
-        backgroundColor: colors.background,
+        backgroundColor: theme.background,
       },
-      tabBarActiveTintColor: colors.text,
+      tabBarActiveTintColor: theme.text,
       headerStyle: {
-        backgroundColor: colors.background,
+        backgroundColor: theme.background,
       },
       headerTitleStyle: {
-        color: colors.text,
+        color: theme.text,
       },
-      headerTintColor: colors.text,
+      headerTintColor: theme.text,
     }}>
       <Tab.Screen
         name="Map"

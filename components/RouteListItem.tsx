@@ -9,6 +9,7 @@ import { Route } from '../types/Route';
 import { Polyline, YaMap } from 'react-native-yamap';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useAppSelector } from '../hooks/redux-hooks';
+import { colors } from '../utils/colors';
 
 type RouteListItem = {
   route: Route;
@@ -40,7 +41,7 @@ function RouteListItem({ route, navigate }: RouteListItem) {
         <Polyline
           key={route.id}
           points={route.route}
-          strokeColor={'#f11515'}
+          strokeColor={colors.badRoute}
           strokeWidth={4}
           zIndex={4}
         />
@@ -63,7 +64,7 @@ function RouteListItem({ route, navigate }: RouteListItem) {
         </View>
         <Pressable
           onPress={() => navigate(route.route[0].lat, route.route[0].lon)}>
-          <Icon name="room" size={30} color="#c2c2c2" />
+          <Icon name="room" size={30} color={colors.gray} />
         </Pressable>
       </View>
     </View>
@@ -76,8 +77,9 @@ const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
     borderRadius: 5,
-    backgroundColor: '#fcfcfc',
     overflow: 'hidden',
+    elevation: 1,
+    
   },
   infoWrapper: {
     flex: 1,
@@ -93,6 +95,6 @@ const styles = StyleSheet.create({
   },
 
   infoText: {
-    color: '#000000',
+    color: colors.black,
   },
 });

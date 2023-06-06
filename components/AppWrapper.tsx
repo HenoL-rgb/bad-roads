@@ -5,7 +5,6 @@ import { useAppSelector } from '../hooks/redux-hooks';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from '../pages/Home';
 import Settings from '../pages/Settings';
-import { View } from 'react-native';
 
 export type StackParamList = {
   Home: undefined;

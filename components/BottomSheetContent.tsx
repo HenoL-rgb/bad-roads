@@ -15,6 +15,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { setDislike, setLike } from '../store/slices/user.slice';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { colors } from '../utils/colors';
 
 type RoutePopUpProps = {
   deleteRoute: (id: number) => void;
@@ -109,7 +110,7 @@ function BottomSheetContent({
                     <Icon
                       name="verified"
                       size={24}
-                      color="#40ce08"
+                      color={colors.verified}
                       style={styles.approved}
                     />
                   </>
@@ -129,12 +130,12 @@ function BottomSheetContent({
                   <Pressable
                     style={[styles.button, styles.buttonClose]}
                     onPress={() => editRoute(routeId)}>
-                    <Icon name="edit" size={24} color="#b3b3b3" />
+                    <Icon name="edit" size={24} color={colors.gray} />
                   </Pressable>
                   <Pressable
                     style={[styles.button, styles.buttonClose]}
                     onPress={() => deleteRoute(routeId)}>
-                    <Icon name="delete" size={24} color="#b3b3b3" />
+                    <Icon name="delete" size={24} color={colors.gray} />
                   </Pressable>
                 </>
               )}
@@ -150,7 +151,7 @@ function BottomSheetContent({
                   {approveLoading ? (
                     <ActivityIndicator size="small" />
                   ) : (
-                    <Icon name="done" size={24} color="#b3b3b3" />
+                    <Icon name="done" size={24} color={colors.gray} />
                   )}
                 </Pressable>
               )}
@@ -166,7 +167,7 @@ function BottomSheetContent({
                 <Icon
                   name={mark === Marks.LIKE ? 'thumb-up' : 'thumb-up-off-alt'}
                   size={24}
-                  color="#ffffff"
+                  color={colors.white}
                 />
               </Pressable>
               <Pressable
@@ -181,7 +182,7 @@ function BottomSheetContent({
                     mark === Marks.DISLIKE ? 'thumb-down' : 'thumb-down-off-alt'
                   }
                   size={24}
-                  color="#ffffff"
+                  color={colors.white}
                 />
               </Pressable>
             </View>
@@ -189,7 +190,7 @@ function BottomSheetContent({
         </View>
       ) : (
         <View style={styles.centeredView}>
-          <ActivityIndicator size="large" color="#2196F3" />
+          <ActivityIndicator size="large" color={colors.blue} />
         </View>
       )}
     </>
@@ -231,7 +232,7 @@ const styles = StyleSheet.create({
   notApproved: {
     height: 15,
     width: 15,
-    backgroundColor: '#bdbdbd',
+    backgroundColor: colors.gray,
     borderRadius: 10,
     position: 'absolute',
     right: -4,
@@ -260,22 +261,20 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#b3b3b3',
+    borderColor: colors.gray,
     borderWidth: 1,
   },
   likeButton: {
     borderRadius: 24,
     padding: 10,
-    backgroundColor: '#21f344',
+    backgroundColor: colors.lime,
   },
   dislikeButton: {
     borderRadius: 24,
     padding: 10,
-    backgroundColor: '#f32121',
+    backgroundColor: colors.red,
   },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
+ 
   buttonClose: {},
   textStyle: {
     color: 'white',
@@ -285,6 +284,6 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
-    color: '#000000',
+    color: colors.black,
   },
 });
