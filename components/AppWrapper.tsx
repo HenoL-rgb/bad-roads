@@ -5,10 +5,16 @@ import { useAppSelector } from '../hooks/redux-hooks';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from '../pages/Home';
 import Settings from '../pages/Settings';
+import Gallery from '../pages/Gallery';
+import { ImageOrVideo } from 'react-native-image-crop-picker';
 
 export type StackParamList = {
   Home: undefined;
   Settings: undefined;
+  Gallery: {
+    images: ImageOrVideo[];
+    clickedId: number;
+  };
 };
 
 export const RootStack = createNativeStackNavigator<StackParamList>();
@@ -16,11 +22,10 @@ export const RootStack = createNativeStackNavigator<StackParamList>();
 function AppWrapper(): JSX.Element {
   const theme = useAppSelector(state => state.themeReducer);
   return (
-    <RootStack.Navigator screenOptions={{
-      animation: 'slide_from_right',
-      animationDuration: 100, // not working
-   
-    }}>
+    <RootStack.Navigator
+      screenOptions={{
+        animationDuration: 100, // not working
+      }}>
       <RootStack.Screen
         name="Home"
         component={Home}
@@ -35,7 +40,16 @@ function AppWrapper(): JSX.Element {
           headerTintColor: theme.colors.text,
         }}
       />
-      <RootStack.Screen name="Settings" component={Settings} options={{headerBackVisible: false}} />
+      <RootStack.Screen
+        name="Settings"
+        component={Settings}
+        options={{ headerBackVisible: false, animation: 'slide_from_right' }}
+      />
+      <RootStack.Screen
+        name="Gallery"
+        component={Gallery}
+        options={{ animation: 'fade_from_bottom' }}
+      />
     </RootStack.Navigator>
   );
 }

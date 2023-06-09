@@ -127,31 +127,6 @@ export default function Map({ route }: Props) {
     setPoints([]);
   }
 
-  async function handleSaveRoute(): Promise<void> {
-    if (!userId) return;
-    getUrl(points);
-
-    if (currentRoute.id) {
-      const response = await updateRoute({
-        points,
-        icon: getUrl(points),
-        id: currentRoute.id,
-      });
-      console.log(response);
-    } else {
-      console.log(points);
-
-      const response = await saveRoute({
-        route: points,
-        icon: getUrl(points),
-        userId: userId,
-      });
-      console.log(response);
-    }
-    await refetch();
-    closeRouteWork();
-  }
-
   function findRoute(): void {
     if (!currentRoute.start || !currentRoute.end) return;
 

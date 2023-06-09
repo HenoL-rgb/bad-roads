@@ -13,7 +13,6 @@ export default function useGetTheme(): Theme {
   useEffect(() => {
     async function getThemeFromStorage() {
       const theme: string | null = await EncryptedStorage.getItem('theme');
-      console.log(theme);
       
       if (theme) {
         return theme === 'light' ? DefaultTheme : DarkTheme;

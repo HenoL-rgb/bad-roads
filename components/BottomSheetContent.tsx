@@ -71,7 +71,7 @@ function BottomSheetContent({
     try {
       const res = await likeRoute({ userId: user.id, routeId: routeId });
     } catch (error) {
-      console.log('Error while like route');
+      throw new Error('Error while like route')
     }
   }
 
@@ -82,7 +82,7 @@ function BottomSheetContent({
     try {
       const res = await dislikeRoute({ userId: user.id, routeId: routeId });
     } catch (error) {
-      console.log('Error while like route');
+      throw new Error('Error while dislike route')
     }
   }
 
@@ -93,7 +93,7 @@ function BottomSheetContent({
       const res = await approveRoute({ routeId: routeId });
       await refetch();
     } catch (error) {
-      console.log('Error while like route');
+      throw new Error('Error while approve route')
     }
   }
 

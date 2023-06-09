@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { useAppSelector } from '../hooks/redux-hooks';
@@ -25,15 +25,23 @@ export const Tab = createBottomTabNavigator<TabNavParamList>();
 
 
 function Home(): JSX.Element {
-  const { data, isLoading: loadRefresh } = useRefreshQuery({}, {});
+  const { data, isLoading: loadRefresh, isError } = useRefreshQuery({}, {});
   const { colors: theme } = useGetTheme();
 
-  const { isAuth } = useAppSelector(state => state.userReducer);
+  const { isAuth } = useAppSelector(state => state.userReducer);  
 
   if (loadRefresh) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color={colors.blue} />
+      </View>
+    );
+  }
+
+  if(isError) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Server error :(</Text>
       </View>
     );
   }

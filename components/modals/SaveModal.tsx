@@ -135,13 +135,16 @@ export default function SaveModal({
             <FlatList
               data={images}
               horizontal
-              renderItem={({ item }) => (
-                <View style={{width: 200, height: 200}} onTouchStart={() => navigate.navigate('Settings')}>
+              renderItem={({ item, index }) => (
+                <Pressable style={{width: 200, height: 200}} onPress={() => navigate.navigate('Gallery', {
+                  images: images,
+                  clickedId: index
+                })}>
                   <Image
                     source={{ uri: item.path }}
                     style={{flex: 1, width: 200, height: 200 }}
                   />
-                </View>
+                </Pressable>
               )}
               keyExtractor={item => item.path}
               ItemSeparatorComponent={() => <View style={{ width: 5 }} />}

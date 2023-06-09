@@ -68,13 +68,13 @@ const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
       } as never;
     }, []);
 
-    useFocusEffect(
-      useCallback(() => {
-        return () => {
-          scrollTo(0);
-        };
-      }, [scrollTo]),
-    );
+    // useFocusEffect(
+    //   useCallback(() => {
+    //     return () => {
+    //       scrollTo(0);
+    //     };
+    //   }, [scrollTo]),
+    // );
 
     return (
       <>

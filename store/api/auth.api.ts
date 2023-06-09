@@ -78,7 +78,6 @@ export const authApi = createApi({
           if (data.message) {
             throw new Error(data.message);
           }
-          console.log(data);
 
           await EncryptedStorage.setItem('token', data.accessToken);
           await EncryptedStorage.setItem('refresh', data.refreshToken);
@@ -96,7 +95,7 @@ export const authApi = createApi({
           );
           dispatch(setAuth(true));
         } catch (error) {
-          console.log(error);
+          throw new Error('Error while login');
         }
       },
     }),
