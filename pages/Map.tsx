@@ -3,7 +3,6 @@ import {
   StyleSheet,
   NativeSyntheticEvent,
   ActivityIndicator,
-  Image,
 } from 'react-native';
 import React, { useCallback, useRef, useMemo, useState } from 'react';
 import YaMap from 'react-native-yamap';
@@ -32,9 +31,8 @@ import BottomSheetContent from '../components/BottomSheetContent';
 import { ModalRefProps } from '../components/modals/Modal';
 import DeleteModal from '../components/modals/DeleteModal';
 import { colors } from '../utils/colors';
-import ViewShot from 'react-native-view-shot';
-import Share from 'react-native-share';
 import { getUrl } from '../utils/getUrl';
+import SaveModal from '../components/modals/SaveModal';
 
 enum modes {
   IDLE,
@@ -70,11 +68,12 @@ export default function Map({ route }: Props) {
   const map = useRef<YaMap>(null);
   const bottomSheetRef = useRef<BottomSheetRefProps>(null);
   const modalRef = useRef<ModalRefProps>(null);
+  const saveModalRef = useRef<ModalRefProps>(null);
   const [saveRoute, { isLoading: saveLoading }] = useSaveRouteMutation();
   const [delRoute, { isLoading: deleteLoading }] = useDeleteRouteMutation();
   const [updateRoute, { isLoading: updateLoading }] = useUpdateRouteMutation();
   const userId = useAppSelector(state => state.userReducer.user?.id);
-
+    
   const routes: Route[] = useMemo(
     () =>
       data
@@ -101,8 +100,7 @@ export default function Map({ route }: Props) {
       start: null,
       end: null,
       id: 0,
-    });
-    refetch();
+    });    refetch();
   }, [refetch]);
 
   const deleteRoute: (routeId: number) => Promise<void> = useCallback(
@@ -131,22 +129,21 @@ export default function Map({ route }: Props) {
 
   async function handleSaveRoute(): Promise<void> {
     if (!userId) return;
+    getUrl(points);
 
     if (currentRoute.id) {
       const response = await updateRoute({
         points,
+        icon: getUrl(points),
         id: currentRoute.id,
       });
       console.log(response);
     } else {
       console.log(points);
-      getUrl(points);
-
-      const uri = await ref?.current?.capture();
 
       const response = await saveRoute({
         route: points,
-        image: getUrl(points),
+        icon: getUrl(points),
         userId: userId,
       });
       console.log(response);
@@ -158,7 +155,6 @@ export default function Map({ route }: Props) {
   function findRoute(): void {
     if (!currentRoute.start || !currentRoute.end) return;
 
-    setMode(modes.ROUTE_ADDED);
     map.current?.findDrivingRoutes(
       [currentRoute.start, currentRoute.end],
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -170,41 +166,29 @@ export default function Map({ route }: Props) {
         );
 
         setPoints(points);
+        setMode(modes.ROUTE_ADDED);
+
       },
     );
   }
 
-  const ref = useRef<any>(null);
-
   function handleMapPress(event: NativeSyntheticEvent<Point>) {
     if (mode === modes.CREATE || mode === modes.EDIT) {
-      if (current === currentMarker.START) {
-        setCurrentRoute({
-          ...currentRoute,
-          start: {
-            lat: event.nativeEvent.lat,
-            lon: event.nativeEvent.lon,
-          },
-        });
+      const marker = current === currentMarker.START ? 'start' : 'end';
+      setCurrentRoute({
+        ...currentRoute,
+        [marker]: {
+          lat: event.nativeEvent.lat,
+          lon: event.nativeEvent.lon,
+        },
+      });
+      setMarkersVisible({ ...markersVisible, [marker]: true });
 
-        if (!markersVisible.start) {
-          setCurrent(currentMarker.END);
-
-          setMarkersVisible({ ...markersVisible, start: true });
-        }
-      } else {
-        setCurrentRoute({
-          ...currentRoute,
-          end: {
-            lat: event.nativeEvent.lat,
-            lon: event.nativeEvent.lon,
-          },
-        });
-        if (!markersVisible.end)
-          setMarkersVisible({ ...markersVisible, end: true });
+      if (current === currentMarker.START && !markersVisible.start) {
+        setCurrent(currentMarker.END);
       }
     }
-  }
+  }  
 
   if (isLoading) {
     return (
@@ -216,7 +200,6 @@ export default function Map({ route }: Props) {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-
       <YaMap
         showUserPosition={false}
         onMapPress={handleMapPress}
@@ -250,7 +233,7 @@ export default function Map({ route }: Props) {
       <MapButtons
         mode={mode}
         setMode={setMode}
-        handleSaveRoute={handleSaveRoute}
+        handleSaveRoute={() => saveModalRef.current?.setActive(true)}
         setPoints={setPoints}
         findRoute={findRoute}
         markersVisible={markersVisible}
@@ -267,6 +250,14 @@ export default function Map({ route }: Props) {
         modalRef={modalRef}
         deleteRoute={() => deleteRoute(currentRoute.id)}
         deleteLoading={deleteLoading}
+      />
+      <SaveModal
+        closeRouteWork={closeRouteWork}
+        currentRoute={currentRoute}
+        modalRef={saveModalRef}
+        points={points}
+        refetch={refetch}
+        key={`${points[0]}${points[1]}`}
       />
     </GestureHandlerRootView>
   );

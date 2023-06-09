@@ -60,13 +60,13 @@ function Home(): JSX.Element {
         name="Map"
         component={Map}
         options={{
+          unmountOnBlur: true,
           headerShown: false,
           tabBarIcon: (props: {
             focused: boolean;
             color: string;
             size: number;
           }) => <Icon name="explore" size={20} color={props.color} />,
-          unmountOnBlur: false,
         }}
         initialParams={{
           lat: 55.17,

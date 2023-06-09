@@ -96,13 +96,6 @@ const BottomSheet = forwardRef<
     } as never;
   }, []);
 
-  useFocusEffect(useCallback(() => {
-    return () => {
-      hideSheet();
-      scrollTo(0);
-    }
-  }, [hideSheet, scrollTo]))
-
   return (
     <>
       <Animated.View

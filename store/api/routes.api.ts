@@ -1,8 +1,7 @@
 import { RootState } from '../store';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { clearUser, setAuth, setUser } from '../slices/user.slice';
+import { setAuth } from '../slices/user.slice';
 import type {
-  Api,
   BaseQueryFn,
   FetchArgs,
   FetchBaseQueryError,
@@ -38,8 +37,7 @@ const baseQueryWithReauth: BaseQueryFn<
   if (result.error && result.error.status === 401) {
     const refreshQuery = fetchBaseQuery({
       baseUrl: `http://${HOST_IP}/auth`,
-      async prepareHeaders(headers, { getState, endpoint }) {
-        const userData = (getState() as RootState).userReducer;
+      async prepareHeaders(headers, { getState }) {
 
         const token = await EncryptedStorage.getItem('refresh');
 

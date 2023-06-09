@@ -1,20 +1,16 @@
-import { View, Text, Dimensions, StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import React, {
   forwardRef,
   PropsWithChildren,
   useCallback,
-  useEffect,
   useImperativeHandle,
 } from 'react';
 import Animated, {
-  FadeIn,
-  runOnJS,
   useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
-  ZoomIn,
 } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -99,7 +95,7 @@ const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
         <Animated.View
           style={[
             {
-              height: 350,
+              minHeight: 350,
               width: 300,
               backgroundColor: 'white',
               position: 'absolute',

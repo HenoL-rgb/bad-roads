@@ -1,6 +1,6 @@
 import { RootState } from '../store';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { clearUser, setAuth, setUser, User } from '../slices/user.slice';
+import { clearUser, setAuth, setUser } from '../slices/user.slice';
 import type {
   BaseQueryFn,
   FetchArgs,

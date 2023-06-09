@@ -49,7 +49,7 @@ function RouteListItem({ route, navigate }: RouteListItem) {
       </YaMap> */}
       <View style={{width: 80, height: 80, backgroundColor: '#132331'}}>
         <Image style={{width: 80, height: 80}} source={{
-          uri: route.image
+          uri: route.icon
         }} />
       </View>
 
