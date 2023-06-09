@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Point } from '../types/Point';
@@ -12,7 +12,6 @@ import Animated, {
   ZoomOut,
 } from 'react-native-reanimated';
 import { colors } from '../utils/colors';
-import { useFocusEffect } from '@react-navigation/native';
 
 enum modes {
   IDLE,
@@ -45,7 +44,7 @@ export default function MapButtons({
   markersVisible,
   closeRouteWork,
 }: MapButtonsProps) {
-  
+
   return (
     <>
       {mode === modes.IDLE && (

@@ -1,48 +1,31 @@
-import {
-  Text,
-  SafeAreaView,
-  View,
-  Switch,
-  StyleSheet,
-  FlatList,
-  Image,
-  Dimensions,
-} from 'react-native';
+import { StyleSheet, FlatList, Dimensions } from 'react-native';
 import React, {
-  useEffect,
   useLayoutEffect,
   useState,
   useRef,
   useCallback,
+  useEffect,
 } from 'react';
-import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStack, StackParamList } from '../components/AppWrapper';
-import { ImageOrVideo } from 'react-native-image-crop-picker';
-import { ViewToken } from '@shopify/flash-list';
-import { DarkTheme } from '@react-navigation/native';
+import { StackParamList } from '../components/AppWrapper';
+import { DarkTheme, useFocusEffect } from '@react-navigation/native';
 import { colors } from '../utils/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import {
-  GestureHandlerRootView,
-  PinchGestureHandler,
-  PinchGestureHandlerGestureEvent,
-} from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import GalleryImage from '../components/GalleryImage';
+import { ImageOrVideo } from 'react-native-image-crop-picker';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
-const AnimatedImage = Animated.createAnimatedComponent(Image);
-
-type Props = NativeStackScreenProps<StackParamList, 'Gallery'>;
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
+type Props = NativeStackScreenProps<StackParamList, 'Gallery'>;
+
 export default function Gallery({ navigation, route }: Props) {
-  const dispatch = useAppDispatch();
   const { images, clickedId } = route.params;
   const [currentImage, setCurrentImage] = useState(clickedId);
-
+  const listRef = useRef<any>();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -64,17 +47,23 @@ export default function Gallery({ navigation, route }: Props) {
           onPress={() => navigation.goBack()}></AnimatedIcon>
       ),
     });
+    
   }, [currentImage, images.length, navigation]);
 
   const viewableItemsChanged = useRef(({ viewableItems }: any) => {
-    setCurrentImage(viewableItems[0].index ?? 0);
+    setCurrentImage(viewableItems[0].index);
   }).current;
 
   const renderItem = useCallback(({ item }: any) => {
-    return (
-      <GalleryImage image={item} />
-    );
+    return <GalleryImage image={item} />;
   }, []);
+
+  useEffect(() => {
+    listRef.current.scrollToIndex({
+      index: clickedId,
+      animated: false,
+    });
+  }, [clickedId]);
 
   return (
     <GestureHandlerRootView style={styles.wrapper}>
@@ -87,6 +76,12 @@ export default function Gallery({ navigation, route }: Props) {
         scrollEventThrottle={32}
         keyExtractor={item => item.path}
         onViewableItemsChanged={viewableItemsChanged}
+        ref={listRef}
+        getItemLayout={(data, index) => ({
+          length: SCREEN_WIDTH,
+          offset: SCREEN_WIDTH * index,
+          index,
+        })}
       />
     </GestureHandlerRootView>
   );

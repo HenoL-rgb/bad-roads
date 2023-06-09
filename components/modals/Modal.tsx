@@ -96,7 +96,7 @@ const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
           style={[
             {
               minHeight: 350,
-              width: 300,
+              width: 340,
               backgroundColor: 'white',
               position: 'absolute',
               alignSelf: 'center',

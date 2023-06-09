@@ -32,7 +32,7 @@ import { ModalRefProps } from '../components/modals/Modal';
 import DeleteModal from '../components/modals/DeleteModal';
 import { colors } from '../utils/colors';
 import { getUrl } from '../utils/getUrl';
-import SaveModal from '../components/modals/SaveModal';
+import SaveModal from '../components/modals/save-modal/SaveModal';
 
 enum modes {
   IDLE,

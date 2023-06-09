@@ -7,14 +7,14 @@ import {
   FlatList,
 } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
-import { useAppSelector } from '../../hooks/redux-hooks';
+import { useAppSelector } from '../../../hooks/redux-hooks';
 import {
   useSaveRouteMutation,
   useUpdateRouteMutation,
-} from '../../store/api/routes.api';
-import { Point } from '../../types/Point';
-import { MapCurrentRoute, Route } from '../../types/Route';
-import { getUrl } from '../../utils/getUrl';
+} from '../../../store/api/routes.api';
+import { Point } from '../../../types/Point';
+import { MapCurrentRoute } from '../../../types/Route';
+import { getUrl } from '../../../utils/getUrl';
 import { QueryActionCreatorResult } from '@reduxjs/toolkit/dist/query/core/buildInitiate';
 import {
   QueryDefinition,
@@ -22,9 +22,9 @@ import {
   FetchArgs,
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/dist/query';
-import Modal, { ModalRefProps } from './Modal';
+import Modal, { ModalRefProps } from '../Modal';
 import { Icon } from 'react-native-elements';
-import { colors } from '../../utils/colors';
+import { colors } from '../../../utils/colors';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -33,10 +33,12 @@ import Animated, {
 } from 'react-native-reanimated';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import { Image } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native';
-import { StackParamList } from '../AppWrapper';
+import { StackParamList } from '../../AppWrapper';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import ModalImage from './ModalImage';
+import ImageSelector from './ImageSelector';
 
 type SaveModalProps = {
   points: Point[];
@@ -60,7 +62,7 @@ type SaveModalProps = {
   >;
 };
 
-type Props = NativeStackNavigationProp<StackParamList>
+type Props = NativeStackNavigationProp<StackParamList>;
 
 export default function SaveModal({
   points,
@@ -71,7 +73,6 @@ export default function SaveModal({
 }: SaveModalProps) {
   const [saveRoute, { isLoading: saveLoading }] = useSaveRouteMutation();
   const [updateRoute, { isLoading: updateLoading }] = useUpdateRouteMutation();
-  const [images, setImages] = useState<ImageOrVideo[]>([]);
   const progress = useSharedValue(1.15);
   const userId = useAppSelector(state => state.userReducer.user?.id);
   const navigate = useNavigation<Props>();
@@ -102,16 +103,6 @@ export default function SaveModal({
     closeRouteWork();
   }
 
-  function useGallery() {
-    ImagePicker.openPicker({
-      multiple: true,
-    }).then(images => {
-      console.log(images);
-      
-      setImages([...images]);
-    });
-  }
-
   const reanimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: progress.value }],
@@ -130,34 +121,27 @@ export default function SaveModal({
             <Icon name="save" size={50} color={colors.blue} />
           </Animated.View>
         </View>
-        <ScrollView style={{minHeight: 200, maxHeight: 300}}>
-          {images ? (
-            <FlatList
-              data={images}
-              horizontal
-              renderItem={({ item, index }) => (
-                <Pressable style={{width: 200, height: 200}} onPress={() => navigate.navigate('Gallery', {
-                  images: images,
-                  clickedId: index
-                })}>
-                  <Image
-                    source={{ uri: item.path }}
-                    style={{flex: 1, width: 200, height: 200 }}
-                  />
-                </Pressable>
-              )}
-              keyExtractor={item => item.path}
-              ItemSeparatorComponent={() => <View style={{ width: 5 }} />}
-            />
-          ) : (
-            <Text>No images</Text>
-          )}
+        <ScrollView
+          style={styles.content}
+          contentContainerStyle={styles.contentContainer}>
+          <View style={styles.section}>
+            <View style={styles.obstacleType}>
+              <Text style={styles.text}>Type:</Text>
+              <View
+                style={{
+                  height: 50,
+                  width: 50,
+                  backgroundColor: colors.darkRed,
+                  borderRadius: 10,
+                }}></View>
+            </View>
+          </View>
 
-          <Pressable onPress={useGallery} style={styles.cancelBtn}>
-            <Text style={{ color: colors.black }}>SELECT</Text>
-          </Pressable>
+          <View style={styles.section}>
+            <ImageSelector />
+          </View>
         </ScrollView>
-        <View style={styles.text}>
+        <View style={styles.textWrapper}>
           <Text
             style={{ color: colors.black, fontSize: 18, textAlign: 'center' }}>
             Save route?
@@ -169,7 +153,9 @@ export default function SaveModal({
             style={styles.cancelBtn}>
             <Text style={{ color: colors.black }}>CANCEL</Text>
           </Pressable>
-          <Pressable style={styles.saveBtn} onPress={handleSaveRoute}>
+          <Pressable
+            style={[styles.cancelBtn, styles.saveBtn]}
+            onPress={handleSaveRoute}>
             {saveLoading || updateLoading ? (
               <ActivityIndicator size={'small'} color={colors.white} />
             ) : (
@@ -187,10 +173,26 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
+  section: {
+    borderRadius: 5,
+  },
+  content: {
+    minHeight: 200,
+    maxHeight: 300,
+  },
+  contentContainer: {
+    rowGap: 10,
+  },
+  obstacleType: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    columnGap: 10,
+  },
   saveIconWrapper: {
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
+    paddingBottom: 10,
   },
   saveIcon: {
     padding: 20,
@@ -198,10 +200,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 50,
   },
-  text: {
+  textWrapper: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  imagesWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#dfdfdf55',
+    borderRadius: 10,
+    height: 100,
+  },
+  text: {
+    color: colors.black,
+    fontSize: 18,
+    paddingLeft: 3,
   },
   buttons: {
     flexDirection: 'row',
@@ -214,14 +229,15 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 12,
     borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectBtn: {
+    marginTop: 3,
+    width: 100,
   },
   saveBtn: {
     backgroundColor: colors.blue,
-    paddingLeft: 18,
-    paddingRight: 18,
-    paddingTop: 12,
-    paddingBottom: 12,
-    borderRadius: 5,
     width: 90,
     height: 45,
     justifyContent: 'center',
