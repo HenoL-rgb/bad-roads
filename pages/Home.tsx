@@ -25,31 +25,8 @@ export const Tab = createBottomTabNavigator<TabNavParamList>();
 
 
 function Home(): JSX.Element {
-  const { data, isLoading: loadRefresh, isError } = useRefreshQuery({}, {});
   const { colors: theme } = useGetTheme();
-
-  const { isAuth } = useAppSelector(state => state.userReducer);  
-
-  if (loadRefresh) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color={colors.blue} />
-      </View>
-    );
-  }
-
-  if(isError) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Server error :(</Text>
-      </View>
-    );
-  }
-
-  if ((data && !data.accessToken) || (isAuth !== null && isAuth === false)) {
-    return <AuthContainer />;
-  }
-
+  
   return (
     <Tab.Navigator initialRouteName="Map" screenOptions={{
       tabBarStyle: {

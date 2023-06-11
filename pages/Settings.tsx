@@ -20,6 +20,8 @@ import { withTheme } from 'react-native-elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStack, StackParamList } from '../components/AppWrapper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Button } from 'react-native';
+import { setAuth } from '../store/slices/user.slice';
 
 type Props = NativeStackScreenProps<StackParamList, 'Settings'>;
 
@@ -114,6 +116,10 @@ export default function Settings({ navigation }: Props) {
           style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
         />
       </View>
+      <Button title='logout' onPress={async () => {
+        await EncryptedStorage.clear();
+        dispatch(setAuth(false));
+      }} />
     </Animated.View>
   );
 }
