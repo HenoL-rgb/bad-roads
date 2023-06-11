@@ -129,23 +129,26 @@ export default function Map({ route }: Props) {
 
   function findRoute(): void {
     if (!currentRoute.start || !currentRoute.end) return;
-
+    
     map.current?.findDrivingRoutes(
       [currentRoute.start, currentRoute.end],
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       (e: RouteEvent) => {
+        
         const points = e.routes[0].sections.reduce(
           (acc: Point[], item: RouteSection) => [...acc, ...item.points],
           [],
         );
-
+          console.log(points);
+          
         setPoints(points);
         setMode(modes.ROUTE_ADDED);
 
       },
     );
-  }
+    
+  }  
 
   function handleMapPress(event: NativeSyntheticEvent<Point>) {
     if (mode === modes.CREATE || mode === modes.EDIT) {

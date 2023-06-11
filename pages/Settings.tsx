@@ -1,4 +1,11 @@
-import { Text, SafeAreaView, View, Switch, StyleSheet } from 'react-native';
+import {
+  Text,
+  SafeAreaView,
+  View,
+  Switch,
+  StyleSheet,
+  Button,
+} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { setTheme } from '../store/slices/theme.slice';
@@ -20,6 +27,7 @@ import { withTheme } from 'react-native-elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStack, StackParamList } from '../components/AppWrapper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { clearUser, setAuth } from '../store/slices/user.slice';
 
 type Props = NativeStackScreenProps<StackParamList, 'Settings'>;
 
@@ -30,7 +38,9 @@ export default function Settings({ navigation }: Props) {
   const { dark, colors } = useAppSelector(state => state.themeReducer);
 
   const progress = useDerivedValue(() => {
-    return dark ? withTiming(1, { duration: 200 }) : withTiming(0, {duration: 300});
+    return dark
+      ? withTiming(1, { duration: 200 })
+      : withTiming(0, { duration: 300 });
   }, [dark]);
 
   const toggleSwitch = () => {
@@ -96,6 +106,19 @@ export default function Settings({ navigation }: Props) {
           {...props}
           onPress={() => navigation.goBack()}></AnimatedIcon>
       ),
+      headerRight: props => (
+        <AnimatedIcon
+          name="logout"
+          size={20}
+          {...props}
+          onPress={async () => {
+            dispatch(setAuth(false));
+            await EncryptedStorage.clear();
+          }}
+          style={[
+            rTextStyle,
+          ]}></AnimatedIcon>
+      ),
     });
   });
 
@@ -114,6 +137,13 @@ export default function Settings({ navigation }: Props) {
           style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
         />
       </View>
+      <Button
+        title="logout"
+        onPress={async () => {
+          dispatch(setAuth(false));
+          await EncryptedStorage.clear();
+        }}
+      />
     </Animated.View>
   );
 }
