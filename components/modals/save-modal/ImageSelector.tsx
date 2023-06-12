@@ -6,16 +6,12 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import ModalImage from './ModalImage';
 import { colors } from '../../../utils/colors';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import { useAppSelector } from '../../../hooks/redux-hooks';
 import Animated, {
-    Easing,
-  interpolate,
-  Layout,
-  useAnimatedProps,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useDerivedValue,
@@ -24,7 +20,6 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-const AScrollView = Animated.createAnimatedComponent(ScrollView);
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function ImageSelector() {
@@ -32,7 +27,13 @@ export default function ImageSelector() {
   const [deletedIndex, setDeletedIndex] = useState<number | null>(null);
   const theme = useAppSelector(state => state.themeReducer);
   const aWidth = useDerivedValue(() => images.length * 110, [images.length]);
-  const listRef = useRef<any>(null);
+  const listRef = useRef<Animated.ScrollView>(null);
+  const translationX = useSharedValue(0);
+
+  const scrollHandler = useAnimatedScrollHandler(event => {
+    translationX.value = event.contentOffset.x;
+    console.log(translationX.value, SCREEN_WIDTH);
+  });
 
   function useGallery() {
     'worklet';
@@ -46,32 +47,44 @@ export default function ImageSelector() {
       .catch(console.log);
   }
 
-
   const rProps = useAnimatedStyle(() => {
     return {
-      minWidth: images.length > 2 ? withDelay(300, withTiming(aWidth.value, {
-        duration: 300,
-      })) : SCREEN_WIDTH
+      minWidth:
+        images.length > 2
+          ? withDelay(
+              300,
+              withTiming(aWidth.value, {
+                duration: 300,
+              }),
+            )
+          : SCREEN_WIDTH,
     };
   });
 
   function deleteImage(path: string) {
     const index = images.findIndex(item => item.path === path);
     setDeletedIndex(index);
-    setImages(images.filter(item => item.path !== path));    
+    setImages(images.filter(item => item.path !== path));
   }
+
+  
   function listSizeChangeHandler() {
-    if(deletedIndex !== null && images.length >= 4 && (images.length - deletedIndex <= 3)) {                
-        listRef.current?.scrollToEnd({animated: true});
-    }
-    else if(images.length < 4) {
-        listRef.current?.scrollTo({x: 0, animated: true})
+    if (
+      deletedIndex !== null &&
+      images.length >= 4 &&
+      images.length - deletedIndex < 3 &&
+      (translationX.value > 95)
+    ) {
+      console.log(translationX.value, SCREEN_WIDTH);
+      
+      listRef.current?.scrollToEnd({ animated: true });
+    } else if (images.length < 4) {
+      listRef.current?.scrollTo({ x: 0, animated: true });
     }
   }
 
   //console.log(aWidth.value);
-  
-  
+
   return (
     <Animated.View>
       <Text
@@ -98,8 +111,14 @@ export default function ImageSelector() {
         
         
       /> */}
-      <Animated.ScrollView  ref={listRef} onContentSizeChange={listSizeChangeHandler}  horizontal>
-        <Animated.View style={[{flexDirection: 'row', paddingLeft: 5}, rProps]}>
+      <Animated.ScrollView
+        ref={listRef}
+        onContentSizeChange={listSizeChangeHandler}
+        showsHorizontalScrollIndicator={false}
+        onScroll={scrollHandler}
+        horizontal>
+        <Animated.View
+          style={[{ flexDirection: 'row', paddingLeft: 5 }, rProps]}>
           {images.map((item, index) => {
             return (
               <ModalImage
