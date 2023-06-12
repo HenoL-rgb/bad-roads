@@ -1,16 +1,19 @@
 #import "AppDelegate.h"
 
 #import <React/RCTBundleURLProvider.h>
+#import <YandexMapsMobile/YMKMapKitFactory.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+
   self.moduleName = @"AwesomeProject";
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
-
+  [YMKMapKit setLocale:@"ru_RU"];
+  [YMKMapKit setApiKey:@"3b806cc7-d2e8-49ac-9f8d-fc2c721025b2"];
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
