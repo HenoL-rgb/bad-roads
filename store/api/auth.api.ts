@@ -9,8 +9,8 @@ import type {
 import { HOST_IP_INNO } from '@env';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
-//const HOST_IP = '10.211.32.66:7000';
-const HOST_IP = '192.168.100.11:7000';
+const HOST_IP = '10.211.32.66:7000';
+//const HOST_IP = '192.168.100.11:7000';
 //const HOST_IP = '192.168.194.72:7000';
 
 const baseQuery = fetchBaseQuery({
@@ -95,6 +95,7 @@ export const authApi = createApi({
           );
           dispatch(setAuth(true));
         } catch (error) {
+          dispatch(setAuth(false))
           throw new Error('Error while login');
         }
       },
@@ -125,6 +126,7 @@ export const authApi = createApi({
           );
           dispatch(setAuth(true));
         } catch (error) {
+          dispatch(setAuth(false))
           console.log(error);
         }
       },
@@ -159,8 +161,6 @@ export const authApi = createApi({
           }
           await EncryptedStorage.setItem('token', data.accessToken);
           await EncryptedStorage.setItem('refresh', data.refreshToken);
-          dispatch(setAuth(true));
-
           dispatch(
             setUser({
               id: data.user.id,
@@ -182,6 +182,7 @@ export const authApi = createApi({
               // ),
             }),
           );
+          dispatch(setAuth(true));
         } catch (error) {
           console.log(error);
         }

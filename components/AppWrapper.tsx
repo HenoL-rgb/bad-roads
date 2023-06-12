@@ -7,7 +7,7 @@ import Home from '../pages/Home';
 import Settings from '../pages/Settings';
 import Gallery from '../pages/Gallery';
 import { ImageOrVideo } from 'react-native-image-crop-picker';
-import { View, ActivityIndicator, Text } from 'react-native';
+import { View, ActivityIndicator, Text, Pressable, StyleSheet } from 'react-native';
 import { colors } from "../utils/colors";
 import AuthContainer from '../navigation/AuthContainer';
 import { useRefreshQuery } from '../store/api/auth.api';
@@ -25,13 +25,13 @@ export const RootStack = createNativeStackNavigator<StackParamList>();
 
 function AppWrapper(): JSX.Element {
   const theme = useAppSelector(state => state.themeReducer);
-  const { data, isLoading: loadRefresh, isError } = useRefreshQuery({}, {});
+  const { data, isLoading: loadRefresh, isError, refetch: retryConnection } = useRefreshQuery({}, {});
 
   const { isAuth } = useAppSelector(state => state.userReducer);  
-
-  if (loadRefresh) {
+  
+  if (loadRefresh || (isAuth === null)) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={styles.container}>
         <ActivityIndicator size="large" color={colors.blue} />
       </View>
     );
@@ -39,18 +39,19 @@ function AppWrapper(): JSX.Element {
 
   if(isError) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={styles.container}>
         <Text>Server error :(</Text>
+        <Pressable style={styles.retryBtn} onPress={retryConnection}>
+          <Text>Retry</Text>
+        </Pressable>
       </View>
     );
   }
 
-  if (!data || (isAuth === null || isAuth === false)) {
-    const first = (!data.accessToken)
-    console.log(isAuth);
-    
+  if (!isAuth) {    
     return <AuthContainer />;
   }
+
   return (
     <RootStack.Navigator
       screenOptions={{
@@ -85,3 +86,20 @@ function AppWrapper(): JSX.Element {
 }
 
 export default AppWrapper;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  retryBtn: {
+    marginTop: 10,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderRadius: 5,
+    backgroundColor: colors.eyePress,
+  }
+})
