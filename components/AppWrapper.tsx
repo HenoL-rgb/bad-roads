@@ -29,14 +29,6 @@ function AppWrapper(): JSX.Element {
 
   const { isAuth } = useAppSelector(state => state.userReducer);  
   
-  if (loadRefresh || (isAuth === null)) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color={colors.blue} />
-      </View>
-    );
-  }
-
   if(isError) {
     return (
       <View style={styles.container}>
@@ -47,6 +39,15 @@ function AppWrapper(): JSX.Element {
       </View>
     );
   }
+  
+  if (loadRefresh || (isAuth === null)) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color={colors.blue} />
+      </View>
+    );
+  }
+
 
   if (!isAuth) {    
     return <AuthContainer />;

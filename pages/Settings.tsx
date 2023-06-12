@@ -137,13 +137,6 @@ export default function Settings({ navigation }: Props) {
           style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
         />
       </View>
-      <Button
-        title="logout"
-        onPress={async () => {
-          dispatch(setAuth(false));
-          await EncryptedStorage.clear();
-        }}
-      />
     </Animated.View>
   );
 }
