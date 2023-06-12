@@ -14,10 +14,10 @@ import { useAppSelector } from '../../../hooks/redux-hooks';
 import Animated, {
   interpolate,
   Layout,
-  runOnUI,
   useAnimatedProps,
   useAnimatedScrollHandler,
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
   withDelay,
   withTiming,
@@ -29,36 +29,41 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 export default function ImageSelector() {
   const [images, setImages] = useState<ImageOrVideo[]>([]);
   const theme = useAppSelector(state => state.themeReducer);
-  const aWidth = useSharedValue(110);
-
+  const sharedImages = useSharedValue<ImageOrVideo[]>([]);
+  const aWidth = useDerivedValue(
+    () => sharedImages.value.length * 110,
+    [sharedImages.value],
+  );
   function useGallery() {
+    'worklet';
     ImagePicker.openPicker({
       multiple: true,
     })
       .then(images => {
         console.log(images);
+        sharedImages.value = images;
         setImages([...images]);
       })
       .catch(console.log);
   }
 
-  useLayoutEffect(() => {
-    aWidth.value = images.length * 110;
-    console.log(images.length);
-  }, [aWidth, images.length]);
-
   const rProps = useAnimatedProps(() => {
     console.log(aWidth);
 
     return {
-      minWidth: withDelay(300, withTiming(aWidth.value, {
-        duration: 300,
-        
-      })),
+      minWidth: withDelay(
+        300,
+        withTiming(aWidth.value, {
+          duration: 300,
+        }),
+      ),
     };
   });
 
   function deleteImage(path: string) {
+    'worklet';
+    console.log(path);
+    sharedImages.value = sharedImages.value.filter(item => item.path !== path);
     setImages(images.filter(item => item.path !== path));
   }
 
@@ -88,8 +93,11 @@ export default function ImageSelector() {
         
         
       /> */}
-      <Animated.ScrollView style={{flex: 1}} horizontal>
-        <Animated.View style={[{flexDirection: 'row'}, rProps]}>
+      <Animated.ScrollView
+        contentContainerStyle={{flex: 1}}
+        showsHorizontalScrollIndicator={false}
+        horizontal>
+        <Animated.View style={[{ flexDirection: 'row' }, rProps]}>
           {images.map((item, index) => {
             return (
               <ModalImage
