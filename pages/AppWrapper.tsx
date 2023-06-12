@@ -3,21 +3,43 @@ import React from 'react';
 import { useAppSelector } from '../hooks/redux-hooks';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Home from '../pages/Home';
-import Settings from '../pages/Settings';
-import Gallery from '../pages/Gallery';
+import Home from './Home';
+import Settings from './Settings';
+import Gallery from './Gallery';
 import { ImageOrVideo } from 'react-native-image-crop-picker';
-import { View, ActivityIndicator, Text, Pressable, StyleSheet } from 'react-native';
-import { colors } from "../utils/colors";
+import {
+  View,
+  ActivityIndicator,
+  Text,
+  Pressable,
+  StyleSheet,
+} from 'react-native';
+import {
+  QueryDefinition,
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+} from '@reduxjs/toolkit/dist/query';
+import { QueryActionCreatorResult } from '@reduxjs/toolkit/dist/query/core/buildInitiate';
+import { Point } from 'react-native-yamap';
+import { MapCurrentRoute } from '../types/Route';
+import { colors } from '../utils/colors';
 import AuthContainer from '../navigation/AuthContainer';
 import { useRefreshQuery } from '../store/api/auth.api';
+import SaveRoute from './SaveRoute';
 
 export type StackParamList = {
-  Home: undefined;
+  Home: {
+    screen: 'Map' | 'Account'
+  };
   Settings: undefined;
   Gallery: {
     images: ImageOrVideo[];
     clickedId: number;
+  };
+  SaveRoute: {
+    points: Point[];
+    currentRoute: MapCurrentRoute;
   };
 };
 
@@ -25,11 +47,15 @@ export const RootStack = createNativeStackNavigator<StackParamList>();
 
 function AppWrapper(): JSX.Element {
   const theme = useAppSelector(state => state.themeReducer);
-  const { data, isLoading: loadRefresh, isError, refetch: retryConnection } = useRefreshQuery({}, {});
+  const {
+    isLoading: loadRefresh,
+    isError,
+    refetch: retryConnection,
+  } = useRefreshQuery({}, {});
 
-  const { isAuth } = useAppSelector(state => state.userReducer);  
-  
-  if(isError) {
+  const { isAuth } = useAppSelector(state => state.userReducer);
+
+  if (isError) {
     return (
       <View style={styles.container}>
         <Text>Server error :(</Text>
@@ -39,8 +65,8 @@ function AppWrapper(): JSX.Element {
       </View>
     );
   }
-  
-  if (loadRefresh || (isAuth === null)) {
+
+  if (loadRefresh || isAuth === null) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color={colors.blue} />
@@ -48,8 +74,7 @@ function AppWrapper(): JSX.Element {
     );
   }
 
-
-  if (!isAuth) {    
+  if (!isAuth) {
     return <AuthContainer />;
   }
 
@@ -82,6 +107,21 @@ function AppWrapper(): JSX.Element {
         component={Gallery}
         options={{ animation: 'fade_from_bottom' }}
       />
+      <RootStack.Screen
+        name="SaveRoute"
+        component={SaveRoute}
+        options={{
+          animation: 'fade_from_bottom',
+          title: 'Save route',
+          headerStyle: {
+            backgroundColor: theme.colors.background,
+          },
+          headerTitleStyle: {
+            color: theme.colors.text,
+          },
+          headerTintColor: theme.colors.text,
+        }}
+      />
     </RootStack.Navigator>
   );
 }
@@ -92,7 +132,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   retryBtn: {
     marginTop: 10,
@@ -102,5 +142,5 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderRadius: 5,
     backgroundColor: colors.eyePress,
-  }
-})
+  },
+});

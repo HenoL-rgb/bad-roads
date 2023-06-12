@@ -1,20 +1,35 @@
 import {
   View,
   Text,
-  FlatList,
   Pressable,
   StyleSheet,
   ScrollView,
-  PressableStateCallbackType,
+  Dimensions,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import ModalImage from './ModalImage';
 import { colors } from '../../../utils/colors';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
-import Animated, { Layout } from 'react-native-reanimated';
+import { useAppSelector } from '../../../hooks/redux-hooks';
+import Animated, {
+  interpolate,
+  Layout,
+  runOnUI,
+  useAnimatedProps,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from 'react-native-reanimated';
+
+const AScrollView = Animated.createAnimatedComponent(ScrollView);
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function ImageSelector() {
   const [images, setImages] = useState<ImageOrVideo[]>([]);
+  const theme = useAppSelector(state => state.themeReducer);
+  const aWidth = useSharedValue(110);
 
   function useGallery() {
     ImagePicker.openPicker({
@@ -22,11 +37,26 @@ export default function ImageSelector() {
     })
       .then(images => {
         console.log(images);
-
         setImages([...images]);
       })
       .catch(console.log);
   }
+
+  useLayoutEffect(() => {
+    aWidth.value = images.length * 110;
+    console.log(images.length);
+  }, [aWidth, images.length]);
+
+  const rProps = useAnimatedProps(() => {
+    console.log(aWidth);
+
+    return {
+      minWidth: withDelay(300, withTiming(aWidth.value, {
+        duration: 300,
+        
+      })),
+    };
+  });
 
   function deleteImage(path: string) {
     setImages(images.filter(item => item.path !== path));
@@ -34,7 +64,11 @@ export default function ImageSelector() {
 
   return (
     <View>
-      <Text style={[styles.text, { marginBottom: 10, paddingLeft: 5 }]}>
+      <Text
+        style={[
+          styles.text,
+          { marginBottom: 10, paddingLeft: 5, color: theme.colors.text },
+        ]}>
         Images:
       </Text>
       {/* <Animated.FlatList
@@ -54,22 +88,21 @@ export default function ImageSelector() {
         
         
       /> */}
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ paddingRight: 110 }}
-        horizontal>
-        {images.map((item, index) => {
-          return (
-            <ModalImage
-              image={item}
-              images={images}
-              clickedId={index}
-              deleteImage={deleteImage}
-              key={item.path}
-            />
-          );
-        })}
-      </ScrollView>
+      <Animated.ScrollView style={{flex: 1}} horizontal>
+        <Animated.View style={[{flexDirection: 'row'}, rProps]}>
+          {images.map((item, index) => {
+            return (
+              <ModalImage
+                image={item}
+                images={images}
+                clickedId={index}
+                deleteImage={deleteImage}
+                key={item.path}
+              />
+            );
+          })}
+        </Animated.View>
+      </Animated.ScrollView>
 
       <Pressable
         onPress={useGallery}
@@ -80,7 +113,7 @@ export default function ImageSelector() {
           styles.cancelBtn,
           styles.selectBtn,
         ]}>
-        <Text style={{ color: colors.black }}>SELECT</Text>
+        <Text style={{ color: theme.colors.text }}>SELECT</Text>
       </Pressable>
     </View>
   );

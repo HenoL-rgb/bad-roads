@@ -23,7 +23,7 @@ import MapButtons from '../components/MapButtons';
 import MapMarkers from '../components/MapMarkers';
 import MapRoutes from '../components/MapRoutes';
 import { TabNavParamList } from '../pages/Home';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useAppSelector } from '../hooks/redux-hooks';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetRefProps } from '../components/BottomSheet';
@@ -33,6 +33,8 @@ import DeleteModal from '../components/modals/DeleteModal';
 import { colors } from '../utils/colors';
 import { getUrl } from '../utils/getUrl';
 import SaveModal from '../components/modals/save-modal/SaveModal';
+import { StackParamList } from './AppWrapper';
+import { useNavigation } from '@react-navigation/native';
 
 enum modes {
   IDLE,
@@ -48,6 +50,7 @@ enum currentMarker {
   END,
 }
 type Props = NativeStackScreenProps<TabNavParamList, 'Map'>;
+type RootNavigation = NativeStackNavigationProp<StackParamList>;
 
 export default function Map({ route }: Props) {
   const initialParams = route.params;
@@ -69,11 +72,9 @@ export default function Map({ route }: Props) {
   const bottomSheetRef = useRef<BottomSheetRefProps>(null);
   const modalRef = useRef<ModalRefProps>(null);
   const saveModalRef = useRef<ModalRefProps>(null);
-  const [saveRoute, { isLoading: saveLoading }] = useSaveRouteMutation();
   const [delRoute, { isLoading: deleteLoading }] = useDeleteRouteMutation();
-  const [updateRoute, { isLoading: updateLoading }] = useUpdateRouteMutation();
-  const userId = useAppSelector(state => state.userReducer.user?.id);
-    
+  const navigation = useNavigation<RootNavigation>();
+
   const routes: Route[] = useMemo(
     () =>
       data
@@ -211,7 +212,10 @@ export default function Map({ route }: Props) {
       <MapButtons
         mode={mode}
         setMode={setMode}
-        handleSaveRoute={() => saveModalRef.current?.setActive(true)}
+        handleSaveRoute={() => navigation.navigate('SaveRoute', {
+          points: points,
+          currentRoute,
+        })}
         setPoints={setPoints}
         findRoute={findRoute}
         markersVisible={markersVisible}
@@ -229,14 +233,14 @@ export default function Map({ route }: Props) {
         deleteRoute={() => deleteRoute(currentRoute.id)}
         deleteLoading={deleteLoading}
       />
-      <SaveModal
+      {/* <SaveModal
         closeRouteWork={closeRouteWork}
         currentRoute={currentRoute}
         modalRef={saveModalRef}
         points={points}
         refetch={refetch}
         key={`${points[0]}${points[1]}`}
-      />
+      /> */}
     </GestureHandlerRootView>
   );
 }

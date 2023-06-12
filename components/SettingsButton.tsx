@@ -5,7 +5,7 @@ import { useAppDispatch } from '../hooks/redux-hooks';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { setAuth } from '../store/slices/user.slice';
 import { useNavigation } from '@react-navigation/native';
-import { StackParamList } from './AppWrapper';
+import { StackParamList } from '../pages/AppWrapper';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { colors } from '../utils/colors';
 

@@ -2,9 +2,25 @@ import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import React from 'react';
 import { ImageOrVideo } from 'react-native-image-crop-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { StackParamList } from '../../AppWrapper';
+import { StackParamList } from '../../../pages/AppWrapper';
 import { useNavigation } from '@react-navigation/native';
-import Animated, { BounceOutLeft, ComplexAnimationBuilder, FadeOut, FadeOutLeft, Layout, RollInLeft, RotateInDownRight, SlideOutLeft, ZoomIn, ZoomInDown, ZoomOut, ZoomOutDown, ZoomOutRotate } from 'react-native-reanimated';
+import Animated, {
+  BounceOutLeft,
+  ComplexAnimationBuilder,
+  CurvedTransition,
+  FadeOut,
+  FadeOutLeft,
+  Layout,
+  RollInLeft,
+  RotateInDownRight,
+  SequencedTransition,
+  SlideOutLeft,
+  ZoomIn,
+  ZoomInDown,
+  ZoomOut,
+  ZoomOutDown,
+  ZoomOutRotate,
+} from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../../../utils/colors';
 
@@ -28,22 +44,23 @@ export default function ModalImage({
   const navigation = useNavigation<Props>();
 
   return (
-    <AnimatedPressable
-      exiting={FadeOutLeft.duration(300)}
-      entering={ZoomIn.delay(100*clickedId)}
-      layout={Layout.delay(400)}
+    <Animated.View
+      exiting={FadeOutLeft.duration(200)}
+      entering={ZoomIn.delay(100 * clickedId)}
+      layout={Layout.delay(300)}
       style={styles.pressable}
-      onPress={() =>
-        navigation.navigate('Gallery', {
-          images: images,
-          clickedId: clickedId,
-        })
-      }>
+      //   onTouchEnd={() =>
+      //     navigation.navigate('Gallery', {
+      //       images: images,
+      //       clickedId: clickedId,
+      //     })
+      //   }
+    >
       <Image source={{ uri: image.path }} style={styles.image} />
       <Pressable style={styles.cancel} onPress={() => deleteImage(image.path)}>
         <Icon name="close" size={11} color={colors.white} />
       </Pressable>
-    </AnimatedPressable>
+    </Animated.View>
   );
 }
 
@@ -51,7 +68,6 @@ const styles = StyleSheet.create({
   pressable: {
     position: 'relative',
     padding: 5,
-    flex: 1,
   },
 
   image: {

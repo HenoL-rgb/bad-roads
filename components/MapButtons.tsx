@@ -12,6 +12,9 @@ import Animated, {
   ZoomOut,
 } from 'react-native-reanimated';
 import { colors } from '../utils/colors';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { StackParamList } from '../pages/AppWrapper';
+import { useNavigation } from '@react-navigation/native';
 
 enum modes {
   IDLE,
@@ -44,6 +47,7 @@ export default function MapButtons({
   markersVisible,
   closeRouteWork,
 }: MapButtonsProps) {
+
 
   return (
     <>

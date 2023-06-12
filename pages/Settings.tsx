@@ -25,7 +25,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { withTheme } from 'react-native-elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStack, StackParamList } from '../components/AppWrapper';
+import { RootStack, StackParamList } from './AppWrapper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { clearUser, setAuth } from '../store/slices/user.slice';
 
