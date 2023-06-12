@@ -6,12 +6,13 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import ModalImage from './ModalImage';
 import { colors } from '../../../utils/colors';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import { useAppSelector } from '../../../hooks/redux-hooks';
 import Animated, {
+    Easing,
   interpolate,
   Layout,
   useAnimatedProps,
@@ -28,12 +29,11 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function ImageSelector() {
   const [images, setImages] = useState<ImageOrVideo[]>([]);
+  const [deletedIndex, setDeletedIndex] = useState<number | null>(null);
   const theme = useAppSelector(state => state.themeReducer);
-  const sharedImages = useSharedValue<ImageOrVideo[]>([]);
-  const aWidth = useDerivedValue(
-    () => sharedImages.value.length * 110,
-    [sharedImages.value],
-  );
+  const aWidth = useDerivedValue(() => images.length * 110, [images.length]);
+  const listRef = useRef<any>(null);
+
   function useGallery() {
     'worklet';
     ImagePicker.openPicker({
@@ -41,34 +41,39 @@ export default function ImageSelector() {
     })
       .then(images => {
         console.log(images);
-        sharedImages.value = images;
         setImages([...images]);
       })
       .catch(console.log);
   }
 
-  const rProps = useAnimatedProps(() => {
-    console.log(aWidth);
 
+  const rProps = useAnimatedStyle(() => {
     return {
-      minWidth: withDelay(
-        300,
-        withTiming(aWidth.value, {
-          duration: 300,
-        }),
-      ),
+      minWidth: images.length > 2 ? withDelay(300, withTiming(aWidth.value, {
+        duration: 300,
+      })) : SCREEN_WIDTH
     };
   });
 
   function deleteImage(path: string) {
-    'worklet';
-    console.log(path);
-    sharedImages.value = sharedImages.value.filter(item => item.path !== path);
-    setImages(images.filter(item => item.path !== path));
+    const index = images.findIndex(item => item.path === path);
+    setDeletedIndex(index);
+    setImages(images.filter(item => item.path !== path));    
+  }
+  function listSizeChangeHandler() {
+    if(deletedIndex !== null && images.length >= 4 && (images.length - deletedIndex <= 3)) {                
+        listRef.current?.scrollToEnd({animated: true});
+    }
+    else if(images.length < 4) {
+        listRef.current?.scrollTo({x: 0, animated: true})
+    }
   }
 
+  //console.log(aWidth.value);
+  
+  
   return (
-    <View>
+    <Animated.View>
       <Text
         style={[
           styles.text,
@@ -93,11 +98,8 @@ export default function ImageSelector() {
         
         
       /> */}
-      <Animated.ScrollView
-        contentContainerStyle={{flex: 1}}
-        showsHorizontalScrollIndicator={false}
-        horizontal>
-        <Animated.View style={[{ flexDirection: 'row' }, rProps]}>
+      <Animated.ScrollView  ref={listRef} onContentSizeChange={listSizeChangeHandler}  horizontal>
+        <Animated.View style={[{flexDirection: 'row', paddingLeft: 5}, rProps]}>
           {images.map((item, index) => {
             return (
               <ModalImage
@@ -123,7 +125,7 @@ export default function ImageSelector() {
         ]}>
         <Text style={{ color: theme.colors.text }}>SELECT</Text>
       </Pressable>
-    </View>
+    </Animated.View>
   );
 }
 
