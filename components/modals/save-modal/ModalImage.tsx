@@ -45,9 +45,9 @@ export default function ModalImage({
 
   return (
     <Animated.View
-      exiting={FadeOutLeft.duration(200)}
+      exiting={FadeOutLeft.duration(100)}
       entering={ZoomIn.delay(100 * clickedId)}
-      layout={Layout.delay(300)}
+      layout={Layout.delay(120)}
       style={styles.pressable}
       //   onTouchEnd={() =>
       //     navigation.navigate('Gallery', {
