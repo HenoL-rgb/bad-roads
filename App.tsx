@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import AppWrapper from './components/AppWrapper';
+import AppWrapper from './pages/AppWrapper';
 import { store } from './store/store';
 import { NavigationContainer } from '@react-navigation/native';
 import { YANDEX_API_KEY } from '@env';

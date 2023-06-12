@@ -35,7 +35,7 @@ import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import { Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native';
-import { StackParamList } from '../../AppWrapper';
+import { StackParamList } from '../../../pages/AppWrapper';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import ModalImage from './ModalImage';
 import ImageSelector from './ImageSelector';

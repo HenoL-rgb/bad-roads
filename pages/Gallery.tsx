@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { StackParamList } from '../components/AppWrapper';
+import { StackParamList } from './AppWrapper';
 import { DarkTheme, useFocusEffect } from '@react-navigation/native';
 import { colors } from '../utils/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
