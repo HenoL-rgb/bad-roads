@@ -9,7 +9,7 @@ import type {
 import { HOST_IP_INNO } from '@env';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
-const HOST_IP = '10.211.32.66:7000';
+const HOST_IP = '10.211.32.139:7000';
 //const HOST_IP = '192.168.100.11:7000';
 //const HOST_IP = '192.168.194.72:7000';
 
@@ -37,9 +37,11 @@ const baseQueryWithReauth: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
+
   if (result.error && result.error.status === 401) {
     const refreshResult: any = await baseQuery('/refresh', api, extraOptions);
-    // store the new token
+    // store the new token    
+    
     if (refreshResult.error && result.error.status === 401) {
       await EncryptedStorage.clear();
       api.dispatch(setAuth(false));
@@ -156,7 +158,9 @@ export const authApi = createApi({
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
+          
           if (data.message) {
+            dispatch(setAuth(false));
             throw new Error(data.message);
           }
           await EncryptedStorage.setItem('token', data.accessToken);

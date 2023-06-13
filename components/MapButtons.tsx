@@ -1,8 +1,7 @@
 import { StyleSheet } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Point } from '../types/Point';
 import Animated, {
   FadeInLeft,
   FadeInRight,
@@ -12,9 +11,8 @@ import Animated, {
   ZoomOut,
 } from 'react-native-reanimated';
 import { colors } from '../utils/colors';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { StackParamList } from '../pages/AppWrapper';
-import { useNavigation } from '@react-navigation/native';
+import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
+import { setInitialState, setMode, setPoints } from '../store/slices/routes.slice';
 
 enum modes {
   IDLE,
@@ -26,28 +24,17 @@ enum modes {
 }
 
 type MapButtonsProps = {
-  mode: number;
-  setMode: React.Dispatch<React.SetStateAction<number>>;
   handleSaveRoute: () => void;
-  setPoints: React.Dispatch<React.SetStateAction<Point[]>>;
   findRoute: () => void;
-  markersVisible: {
-    start: boolean;
-    end: boolean;
-  };
-  closeRouteWork: () => void;
+  
 };
 
 export default function MapButtons({
-  mode,
-  setMode,
   handleSaveRoute,
-  setPoints,
   findRoute,
-  markersVisible,
-  closeRouteWork,
 }: MapButtonsProps) {
-
+  const dispatch = useAppDispatch();
+  const { mode, markersVisible } = useAppSelector(state => state.routesReducer);
 
   return (
     <>
@@ -59,7 +46,7 @@ export default function MapButtons({
           <Pressable
             style={styles.pressable}
             onPress={() => {
-              setMode(modes.CREATE);
+              dispatch(setMode(modes.CREATE));
             }}>
             <Icon name="add" size={20} color={colors.white} />
           </Pressable>
@@ -77,7 +64,7 @@ export default function MapButtons({
           }}
           entering={ZoomIn.duration(120)}
           exiting={ZoomOut.duration(120)}>
-          <Pressable onPress={closeRouteWork} style={styles.pressable}>
+          <Pressable onPress={() => dispatch(setInitialState())} style={styles.pressable}>
             <Icon name="close" size={20} color={colors.white} />
           </Pressable>
         </Animated.View>
@@ -106,8 +93,8 @@ export default function MapButtons({
           <Pressable
             style={styles.pressable}
             onPress={() => {
-              setPoints([]);
-              setMode(modes.CREATE);
+              dispatch(setPoints([]));
+              dispatch(setMode(modes.CREATE));
             }}>
             <Icon name="undo" size={20} color={colors.white} />
           </Pressable>

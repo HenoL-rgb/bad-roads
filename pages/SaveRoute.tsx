@@ -15,8 +15,9 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import ImageSelector from '../components/modals/save-modal/ImageSelector';
-import { useAppSelector } from '../hooks/redux-hooks';
+import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import {
+  useGetAllRoutesQuery,
   useSaveRouteMutation,
   useUpdateRouteMutation,
 } from '../store/api/routes.api';
@@ -24,6 +25,7 @@ import { getUrl } from '../utils/getUrl';
 import { colors } from '../utils/colors';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackParamList } from './AppWrapper';
+import { setInitialState } from '../store/slices/routes.slice';
 
 type SaveRouteProps = NativeStackScreenProps<StackParamList, 'SaveRoute'>;
 
@@ -34,6 +36,8 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
   const userId = useAppSelector(state => state.userReducer.user?.id);
   const { points, currentRoute } = route.params;
   const theme = useAppSelector(state => state.themeReducer);
+  const { refetch } = useGetAllRoutesQuery({});
+  const dispatch = useAppDispatch();
 
   async function handleSaveRoute(): Promise<void> {
     if (!userId) return;
@@ -55,6 +59,8 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
         userId: userId,
       });
       console.log(response);
+      dispatch(setInitialState());
+      await refetch()
     }
     navigation.navigate('Home', {
         screen: 'Map'
@@ -111,12 +117,12 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
           <Text style={[{color: theme.colors.text }]}>CANCEL</Text>
         </Pressable>
         <Pressable
-          style={[styles.cancelBtn, styles.saveBtn]}
+          style={[styles.cancelBtn, styles.saveBtn, {backgroundColor: theme.colors.text}]}
           onPress={handleSaveRoute}>
           {saveLoading || updateLoading ? (
             <ActivityIndicator size={'small'} color={colors.white} />
           ) : (
-            <Text style={[{ color: theme.colors.text }]}>SAVE</Text>
+            <Text style={[{ color: theme.colors.card }]}>SAVE</Text>
           )}
         </Pressable>
       </View>

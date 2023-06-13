@@ -48,13 +48,14 @@ export const RootStack = createNativeStackNavigator<StackParamList>();
 function AppWrapper(): JSX.Element {
   const theme = useAppSelector(state => state.themeReducer);
   const {
+    data,
     isLoading: loadRefresh,
     isError,
     refetch: retryConnection,
   } = useRefreshQuery({}, {});
 
   const { isAuth } = useAppSelector(state => state.userReducer);
-
+  
   if (isError) {
     return (
       <View style={styles.container}>

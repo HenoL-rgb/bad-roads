@@ -5,6 +5,7 @@ import {
   Switch,
   StyleSheet,
   Button,
+  Pressable,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
@@ -32,6 +33,7 @@ import { clearUser, setAuth } from '../store/slices/user.slice';
 type Props = NativeStackScreenProps<StackParamList, 'Settings'>;
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function Settings({ navigation }: Props) {
   const dispatch = useAppDispatch();

@@ -28,12 +28,13 @@ export default function SettingsButton(props: any) {
     <Pressable
       onPress={() => navigation.navigate('Settings')}
       style={({pressed}) => [{
+        
         marginRight: 15,
         padding: 8,
         borderRadius: 30,
       },
       {
-        backgroundColor: pressed ? colors.eyePress : 'transparent',
+        backgroundColor: pressed ? colors.gray : 'transparent',
       }
       ]}>
       <Icon name="settings" size={20} color={props.tintColor ?? colors.black} />

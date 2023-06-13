@@ -32,7 +32,6 @@ export default function ImageSelector() {
 
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationX.value = event.contentOffset.x;
-    console.log(translationX.value, SCREEN_WIDTH);
   });
 
   function useGallery() {
@@ -73,9 +72,8 @@ export default function ImageSelector() {
       deletedIndex !== null &&
       images.length >= 4 &&
       images.length - deletedIndex < 3 &&
-      (translationX.value > 95)
+      (translationX.value > SCREEN_WIDTH / 2.85)
     ) {
-      console.log(translationX.value, SCREEN_WIDTH);
       
       listRef.current?.scrollToEnd({ animated: true });
     } else if (images.length < 4) {

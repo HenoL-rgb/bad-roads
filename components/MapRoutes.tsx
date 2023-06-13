@@ -1,9 +1,9 @@
 import React from 'react';
 import { Polyline } from 'react-native-yamap';
-import { MapCurrentRoute, Route } from '../types/Route';
-import { Point } from '../types/Point';
-import { useAppSelector } from '../hooks/redux-hooks';
+import { Route } from '../types/Route';
+import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { colors } from '../utils/colors';
+import { setCurrentRoute } from '../store/slices/routes.slice';
 
 enum modes {
   IDLE,
@@ -16,22 +16,17 @@ enum modes {
 
 type MapRoutesProps = {
   routes: Route[];
-  currentRoute: MapCurrentRoute;
-  setCurrentRoute: React.Dispatch<React.SetStateAction<MapCurrentRoute>>;
   openSheet: () => void;
-  points: Point[];
-  mode: number;
 };
 
 export default function MapRoutes({
   routes,
-  setCurrentRoute,
-  points,
-  mode,
   openSheet
 }: MapRoutesProps) {
   const userId = useAppSelector(state => state.userReducer.user?.id);
   const roles = useAppSelector(state => state.userReducer.user?.roles);
+  const {mode, points} = useAppSelector(state => state.routesReducer);
+  const dispatch = useAppDispatch();
   const isAdmin = roles
     ? roles.some(
         (role: { value: string; description: string }) =>
@@ -74,11 +69,11 @@ export default function MapRoutes({
               onPress={() => {
                 if (mode !== modes.IDLE) return;
                 openSheet();
-                setCurrentRoute({
+                dispatch(setCurrentRoute({
                   start: route.route[0],
                   end: route.route[route.route.length - 1],
                   id: route.id,
-                });
+                }));
               }}
             />
           ))}

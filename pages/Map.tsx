@@ -4,37 +4,39 @@ import {
   NativeSyntheticEvent,
   ActivityIndicator,
 } from 'react-native';
-import React, { useCallback, useRef, useMemo, useState } from 'react';
+import React, { useCallback, useRef, useMemo } from 'react';
 import YaMap from 'react-native-yamap';
 import {
   useDeleteRouteMutation,
   useGetAllRoutesQuery,
-  useSaveRouteMutation,
-  useUpdateRouteMutation,
 } from '../store/api/routes.api';
 import { Point } from '../types/Point';
-import {
-  DataRoute,
-  MapCurrentRoute,
-  Route,
-  RouteSection,
-} from '../types/Route';
+import { DataRoute, Route, RouteSection } from '../types/Route';
 import MapButtons from '../components/MapButtons';
 import MapMarkers from '../components/MapMarkers';
 import MapRoutes from '../components/MapRoutes';
 import { TabNavParamList } from '../pages/Home';
-import { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useAppSelector } from '../hooks/redux-hooks';
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
+import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetRefProps } from '../components/BottomSheet';
 import BottomSheetContent from '../components/BottomSheetContent';
 import { ModalRefProps } from '../components/modals/Modal';
 import DeleteModal from '../components/modals/DeleteModal';
 import { colors } from '../utils/colors';
-import { getUrl } from '../utils/getUrl';
-import SaveModal from '../components/modals/save-modal/SaveModal';
 import { StackParamList } from './AppWrapper';
 import { useNavigation } from '@react-navigation/native';
+import {
+  setMode,
+  setMarkersVisible,
+  setCurrentRoute,
+  setInitialState,
+  setCurrentMarker,
+  setPoints,
+} from '../store/slices/routes.slice';
 
 enum modes {
   IDLE,
@@ -45,7 +47,7 @@ enum modes {
   ROUTE_APPROVED,
 }
 
-enum currentMarker {
+enum CurrentMarker {
   START,
   END,
 }
@@ -54,19 +56,11 @@ type RootNavigation = NativeStackNavigationProp<StackParamList>;
 
 export default function Map({ route }: Props) {
   const initialParams = route.params;
-  const [markersVisible, setMarkersVisible] = useState({
-    start: false,
-    end: false,
-  });
-  const [currentRoute, setCurrentRoute] = useState<MapCurrentRoute>({
-    start: null,
-    end: null,
-    id: 0,
-  });
 
-  const [points, setPoints] = useState<Point[]>([]);
-  const [current, setCurrent] = useState<number>(currentMarker.START);
-  const [mode, setMode] = useState<number>(modes.IDLE);
+  const { mode, currentMarker, currentRoute, markersVisible, points } =
+    useAppSelector(state => state.routesReducer);
+
+  const dispatch = useAppDispatch();
   const { data, isLoading, refetch } = useGetAllRoutesQuery({});
   const map = useRef<YaMap>(null);
   const bottomSheetRef = useRef<BottomSheetRefProps>(null);
@@ -92,82 +86,73 @@ export default function Map({ route }: Props) {
 
   const sheetPressEdit: () => void = useCallback(() => {
     bottomSheetRef.current?.scrollTo(0);
-    setMode(modes.EDIT);
-    setMarkersVisible({ start: true, end: true });
-  }, []);
+    dispatch(setMode(modes.EDIT));
+    dispatch(setMarkersVisible({ start: true, end: true }));
+  }, [dispatch]);
 
   const hideSheet: () => void = useCallback(() => {
     setCurrentRoute({
       start: null,
       end: null,
       id: 0,
-    });    refetch();
+    });
+    refetch();
   }, [refetch]);
 
   const deleteRoute: (routeId: number) => Promise<void> = useCallback(
     async (routeId: number) => {
       const response = await delRoute({ routeId });
       await refetch();
-      closeRouteWork();
+      dispatch(setInitialState());
       modalRef.current?.setActive(false);
       bottomSheetRef.current?.scrollTo(0);
       hideSheet();
     },
-    [delRoute, hideSheet, refetch],
+    [delRoute, dispatch, hideSheet, refetch],
   );
-
-  function closeRouteWork(): void {
-    setMode(modes.IDLE);
-    setMarkersVisible({ start: false, end: false });
-    setCurrent(currentMarker.START);
-    setCurrentRoute({
-      start: null,
-      end: null,
-      id: 0,
-    });
-    setPoints([]);
-  }
 
   function findRoute(): void {
     if (!currentRoute.start || !currentRoute.end) return;
-    
-    map.current?.findDrivingRoutes(
+    if (!map.current) {
+      console.log('no map');
+      return;
+    }
+
+    map.current.findDrivingRoutes(
       [currentRoute.start, currentRoute.end],
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       (e: RouteEvent) => {
-        
         const points = e.routes[0].sections.reduce(
           (acc: Point[], item: RouteSection) => [...acc, ...item.points],
           [],
         );
-          console.log(points);
-          
-        setPoints(points);
-        setMode(modes.ROUTE_ADDED);
 
+        dispatch(setPoints(points));
+        dispatch(setMode(modes.ROUTE_ADDED));
       },
     );
-    
-  }  
+  }
 
   function handleMapPress(event: NativeSyntheticEvent<Point>) {
     if (mode === modes.CREATE || mode === modes.EDIT) {
-      const marker = current === currentMarker.START ? 'start' : 'end';
-      setCurrentRoute({
-        ...currentRoute,
-        [marker]: {
-          lat: event.nativeEvent.lat,
-          lon: event.nativeEvent.lon,
-        },
-      });
-      setMarkersVisible({ ...markersVisible, [marker]: true });
+      const marker = currentMarker === CurrentMarker.START ? 'start' : 'end';
+      dispatch(
+        setCurrentRoute({
+          ...currentRoute,
+          [marker]: {
+            lat: event.nativeEvent.lat,
+            lon: event.nativeEvent.lon,
+          },
+        }),
+      );
+      dispatch(setMarkersVisible({ ...markersVisible, [marker]: true }));
 
-      if (current === currentMarker.START && !markersVisible.start) {
-        setCurrent(currentMarker.END);
+      if (currentMarker === CurrentMarker.START && !markersVisible.start) {
+        dispatch(setCurrentMarker(CurrentMarker.END));
       }
     }
-  }  
+  }
 
   if (isLoading) {
     return (
@@ -194,32 +179,22 @@ export default function Map({ route }: Props) {
         }}>
         <MapMarkers
           markersVisible={markersVisible}
-          current={current}
+          current={currentMarker}
           currentRoute={currentRoute}
-          setCurrent={setCurrent}
+          setCurrent={setCurrentMarker}
         />
 
-        <MapRoutes
-          currentRoute={currentRoute}
-          routes={routes}
-          openSheet={openSheet}
-          setCurrentRoute={setCurrentRoute}
-          points={points}
-          mode={mode}
-        />
+        <MapRoutes routes={routes} openSheet={openSheet} />
       </YaMap>
 
       <MapButtons
-        mode={mode}
-        setMode={setMode}
-        handleSaveRoute={() => navigation.navigate('SaveRoute', {
-          points: points,
-          currentRoute,
-        })}
-        setPoints={setPoints}
+        handleSaveRoute={() =>
+          navigation.navigate('SaveRoute', {
+            points: points,
+            currentRoute,
+          })
+        }
         findRoute={findRoute}
-        markersVisible={markersVisible}
-        closeRouteWork={closeRouteWork}
       />
       <BottomSheet hideSheet={hideSheet} ref={bottomSheetRef}>
         <BottomSheetContent

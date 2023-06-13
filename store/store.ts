@@ -3,6 +3,7 @@ import { authApi } from './api/auth.api'
 import { routesApi } from './api/routes.api'
 import userReducer from "./slices/user.slice"
 import themeReducer from './slices/theme.slice'
+import routesReducer from './slices/routes.slice'
 // ...
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     userReducer,
     themeReducer,
+    routesReducer
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(routesApi.middleware, authApi.middleware)
