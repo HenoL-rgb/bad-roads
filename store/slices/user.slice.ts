@@ -1,5 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { Route } from '../../types/Route';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export interface UserData {
   isAuth: boolean | null;
@@ -21,7 +20,6 @@ export interface User {
   dislikes: {
     id: number;
   }[];
-  routes: Route[];
   createdAt?: Date;
 }
 
@@ -34,19 +32,19 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setAuth(state, action) {
-      return { ...state, isAuth: action.payload };
+    setAuth(state, action: PayloadAction<boolean | null>) {
+      state.isAuth = action.payload;
     },
 
-    setUser(state, action) {
-      return { ...state, user: action.payload };
+    setUser(state, action: PayloadAction<User>) {
+      state.user = action.payload;
     },
 
     clearUser() {
       return { ...initialState };
     },
 
-    setLike(state, action) {      
+    setUserLike(state, action) {      
       if (state.user?.likes.some(item => item.id === action.payload.id)) {
         state.user.likes = state.user.likes.filter(
           item => item.id !== action.payload.id,
@@ -58,7 +56,7 @@ export const userSlice = createSlice({
       }
     },
 
-    setDislike(state, action) {      
+    setUserDislike(state, action) {      
       if (state.user?.dislikes.some(item => item.id === action.payload.id)) {
         state.user.dislikes = state.user.dislikes.filter(
           item => item.id !== action.payload.id,
@@ -73,6 +71,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUser, setAuth, clearUser, setLike, setDislike } = userSlice.actions;
+export const { setUser, setAuth, clearUser, setUserLike, setUserDislike } = userSlice.actions;
 
 export default userSlice.reducer;

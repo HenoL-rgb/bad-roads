@@ -5,12 +5,16 @@ import type {
   BaseQueryFn,
   FetchArgs,
   FetchBaseQueryError,
+  FetchBaseQueryMeta,
 } from '@reduxjs/toolkit/query';
 import { HOST_IP_INNO } from '@env';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import { AnyAction } from '@reduxjs/toolkit';
+import { Login, LoginResponse } from '../../types/LoginQuery';
+import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 
-const HOST_IP = '10.211.32.139:7000';
-//const HOST_IP = '192.168.100.11:7000';
+const HOST_IP = '10.211.32.160:7000';
+//const HOST_IP = '192.168.100.8:7000';
 //const HOST_IP = '192.168.194.72:7000';
 
 const baseQuery = fetchBaseQuery({
@@ -37,18 +41,23 @@ const baseQueryWithReauth: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
+  console.log('result ', result);
 
   if (result.error && result.error.status === 401) {
-    const refreshResult: any = await baseQuery('/refresh', api, extraOptions);
-    // store the new token    
-    
-    if (refreshResult.error && result.error.status === 401) {
+    const refreshResult: QueryReturnValue<
+      any,
+      FetchBaseQueryError,
+      FetchBaseQueryMeta
+    > = await baseQuery('/refresh', api, extraOptions);
+    // store the new token
+
+    if (refreshResult.error && refreshResult.error.status === 401) {
       await EncryptedStorage.clear();
       api.dispatch(setAuth(false));
       return result;
     }
 
-    if (!refreshResult.error) {
+    if (!refreshResult.error && ('accessToken' in refreshResult.data)) {
       //localStorage.setItem("token", refreshResult.data?.accessToken);
 
       await EncryptedStorage.setItem('token', refreshResult.data.accessToken);
@@ -68,7 +77,7 @@ export const authApi = createApi({
   baseQuery: baseQueryWithReauth,
 
   endpoints: build => ({
-    login: build.mutation({
+    login: build.mutation<LoginResponse, Login>({
       query: body => ({
         url: '/login',
         method: 'POST',
@@ -77,12 +86,10 @@ export const authApi = createApi({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          if (data.message) {
-            throw new Error(data.message);
-          }
 
           await EncryptedStorage.setItem('token', data.accessToken);
           await EncryptedStorage.setItem('refresh', data.refreshToken);
+
           dispatch(
             setUser({
               id: data.user.id,
@@ -97,13 +104,13 @@ export const authApi = createApi({
           );
           dispatch(setAuth(true));
         } catch (error) {
-          dispatch(setAuth(false))
+          dispatch(setAuth(false));
           throw new Error('Error while login');
         }
       },
     }),
 
-    register: build.mutation({
+    register: build.mutation<LoginResponse, Login>({
       query: body => ({
         url: '/registration',
         method: 'POST',
@@ -128,13 +135,13 @@ export const authApi = createApi({
           );
           dispatch(setAuth(true));
         } catch (error) {
-          dispatch(setAuth(false))
+          dispatch(setAuth(false));
           console.log(error);
         }
       },
     }),
 
-    logout: build.mutation({
+    logout: build.mutation<void, void>({
       query: body => ({
         url: '/logout',
         method: 'POST',
@@ -158,7 +165,7 @@ export const authApi = createApi({
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          
+
           if (data.message) {
             dispatch(setAuth(false));
             throw new Error(data.message);

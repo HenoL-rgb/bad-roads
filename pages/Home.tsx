@@ -1,16 +1,11 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import { View, ActivityIndicator, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import { useAppSelector } from '../hooks/redux-hooks';
 import Account from '../pages/Account';
-import AuthContainer from '../navigation/AuthContainer';
 import Map from '../pages/Map';
-import { useRefreshQuery } from '../store/api/auth.api';
 import useGetTheme from '../hooks/useGetTheme.hook';
 import SettingsButton from '../components/SettingsButton';
-import { colors } from '../utils/colors';
 
 export type TabNavParamList = {
   Map: {

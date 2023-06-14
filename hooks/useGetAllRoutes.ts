@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useGetAllRoutesQuery } from '../store/api/routes.api';
 import { Route } from '../types/Route';
+import { useAppDispatch, useAppSelector } from './redux-hooks';
+import { setRoutes } from '../store/slices/routes.slice';
 
 const useGetAllRoutes = () => {
-  const [routes, setRoutes] = useState<Route[]>([]);
+  const dispatch = useAppDispatch();
+  const routes = useAppSelector(state => state.routesReducer.routes);
   const {
     data: routesData,
     refetch,
@@ -11,7 +14,7 @@ const useGetAllRoutes = () => {
   } = useGetAllRoutesQuery({});
 
   useEffect(() => {
-    setRoutes(
+    dispatch(setRoutes(
       routesData
         ? routesData?.map(
             (routeData: {
@@ -22,8 +25,8 @@ const useGetAllRoutes = () => {
             }) => ({ ...routeData, route: JSON.parse(routeData.route) }),
           )
         : [],
-    );
-  }, [routesData]);
+    ));
+  }, [dispatch, routesData]);
 
   return {routes, refetch, isLoading};
 };

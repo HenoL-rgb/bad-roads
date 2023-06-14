@@ -8,9 +8,9 @@ import {
 } from 'react-native';
 import React, { useRef, useState } from 'react';
 import ModalImage from './ModalImage';
-import { colors } from '../../../utils/colors';
+import { colors } from '../../utils/colors';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
-import { useAppSelector } from '../../../hooks/redux-hooks';
+import { useAppSelector } from '../../hooks/redux-hooks';
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,

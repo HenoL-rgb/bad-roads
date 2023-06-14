@@ -1,5 +1,5 @@
-import { DefaultTheme } from '@react-navigation/native';
-import { createSlice } from '@reduxjs/toolkit';
+import { DefaultTheme, Theme } from '@react-navigation/native';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 const initialState = DefaultTheme;
 
@@ -7,7 +7,7 @@ export const themeSlice = createSlice({
   initialState,
   name: 'theme',
   reducers: {
-    setTheme(state, action) {
+    setTheme(state, action: PayloadAction<Theme>) {
       state.dark = action.payload.dark;
       state.colors = action.payload.colors;
     },

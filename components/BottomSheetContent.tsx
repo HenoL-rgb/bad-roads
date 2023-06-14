@@ -13,9 +13,10 @@ import {
   useApproveRouteMutation,
 } from '../store/api/routes.api';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
-import { setDislike, setLike } from '../store/slices/user.slice';
+import { setDislike, setLike } from '../store/slices/routes.slice';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../utils/colors';
+import { setUserDislike, setUserLike } from '../store/slices/user.slice';
 
 type RoutePopUpProps = {
   deleteRoute: (id: number) => void;
@@ -68,9 +69,10 @@ function BottomSheetContent({
   async function handleLike() {
     if (!user) return;
 
-    dispatch(setLike({ id: routeId }));
     try {
       const res = await likeRoute({ userId: user.id, routeId: routeId });
+      dispatch(setUserLike({id: routeId}))
+      dispatch(setLike({ routeId: routeId, user: {id: user.id} }));
     } catch (error) {
       throw new Error('Error while like route')
     }
@@ -79,9 +81,10 @@ function BottomSheetContent({
   async function handleDislike() {
     if (!user) return;
 
-    dispatch(setDislike({ id: routeId }));
     try {
       const res = await dislikeRoute({ userId: user.id, routeId: routeId });
+      dispatch(setUserDislike({id: routeId}))
+      dispatch(setDislike({ routeId: routeId, user: {id: user.id} }));
     } catch (error) {
       throw new Error('Error while dislike route')
     }

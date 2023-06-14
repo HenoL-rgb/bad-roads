@@ -26,7 +26,7 @@ import { MapCurrentRoute } from '../types/Route';
 import { colors } from '../utils/colors';
 import AuthContainer from '../navigation/AuthContainer';
 import { useRefreshQuery } from '../store/api/auth.api';
-import SaveRoute from './SaveRoute';
+import SaveRoute from './save-route/SaveRoute';
 
 export type StackParamList = {
   Home: {
@@ -56,7 +56,7 @@ function AppWrapper(): JSX.Element {
 
   const { isAuth } = useAppSelector(state => state.userReducer);
   
-  if (isError) {
+  if (isError && isAuth === null) {
     return (
       <View style={styles.container}>
         <Text>Server error :(</Text>

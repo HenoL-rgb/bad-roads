@@ -1,38 +1,28 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import React from 'react';
 import { Marker } from 'react-native-yamap';
-import { MapCurrentRoute } from '../types/Route';
-import Animated, { BounceIn, BounceInDown, BounceOutDown, ZoomIn, ZoomInDown, ZoomOut, ZoomOutDown } from 'react-native-reanimated';
+import Animated, { ZoomInDown } from 'react-native-reanimated';
+import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
+import { setCurrentMarker } from '../store/slices/routes.slice';
 
-type MapMarkersProps = {
-  markersVisible: {
-    start: boolean;
-    end: boolean;
-  };
-  currentRoute: MapCurrentRoute;
-  current: number;
-  setCurrent: React.Dispatch<React.SetStateAction<number>>;
-};
-
-enum currentMarker {
+enum CurrentMarker {
   START,
   END,
 }
 
-export default function MapMarkers({
-  markersVisible,
-  currentRoute,
-  current,
-  setCurrent,
-}: MapMarkersProps) {
+export default function MapMarkers() {
+
+  const {markersVisible, currentRoute, currentMarker} = useAppSelector(state => state.routesReducer);
+  const dispatch = useAppDispatch();
+
   return (
     <>
       {markersVisible.end && currentRoute.end && (
         <Marker
           point={currentRoute.end}
-          scale={current === currentMarker.END ? 1.2 : 1}
+          scale={currentMarker === CurrentMarker.END ? 1.2 : 1}
           onPress={() => {
-            setCurrent(currentMarker.END);
+            dispatch(setCurrentMarker(CurrentMarker.END));
           }}>
           <Animated.View entering={ZoomInDown.springify().mass(0.1).damping(10)} style={styles.marker}>
             <View style={styles.markerTop}></View>
@@ -44,10 +34,10 @@ export default function MapMarkers({
       {markersVisible.start && currentRoute.start && (
         <Marker
           point={currentRoute.start}
-          scale={current === currentMarker.START ? 1.2 : 1}
+          scale={currentMarker === CurrentMarker.START ? 1.2 : 1}
           onPress={() => {
             if (markersVisible.end) {
-              setCurrent(currentMarker.START);
+              dispatch(setCurrentMarker(CurrentMarker.START));
             }
           }}>
           <View style={styles.marker}>

@@ -14,18 +14,18 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import ImageSelector from '../components/modals/save-modal/ImageSelector';
-import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
+import ImageSelector from './ImageSelector';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
 import {
   useGetAllRoutesQuery,
   useSaveRouteMutation,
   useUpdateRouteMutation,
-} from '../store/api/routes.api';
-import { getUrl } from '../utils/getUrl';
-import { colors } from '../utils/colors';
+} from '../../store/api/routes.api';
+import { getUrl } from '../../utils/getUrl';
+import { colors } from '../../utils/colors';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { StackParamList } from './AppWrapper';
-import { setInitialState } from '../store/slices/routes.slice';
+import { StackParamList } from '../AppWrapper';
+import { setInitialState } from '../../store/slices/routes.slice';
 
 type SaveRouteProps = NativeStackScreenProps<StackParamList, 'SaveRoute'>;
 

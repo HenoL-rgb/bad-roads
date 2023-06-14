@@ -37,6 +37,7 @@ import {
   setCurrentMarker,
   setPoints,
 } from '../store/slices/routes.slice';
+import useGetAllRoutes from '../hooks/useGetAllRoutes';
 
 enum modes {
   IDLE,
@@ -61,24 +62,13 @@ export default function Map({ route }: Props) {
     useAppSelector(state => state.routesReducer);
 
   const dispatch = useAppDispatch();
-  const { data, isLoading, refetch } = useGetAllRoutesQuery({});
+  const { routes, isLoading, refetch } = useGetAllRoutes();
   const map = useRef<YaMap>(null);
   const bottomSheetRef = useRef<BottomSheetRefProps>(null);
   const modalRef = useRef<ModalRefProps>(null);
   const saveModalRef = useRef<ModalRefProps>(null);
   const [delRoute, { isLoading: deleteLoading }] = useDeleteRouteMutation();
   const navigation = useNavigation<RootNavigation>();
-
-  const routes: Route[] = useMemo(
-    () =>
-      data
-        ? data.map((item: DataRoute) => ({
-            ...item,
-            route: JSON.parse(item.route),
-          }))
-        : [],
-    [data],
-  );
 
   const openSheet: () => void = useCallback(() => {
     bottomSheetRef.current?.scrollTo(-350);
@@ -91,13 +81,12 @@ export default function Map({ route }: Props) {
   }, [dispatch]);
 
   const hideSheet: () => void = useCallback(() => {
-    setCurrentRoute({
+    dispatch(setCurrentRoute({
       start: null,
       end: null,
       id: 0,
-    });
-    refetch();
-  }, [refetch]);
+    }));
+  }, [dispatch]);
 
   const deleteRoute: (routeId: number) => Promise<void> = useCallback(
     async (routeId: number) => {
@@ -177,12 +166,7 @@ export default function Map({ route }: Props) {
           zoom: 17,
           azimuth: 0,
         }}>
-        <MapMarkers
-          markersVisible={markersVisible}
-          current={currentMarker}
-          currentRoute={currentRoute}
-          setCurrent={setCurrentMarker}
-        />
+        <MapMarkers />
 
         <MapRoutes routes={routes} openSheet={openSheet} />
       </YaMap>
@@ -208,14 +192,6 @@ export default function Map({ route }: Props) {
         deleteRoute={() => deleteRoute(currentRoute.id)}
         deleteLoading={deleteLoading}
       />
-      {/* <SaveModal
-        closeRouteWork={closeRouteWork}
-        currentRoute={currentRoute}
-        modalRef={saveModalRef}
-        points={points}
-        refetch={refetch}
-        key={`${points[0]}${points[1]}`}
-      /> */}
     </GestureHandlerRootView>
   );
 }

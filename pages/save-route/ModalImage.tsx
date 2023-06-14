@@ -2,7 +2,7 @@ import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import React from 'react';
 import { ImageOrVideo } from 'react-native-image-crop-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { StackParamList } from '../../../pages/AppWrapper';
+import { StackParamList } from '../../pages/AppWrapper';
 import { useNavigation } from '@react-navigation/native';
 import Animated, {
   BounceOutLeft,
@@ -22,7 +22,7 @@ import Animated, {
   ZoomOutRotate,
 } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { colors } from '../../../utils/colors';
+import { colors } from '../../utils/colors';
 
 type ModalImageProps = {
   images: ImageOrVideo[];
