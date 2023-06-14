@@ -20,6 +20,9 @@ export default function Account() {
     skip: userData.user ? false : true,
   });
 
+  console.log(routesData);
+  
+
   const date = userData.user?.createdAt
     ? userData.user.createdAt.toString().split('T')[0]
     : 'no data';

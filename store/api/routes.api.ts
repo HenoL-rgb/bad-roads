@@ -8,144 +8,90 @@ import type {
 } from '@reduxjs/toolkit/query';
 import { HOST_IP_INNO } from '@env';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import { SaveRoute, SaveRouteResponse } from '../../types/SaveRouteQuery';
+import { Route } from '../../types/Route';
+import { DeleteRoute, DeleteRouteResponse, GetRouteByIdResponse, GetRoutesResponse } from '../../types/GetAllRoutesQuery';
+import { baseQueryWithReauth } from './auth.api';
+import { UpdateRoute, UpdateRouteResponse } from '../../types/UpdateRouteQuery';
+import { ApproveRoute, ApproveRouteResponse } from '../../types/ApproveRouteQuery';
+import { MarkRoute, MarkRouteResponse } from '../../types/MarksQuery';
 
 //const HOST_IP = '192.168.194.72:7000';
 //const HOST_IP = "192.168.100.8:7000";
 const HOST_IP = '10.211.32.160:7000';
-
-const baseQuery = fetchBaseQuery({
-  baseUrl: `http://${HOST_IP}/api`,
-  async prepareHeaders(headers, { getState, endpoint }) {
-    const userData = (getState() as RootState).userReducer;
-    const token = await EncryptedStorage.getItem('token');
-
-    if (userData.isAuth && token && endpoint !== 'refresh') {
-      headers.set('Authorization', `Bearer ${token}`);
-    }
-
-    return headers;
-  },
-  credentials: 'include',
-});
-
-const baseQueryWithReauth: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
-  let result = await baseQuery(args, api, extraOptions);
-  if (result.error && result.error.status === 401) {
-    const refreshQuery = fetchBaseQuery({
-      baseUrl: `http://${HOST_IP}/auth`,
-      async prepareHeaders(headers, { getState }) {
-
-        const token = await EncryptedStorage.getItem('refresh');
-
-        headers.set('refresh', `${token}`);
-
-        return headers;
-      },
-      credentials: 'include',
-    });
-    const refreshResult: any = await refreshQuery(
-      `/refresh`,
-      api,
-      extraOptions,
-    );
-    // store the new token
-
-    if (refreshResult.error && result.error.status === 401) {
-      await EncryptedStorage.clear();
-      api.dispatch(setAuth(false));
-      return result;
-    }
-
-    if (!refreshResult.error) {
-      //localStorage.setItem("token", refreshResult.data?.accessToken);
-      await EncryptedStorage.setItem('token', refreshResult.data.accessToken);
-      await EncryptedStorage.setItem(
-        'refresh',
-        refreshResult.data.refreshToken,
-      );
-      // retry the initial query
-      result = await baseQuery(args, api, extraOptions);
-    }
-  }
-  return result;
-};
 
 export const routesApi = createApi({
   reducerPath: 'routesApi',
   baseQuery: baseQueryWithReauth,
 
   endpoints: build => ({
-    saveRoute: build.mutation({
+    saveRoute: build.mutation<SaveRouteResponse, SaveRoute>({
       query: body => ({
-        url: '/routes',
+        url: 'api/routes',
         method: 'POST',
         body,
       }),
     }),
 
-    getAllRoutes: build.query({
+    getAllRoutes: build.query<GetRoutesResponse[], object>({
       query: () => ({
-        url: '/routes',
+        url: 'api/routes',
       }),
     }),
 
-    getRouteById: build.query({
+    getRouteById: build.query<GetRouteByIdResponse, number>({
       query: (id: number) => ({
-        url: `/routes/${id}`
+        url: `api/routes/${id}`
       })
     }),
 
-    getRoutesByUserId: build.query({
+    getRoutesByUserId: build.query<GetRoutesResponse[],number>({
       query: (id: number) => ({
-        url: `/routes/user/${id}`,
+        url: `api/routes/user/${id}`,
       }),
     }),
 
-    deleteRoute: build.mutation({
+    deleteRoute: build.mutation<DeleteRouteResponse, DeleteRoute>({
       query: body => ({
-        url: '/routes/delete',
+        url: 'api/routes/delete',
         method: 'POST',
         body,
       }),
     }),
 
-    updateRoute: build.mutation({
+    updateRoute: build.mutation<UpdateRouteResponse, UpdateRoute>({
       query: body => ({
-        url: '/routes/update',
+        url: 'api/routes/update',
         method: 'POST',
         body,
       }),
     }),
 
-    approveRoute: build.mutation({
+    approveRoute: build.mutation<ApproveRouteResponse, ApproveRoute>({
       query: body => ({
-        url: '/routes/approve',
+        url: 'api/routes/approve',
         method: 'POST',
         body,
       }),
     }),
 
-    likeRoute: build.mutation({
+    likeRoute: build.mutation<MarkRouteResponse, MarkRoute>({
       query: (body) => ({
-        url: `/routes/likes`,
+        url: `api/routes/likes`,
         method: "POST",
         body
       })
     }),
 
-    getLikedByUserId: build.query({
-      query: (id: number) => ({
-        url: `/routes/likes/user/${id}`
-      })
-    }),
+    // getLikedByUserId: build.query({
+    //   query: (id: number) => ({
+    //     url: `api/routes/likes/user/${id}`
+    //   })
+    // }),
 
-    dislikeRoute: build.mutation({
+    dislikeRoute: build.mutation<MarkRouteResponse, MarkRoute>({
       query: (body) => ({
-        url: `/routes/dislikes`,
+        url: `api/routes/dislikes`,
         method: "POST",
         body
       })
@@ -163,5 +109,5 @@ export const {
   useLikeRouteMutation,
   useDislikeRouteMutation,
   useGetRouteByIdQuery,
-  useGetLikedByUserIdQuery
+  //useGetLikedByUserIdQuery
 } = routesApi;

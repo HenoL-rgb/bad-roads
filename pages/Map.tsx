@@ -91,6 +91,8 @@ export default function Map({ route }: Props) {
   const deleteRoute: (routeId: number) => Promise<void> = useCallback(
     async (routeId: number) => {
       const response = await delRoute({ routeId });
+      console.log(response);
+      
       await refetch();
       dispatch(setInitialState());
       modalRef.current?.setActive(false);

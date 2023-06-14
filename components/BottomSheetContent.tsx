@@ -53,7 +53,7 @@ function BottomSheetContent({
   const { data, refetch, isLoading } = useGetRouteByIdQuery(routeId, {
     skip: routeId ? false : true,
     refetchOnMountOrArgChange: true,
-  });
+  });  
 
   const likes = useAppSelector(state => state.userReducer.user?.likes);
   const dislikes = useAppSelector(state => state.userReducer.user?.dislikes);
@@ -71,6 +71,7 @@ function BottomSheetContent({
 
     try {
       const res = await likeRoute({ userId: user.id, routeId: routeId });
+      
       dispatch(setUserLike({id: routeId}))
       dispatch(setLike({ routeId: routeId, user: {id: user.id} }));
     } catch (error) {
@@ -83,6 +84,7 @@ function BottomSheetContent({
 
     try {
       const res = await dislikeRoute({ userId: user.id, routeId: routeId });
+      console.log(res);
       dispatch(setUserDislike({id: routeId}))
       dispatch(setDislike({ routeId: routeId, user: {id: user.id} }));
     } catch (error) {
@@ -95,6 +97,8 @@ function BottomSheetContent({
 
     try {
       const res = await approveRoute({ routeId: routeId });
+      console.log(res);
+      
       await refetch();
     } catch (error) {
       throw new Error('Error while approve route')

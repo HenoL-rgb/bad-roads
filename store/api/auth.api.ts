@@ -18,12 +18,12 @@ const HOST_IP = '10.211.32.160:7000';
 //const HOST_IP = '192.168.194.72:7000';
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: `http://${HOST_IP}/auth`,
+  baseUrl: `http://${HOST_IP}/`,
   async prepareHeaders(headers, { getState, endpoint }) {
     const userData = (getState() as RootState).userReducer;
     const token = await EncryptedStorage.getItem('token');
 
-    if (userData.isAuth && token && endpoint !== 'refresh') {
+    if (userData.isAuth && token && endpoint !== 'auth/refresh') {
       headers.set('Authorization', `Bearer ${token}`);
     } else if (endpoint === 'refresh') {
       const refresh = await EncryptedStorage.getItem('refresh');
@@ -35,39 +35,29 @@ const baseQuery = fetchBaseQuery({
   credentials: 'include',
 });
 
-const baseQueryWithReauth: BaseQueryFn<
+export const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
-  console.log('result ', result);
 
   if (result.error && result.error.status === 401) {
     const refreshResult: QueryReturnValue<
-      any,
+      unknown,
       FetchBaseQueryError,
       FetchBaseQueryMeta
-    > = await baseQuery('/refresh', api, extraOptions);
+    > = await baseQuery('auth/refresh', api, extraOptions);
     // store the new token
 
-    if (refreshResult.error && refreshResult.error.status === 401) {
+    if (refreshResult.error && refreshResult.error.status === 401) {      
       await EncryptedStorage.clear();
       api.dispatch(setAuth(false));
       return result;
     }
-
-    if (!refreshResult.error && ('accessToken' in refreshResult.data)) {
-      //localStorage.setItem("token", refreshResult.data?.accessToken);
-
-      await EncryptedStorage.setItem('token', refreshResult.data.accessToken);
-      await EncryptedStorage.setItem(
-        'refresh',
-        refreshResult.data.refreshToken,
-      );
       // retry the initial query
       result = await baseQuery(args, api, extraOptions);
-    }
+    
   }
   return result;
 };
@@ -79,7 +69,7 @@ export const authApi = createApi({
   endpoints: build => ({
     login: build.mutation<LoginResponse, Login>({
       query: body => ({
-        url: '/login',
+        url: 'auth/login',
         method: 'POST',
         body,
       }),
@@ -112,7 +102,7 @@ export const authApi = createApi({
 
     register: build.mutation<LoginResponse, Login>({
       query: body => ({
-        url: '/registration',
+        url: 'auth/registration',
         method: 'POST',
         body,
       }),
@@ -143,7 +133,7 @@ export const authApi = createApi({
 
     logout: build.mutation<void, void>({
       query: body => ({
-        url: '/logout',
+        url: 'auth/logout',
         method: 'POST',
         body,
       }),
@@ -160,16 +150,12 @@ export const authApi = createApi({
 
     refresh: build.query({
       query: () => ({
-        url: '/refresh',
+        url: 'auth/refresh',
       }),
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-
-          if (data.message) {
-            dispatch(setAuth(false));
-            throw new Error(data.message);
-          }
+    
           await EncryptedStorage.setItem('token', data.accessToken);
           await EncryptedStorage.setItem('refresh', data.refreshToken);
           dispatch(

@@ -6,6 +6,14 @@ export type SaveRoute = {
     userId: number
 }
 
-// export type SaveRouteResponse = {
-    
-// }
+export type SaveRouteResponse = {
+    data: {
+        createdAt: string,
+        icon: string,
+        id: number,
+        isApproved: boolean,
+        route: string,
+        updatedAt: string,
+        userId: number
+    }
+}

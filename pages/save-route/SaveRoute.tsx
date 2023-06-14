@@ -51,7 +51,6 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
       });
       console.log(response);
     } else {
-      console.log(points);
 
       const response = await saveRoute({
         route: points,
