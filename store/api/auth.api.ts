@@ -7,13 +7,11 @@ import type {
   FetchBaseQueryError,
   FetchBaseQueryMeta,
 } from '@reduxjs/toolkit/query';
-import { HOST_IP_INNO } from '@env';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import { AnyAction } from '@reduxjs/toolkit';
 import { Login, LoginResponse } from '../../types/LoginQuery';
 import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 
-const HOST_IP = '10.211.32.160:7000';
+const HOST_IP = '10.211.48.204:7000';
 //const HOST_IP = '192.168.100.8:7000';
 //const HOST_IP = '192.168.194.72:7000';
 
@@ -49,7 +47,8 @@ export const baseQueryWithReauth: BaseQueryFn<
       FetchBaseQueryMeta
     > = await baseQuery('auth/refresh', api, extraOptions);
     // store the new token
-
+    console.log('send refresh');
+    
     if (refreshResult.error && refreshResult.error.status === 401) {      
       await EncryptedStorage.clear();
       api.dispatch(setAuth(false));
@@ -139,7 +138,7 @@ export const authApi = createApi({
       }),
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
-          const { data } = await queryFulfilled;
+          await queryFulfilled;
           await EncryptedStorage.clear();
           dispatch(clearUser());
         } catch (error) {

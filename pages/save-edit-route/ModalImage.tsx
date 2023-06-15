@@ -2,7 +2,7 @@ import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import React from 'react';
 import { ImageOrVideo } from 'react-native-image-crop-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { StackParamList } from '../../pages/AppWrapper';
+import { StackParamList } from '../AppWrapper';
 import { useNavigation } from '@react-navigation/native';
 import Animated, {
   BounceOutLeft,

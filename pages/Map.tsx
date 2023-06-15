@@ -4,14 +4,13 @@ import {
   NativeSyntheticEvent,
   ActivityIndicator,
 } from 'react-native';
-import React, { useCallback, useRef, useMemo } from 'react';
+import React, { useCallback, useRef } from 'react';
 import YaMap from 'react-native-yamap';
 import {
   useDeleteRouteMutation,
-  useGetAllRoutesQuery,
 } from '../store/api/routes.api';
 import { Point } from '../types/Point';
-import { DataRoute, Route, RouteSection } from '../types/Route';
+import { RouteSection } from '../types/Route';
 import MapButtons from '../components/MapButtons';
 import MapMarkers from '../components/MapMarkers';
 import MapRoutes from '../components/MapRoutes';
@@ -62,11 +61,10 @@ export default function Map({ route }: Props) {
     useAppSelector(state => state.routesReducer);
 
   const dispatch = useAppDispatch();
-  const { routes, isLoading, refetch } = useGetAllRoutes();
+  const { routes, isLoading } = useGetAllRoutes();
   const map = useRef<YaMap>(null);
   const bottomSheetRef = useRef<BottomSheetRefProps>(null);
   const modalRef = useRef<ModalRefProps>(null);
-  const saveModalRef = useRef<ModalRefProps>(null);
   const [delRoute, { isLoading: deleteLoading }] = useDeleteRouteMutation();
   const navigation = useNavigation<RootNavigation>();
 
@@ -93,13 +91,12 @@ export default function Map({ route }: Props) {
       const response = await delRoute({ routeId });
       console.log(response);
       
-      await refetch();
       dispatch(setInitialState());
       modalRef.current?.setActive(false);
       bottomSheetRef.current?.scrollTo(0);
       hideSheet();
     },
-    [delRoute, dispatch, hideSheet, refetch],
+    [delRoute, dispatch, hideSheet],
   );
 
   function findRoute(): void {
@@ -197,5 +194,3 @@ export default function Map({ route }: Props) {
     </GestureHandlerRootView>
   );
 }
-
-const styles = StyleSheet.create({});

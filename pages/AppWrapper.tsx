@@ -26,7 +26,7 @@ import { MapCurrentRoute } from '../types/Route';
 import { colors } from '../utils/colors';
 import AuthContainer from '../navigation/AuthContainer';
 import { useRefreshQuery } from '../store/api/auth.api';
-import SaveRoute from './save-route/SaveRoute';
+import SaveRoute from './save-edit-route/SaveRoute';
 
 export type StackParamList = {
   Home: {

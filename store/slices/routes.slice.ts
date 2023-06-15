@@ -1,6 +1,9 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Point } from '../../types/Point';
 import { MapCurrentRoute, Route } from '../../types/Route';
+import { ApproveRoute } from '../../types/ApproveRouteQuery';
+import { DeleteRoute, GetRoutesResponse } from '../../types/GetAllRoutesQuery';
+import { SaveRouteResponse } from '../../types/SaveRouteQuery';
 
 enum modes {
   IDLE,
@@ -75,14 +78,38 @@ export const routesSlice = createSlice({
     setRoutes(state, action: PayloadAction<Route[]>) {
       state.routes = action.payload;
     },
+    deleteRouteAction(state, action: PayloadAction<DeleteRoute>) {
+      state.routes = state.routes.filter(route => route.id !== action.payload.routeId)
+    },
+    saveRouteAction(state, action: PayloadAction<Route>) {
+      state.routes = [...state.routes, action.payload];
+    },
+    setApproveRoute(state, action: PayloadAction<ApproveRoute>) {
+      state.routes = [...state.routes].map(item => {
+        if(item.id === action.payload.routeId) {
+          return {
+            ...item,
+            isApproved: true
+          }
+        }
+        return item
+      })
+    },
     setLike(state, action: PayloadAction<Like>) {
       state.routes = [...state.routes].map(item => {
 
         //Remove if like exist
         if(item.id === action.payload.routeId) {
+          if(item.likedUsers.findIndex(user => user.id === action.payload.user.id) !== -1) {
+            return {
+              ...item,
+              likedUsers: item.likedUsers.filter(user => user.id !== action.payload.user.id),
+            }
+          }
           return {
             ...item,
-            likedUsers: [...item.likedUsers, action.payload.user]
+            likedUsers: [...item.likedUsers, action.payload.user],
+            dislikedUsers: item.dislikedUsers.filter(user => user.id !== action.payload.user.id)
           }
         }
         return item;
@@ -91,9 +118,16 @@ export const routesSlice = createSlice({
     setDislike(state, action: PayloadAction<Like>) {
       state.routes = [...state.routes].map(item => {
         if(item.id === action.payload.routeId) {
+          if(item.dislikedUsers.findIndex(user => user.id === action.payload.user.id) !== -1) {
+            return {
+              ...item,
+              dislikedUsers: item.dislikedUsers.filter(user => user.id !== action.payload.user.id)
+            }
+          }
           return {
             ...item,
-            dislikedUsers: [...item.dislikedUsers, action.payload.user]
+            dislikedUsers: [...item.dislikedUsers, action.payload.user],
+            likedUsers: item.likedUsers.filter(user => user.id !== action.payload.user.id)
           }
         }
         return item;
@@ -114,6 +148,9 @@ export const {
   setPoints,
   setRoutes,
   setLike,
-  setDislike
+  setDislike,
+  setApproveRoute,
+  deleteRouteAction,
+  saveRouteAction
 } = routesSlice.actions;
 export default routesSlice.reducer;

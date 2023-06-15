@@ -1,28 +1,31 @@
 import { useEffect } from 'react';
-import { useGetAllRoutesQuery } from '../store/api/routes.api';
+import { useGetAllRoutesMutation } from '../store/api/routes.api';
 import { useAppDispatch, useAppSelector } from './redux-hooks';
 import { setRoutes } from '../store/slices/routes.slice';
 import { GetRoutesResponse } from '../types/GetAllRoutesQuery';
+import { transformRoute } from '../utils/transformRoute';
 
 const useGetAllRoutes = () => {
   const dispatch = useAppDispatch();
   const routes = useAppSelector(state => state.routesReducer.routes);
-  const { data: routesData, refetch, isLoading } = useGetAllRoutesQuery({});
+  const [getAllRoutes, {isLoading}] = useGetAllRoutesMutation({});
 
   useEffect(() => {
-    dispatch(
-      setRoutes(
-        routesData
-          ? routesData?.map((routeData: GetRoutesResponse) => ({
-              ...routeData,
-              route: JSON.parse(routeData.route),
-            }))
-          : [],
-      ),
-    );
-  }, [dispatch, routesData]);
+    const fetchRoutes = async () => {      
+      const routesData = await getAllRoutes({}).unwrap();
+        dispatch(
+          setRoutes(
+            routesData
+              ? routesData?.map((routeData: GetRoutesResponse) => transformRoute(routeData))
+              : [],
+          ),
+        );
+    }
 
-  return { routes, refetch, isLoading };
+    fetchRoutes();
+  }, [dispatch, getAllRoutes]);
+
+  return { routes, isLoading };
 };
 
 export default useGetAllRoutes;

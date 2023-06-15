@@ -13,7 +13,11 @@ import {
   useApproveRouteMutation,
 } from '../store/api/routes.api';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
-import { setDislike, setLike } from '../store/slices/routes.slice';
+import {
+  setApproveRoute,
+  setDislike,
+  setLike,
+} from '../store/slices/routes.slice';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../utils/colors';
 import { setUserDislike, setUserLike } from '../store/slices/user.slice';
@@ -36,13 +40,13 @@ function BottomSheetContent({
   routeId,
 }: RoutePopUpProps) {
   const dispatch = useAppDispatch();
-  const [likeRoute, { isLoading: likeLoading }] = useLikeRouteMutation();
-  const [dislikeRoute, { isLoading: dislikeLoading }] =
+  const [likeRoute] = useLikeRouteMutation();
+  const [dislikeRoute] =
     useDislikeRouteMutation();
   const [approveRoute, { isLoading: approveLoading }] =
     useApproveRouteMutation();
   const user = useAppSelector(state => state.userReducer.user);
-  
+
   const isAdmin = user
     ? user.roles.some(
         (role: { value: string; description: string }) =>
@@ -50,10 +54,10 @@ function BottomSheetContent({
       )
     : false;
 
-  const { data, refetch, isLoading } = useGetRouteByIdQuery(routeId, {
+  const { data, refetch } = useGetRouteByIdQuery(routeId, {
     skip: routeId ? false : true,
     refetchOnMountOrArgChange: true,
-  });  
+  });
 
   const likes = useAppSelector(state => state.userReducer.user?.likes);
   const dislikes = useAppSelector(state => state.userReducer.user?.dislikes);
@@ -70,12 +74,12 @@ function BottomSheetContent({
     if (!user) return;
 
     try {
-      const res = await likeRoute({ userId: user.id, routeId: routeId });
-      
-      dispatch(setUserLike({id: routeId}))
-      dispatch(setLike({ routeId: routeId, user: {id: user.id} }));
+      await likeRoute({ userId: user.id, routeId: routeId });
+
+      dispatch(setUserLike({ id: routeId }));
+      dispatch(setLike({ routeId: routeId, user: { id: user.id } }));
     } catch (error) {
-      throw new Error('Error while like route')
+      throw new Error('Error while like route');
     }
   }
 
@@ -83,12 +87,11 @@ function BottomSheetContent({
     if (!user) return;
 
     try {
-      const res = await dislikeRoute({ userId: user.id, routeId: routeId });
-      console.log(res);
-      dispatch(setUserDislike({id: routeId}))
-      dispatch(setDislike({ routeId: routeId, user: {id: user.id} }));
+      await dislikeRoute({ userId: user.id, routeId: routeId });
+      dispatch(setUserDislike({ id: routeId }));
+      dispatch(setDislike({ routeId: routeId, user: { id: user.id } }));
     } catch (error) {
-      throw new Error('Error while dislike route')
+      throw new Error('Error while dislike route');
     }
   }
 
@@ -96,12 +99,11 @@ function BottomSheetContent({
     if (!user) return;
 
     try {
-      const res = await approveRoute({ routeId: routeId });
-      console.log(res);
-      
+      await approveRoute({ routeId: routeId });
       await refetch();
+      dispatch(setApproveRoute({ routeId: routeId }));
     } catch (error) {
-      throw new Error('Error while approve route')
+      throw new Error('Error while approve route');
     }
   }
 
@@ -114,7 +116,7 @@ function BottomSheetContent({
               <View style={styles.sign}>
                 {data.isApproved ? (
                   <>
-                  <View style={styles.fillBg}></View>
+                    <View style={styles.fillBg}></View>
                     <Icon
                       name="verified"
                       size={24}
@@ -282,7 +284,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: colors.red,
   },
- 
+
   buttonClose: {},
   textStyle: {
     color: 'white',
