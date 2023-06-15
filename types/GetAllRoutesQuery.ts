@@ -1,4 +1,4 @@
-import { Point } from './Point';
+import { Obstacle } from './SaveRouteQuery';
 
 export type GetRoutesResponse = {
   createdAt: string;
@@ -9,6 +9,7 @@ export type GetRoutesResponse = {
   isApproved: boolean;
   icon: string;
   images: string[];
+  obstacle: Obstacle;
   dislikedUsers: {
     id: number;
   }[];

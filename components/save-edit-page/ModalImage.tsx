@@ -32,7 +32,7 @@ export default function ModalImage({
   const navigation = useNavigation<Props>();
 
   return (
-    <Animated.View
+    <AnimatedPressable
       exiting={FadeOutLeft.duration(100)}
       entering={ZoomIn.delay(100 * clickedId)}
       layout={Layout.delay(120)}
@@ -48,7 +48,7 @@ export default function ModalImage({
       <Pressable style={styles.cancel} onPress={() => deleteImage(image.path)}>
         <Icon name="close" size={11} color={colors.white} />
       </Pressable>
-    </Animated.View>
+    </AnimatedPressable>
   );
 }
 
@@ -66,8 +66,8 @@ const styles = StyleSheet.create({
   },
   cancel: {
     position: 'absolute',
-    width: 17,
-    height: 17,
+    width: 20,
+    height: 20,
     backgroundColor: colors.red,
     borderRadius: 20,
     alignItems: 'center',

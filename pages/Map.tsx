@@ -1,6 +1,5 @@
 import {
   View,
-  StyleSheet,
   NativeSyntheticEvent,
   ActivityIndicator,
 } from 'react-native';

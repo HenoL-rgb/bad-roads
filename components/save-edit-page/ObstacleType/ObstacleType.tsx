@@ -6,14 +6,16 @@ import {Other} from '../../../pages/save-edit-route/assets'
 import ObstaclesDropDown from './ObstaclesDropDown';
 import { ModalRefProps } from '../../modals/Modal';
 import { SvgProps } from 'react-native-svg';
+import * as assets from '../../../pages/save-edit-route/assets'
 
 type ObstacleTypeProps = {
   theme: Theme;
   setModalActive: () => void;
-  Obstacle: React.FC<SvgProps> | null;
+  Obstacle: string | null;
 };
 
 export default function ObstacleType({ theme, setModalActive, Obstacle }: ObstacleTypeProps) {
+  const Icon = assets['Other'] as React.FC<SvgProps>
   return (
     <>
     <View style={styles.section}>
@@ -28,7 +30,7 @@ export default function ObstacleType({ theme, setModalActive, Obstacle }: Obstac
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-            {Obstacle && <Obstacle />}
+            {Obstacle && <Icon />}
           </View>
       </View>
     </View>

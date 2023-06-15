@@ -4,7 +4,6 @@ import React, {
   PropsWithChildren,
   useCallback,
   useImperativeHandle,
-  useRef,
 } from 'react';
 import Animated, {
   useAnimatedProps,

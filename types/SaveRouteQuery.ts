@@ -15,6 +15,7 @@ export type SaveRouteResponse = {
   updatedAt: string;
   userId: number;
   images: string[];
+  obstacle: Obstacle;
   dislikedUsers: {
     id: number;
   }[];
@@ -22,3 +23,9 @@ export type SaveRouteResponse = {
     id: number;
   }[];
 };
+
+export type Obstacle = {
+  icon: string;
+  id: number;
+  description: string;
+}

@@ -2,20 +2,24 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 import React from 'react';
 import { SvgProps } from 'react-native-svg';
 import { colors } from '../../../utils/colors';
+import * as assets from '../../../pages/save-edit-route/assets'
+
+type Key = keyof typeof assets;
 
 type ObstaclesItemProps = {
-  Icon: React.FC<SvgProps>;
+  icon: Key;
   id: number;
   description: string;
   handlePress: (id: number) => void;
 };
 
 export default function ObstaclesItem({
-  Icon,
+  icon,
   description,
   handlePress,
   id,
 }: ObstaclesItemProps) {
+    const IconTest = assets[`${icon}`]
   return (
     <Pressable
       onPress={() => handlePress(id)}
@@ -28,7 +32,7 @@ export default function ObstaclesItem({
         },
       ]}>
       <View style={styles.iconWrapper}>
-        <Icon />
+        <IconTest />
       </View>
       <Text style={styles.description}>{description}</Text>
     </Pressable>

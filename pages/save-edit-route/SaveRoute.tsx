@@ -4,7 +4,6 @@ import ImageSelector from '../../components/save-edit-page/ImageSelector';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
 import {
   useSaveRouteMutation,
-  useUpdateRouteMutation,
 } from '../../store/api/routes.api';
 import { getUrl } from '../../utils/getUrl';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -20,62 +19,30 @@ import Controls from '../../components/save-edit-page/Controls';
 import TopIcon from '../../components/save-edit-page/TopIcon';
 import ObstaclesDropDown from '../../components/save-edit-page/ObstacleType/ObstaclesDropDown';
 import { ModalRefProps } from '../../components/modals/Modal';
-import { SvgProps } from 'react-native-svg';
-import { Other } from './assets';
 import { ImageOrVideo } from 'react-native-image-crop-picker';
+import * as assets from '../../pages/save-edit-route/assets'
 
 type SaveRouteProps = NativeStackScreenProps<StackParamList, 'SaveRoute'>;
 
 type Info = {
   obstacle: {
-    icon: React.FC<SvgProps>;
+    icon: keyof typeof assets;
     id: number;
   } | null;
   description: string | null;
   images: ImageOrVideo[];
 };
 
-const data = [
+const data: {id: number, icon: keyof typeof assets, description: string}[] = [
   {
     id: 1,
-    icon: Other,
+    icon: 'Other',
     description:
       'Указатель предупреждает участников дорожного движения' +
       ' о подъезде к участку дороги, на котором имеются опасности,' +
       ' не предусмотренные другими предупреждающими знаками',
   },
-  {
-    id: 2,
-    icon: Other,
-    description:
-      'Указатель предупреждает участников дорожного движения' +
-      ' о подъезде к участку дороги, на котором имеются опасности,' +
-      ' не предусмотренные другими предупреждающими знаками',
-  },
-  {
-    id: 3,
-    icon: Other,
-    description:
-      'Указатель предупреждает участников дорожного движения' +
-      ' о подъезде к участку дороги, на котором имеются опасности,' +
-      ' не предусмотренные другими предупреждающими знаками',
-  },
-  {
-    id: 4,
-    icon: Other,
-    description:
-      'Указатель предупреждает участников дорожного движения' +
-      ' о подъезде к участку дороги, на котором имеются опасности,' +
-      ' не предусмотренные другими предупреждающими знаками',
-  },
-  {
-    id: 5,
-    icon: Other,
-    description:
-      'Указатель предупреждает участников дорожного движения' +
-      ' о подъезде к участку дороги, на котором имеются опасности,' +
-      ' не предусмотренные другими предупреждающими знаками',
-  },
+  
 ];
 
 export default function SaveRoute({ navigation, route }: SaveRouteProps) {
@@ -169,7 +136,6 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
       <ObstaclesDropDown
         data={data}
         modalRef={ref}
-        obstacle={info.obstacle}
         setObstacle={value => setObstacle(value)}
       />
     </View>
