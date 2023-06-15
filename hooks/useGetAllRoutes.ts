@@ -25,7 +25,7 @@ const useGetAllRoutes = () => {
     fetchRoutes();
   }, [dispatch, getAllRoutes]);
 
-  return { routes, isLoading };
+  return { routes, isLoading, getAllRoutes };
 };
 
 export default useGetAllRoutes;

@@ -22,8 +22,12 @@ import Animated, {
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-export default function ImageSelector() {
-  const [images, setImages] = useState<ImageOrVideo[]>([]);
+type ImageSelectorProps = {
+  images: ImageOrVideo[];
+  setImages: (images: ImageOrVideo[]) => void;
+}
+
+export default function ImageSelector({images, setImages}: ImageSelectorProps) {
   const [deletedIndex, setDeletedIndex] = useState<number | null>(null);
   const theme = useAppSelector(state => state.themeReducer);
   const aWidth = useDerivedValue(() => images.length * 110, [images.length]);

@@ -1,25 +1,13 @@
-import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
+import { Image, Pressable, StyleSheet } from 'react-native';
 import React from 'react';
 import { ImageOrVideo } from 'react-native-image-crop-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { StackParamList } from '../AppWrapper';
+import { StackParamList } from '../../pages/AppWrapper';
 import { useNavigation } from '@react-navigation/native';
 import Animated, {
-  BounceOutLeft,
-  ComplexAnimationBuilder,
-  CurvedTransition,
-  FadeOut,
   FadeOutLeft,
   Layout,
-  RollInLeft,
-  RotateInDownRight,
-  SequencedTransition,
-  SlideOutLeft,
   ZoomIn,
-  ZoomInDown,
-  ZoomOut,
-  ZoomOutDown,
-  ZoomOutRotate,
 } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../../utils/colors';

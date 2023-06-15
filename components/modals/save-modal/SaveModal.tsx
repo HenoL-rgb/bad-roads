@@ -38,7 +38,7 @@ import { ScrollView } from 'react-native';
 import { StackParamList } from '../../../pages/AppWrapper';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import ModalImage from './ModalImage';
-import ImageSelector from '../../../pages/save-edit-route/ImageSelector';
+import ImageSelector from '../../save-edit-page/ImageSelector';
 
 type SaveModalProps = {
   points: Point[];

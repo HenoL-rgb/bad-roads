@@ -1,10 +1,6 @@
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-} from 'react-native';
-import React from 'react';
-import ImageSelector from './ImageSelector';
+import { View, ScrollView, StyleSheet } from 'react-native';
+import React, { useRef, useState } from 'react';
+import ImageSelector from '../../components/save-edit-page/ImageSelector';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
 import {
   useSaveRouteMutation,
@@ -19,47 +15,124 @@ import {
 } from '../../store/slices/routes.slice';
 import { transformRoute } from '../../utils/transformRoute';
 import Description from '../../components/save-edit-page/Description';
-import ObstacleType from '../../components/save-edit-page/ObstacleType';
+import ObstacleType from '../../components/save-edit-page/ObstacleType/ObstacleType';
 import Controls from '../../components/save-edit-page/Controls';
 import TopIcon from '../../components/save-edit-page/TopIcon';
+import ObstaclesDropDown from '../../components/save-edit-page/ObstacleType/ObstaclesDropDown';
+import { ModalRefProps } from '../../components/modals/Modal';
+import { SvgProps } from 'react-native-svg';
+import { Other } from './assets';
+import { ImageOrVideo } from 'react-native-image-crop-picker';
 
 type SaveRouteProps = NativeStackScreenProps<StackParamList, 'SaveRoute'>;
 
+type Info = {
+  obstacle: {
+    icon: React.FC<SvgProps>;
+    id: number;
+  } | null;
+  description: string | null;
+  images: ImageOrVideo[];
+};
+
+const data = [
+  {
+    id: 1,
+    icon: Other,
+    description:
+      'Указатель предупреждает участников дорожного движения' +
+      ' о подъезде к участку дороги, на котором имеются опасности,' +
+      ' не предусмотренные другими предупреждающими знаками',
+  },
+  {
+    id: 2,
+    icon: Other,
+    description:
+      'Указатель предупреждает участников дорожного движения' +
+      ' о подъезде к участку дороги, на котором имеются опасности,' +
+      ' не предусмотренные другими предупреждающими знаками',
+  },
+  {
+    id: 3,
+    icon: Other,
+    description:
+      'Указатель предупреждает участников дорожного движения' +
+      ' о подъезде к участку дороги, на котором имеются опасности,' +
+      ' не предусмотренные другими предупреждающими знаками',
+  },
+  {
+    id: 4,
+    icon: Other,
+    description:
+      'Указатель предупреждает участников дорожного движения' +
+      ' о подъезде к участку дороги, на котором имеются опасности,' +
+      ' не предусмотренные другими предупреждающими знаками',
+  },
+  {
+    id: 5,
+    icon: Other,
+    description:
+      'Указатель предупреждает участников дорожного движения' +
+      ' о подъезде к участку дороги, на котором имеются опасности,' +
+      ' не предусмотренные другими предупреждающими знаками',
+  },
+];
+
 export default function SaveRoute({ navigation, route }: SaveRouteProps) {
   const [saveRoute, { isLoading: saveLoading }] = useSaveRouteMutation();
-  const [updateRoute, { isLoading: updateLoading }] = useUpdateRouteMutation();
+  const [info, setInfo] = useState<Info>({
+    obstacle: null,
+    description: null,
+    images: [],
+  });
   const userId = useAppSelector(state => state.userReducer.user?.id);
-  const { points, currentRoute } = route.params;
+  const { points } = route.params;
   const theme = useAppSelector(state => state.themeReducer);
   const dispatch = useAppDispatch();
+  const ref = useRef<ModalRefProps>(null);
 
+  const setObstacle = (id: number) => {
+    const obstacleFound = data.find(item => item.id === id);
+    if (!obstacleFound || !ref.current) {
+      return;
+    }
+
+    setInfo({
+      ...info,
+      obstacle: {
+        icon: obstacleFound.icon,
+        id: obstacleFound.id,
+      },
+    });
+    ref.current.setActive(false);
+  };
+
+  function handleModalActive() {
+    if (!ref.current) {
+      return;
+    }
+
+    ref.current.setActive(true);
+  }
   //update correct
   async function handleSaveRoute(): Promise<void> {
     if (!userId) return;
     getUrl(points);
 
-    if (currentRoute.id) {
-      const response = await updateRoute({
-        points,
+    try {
+      const response = await saveRoute({
+        route: points,
         icon: getUrl(points),
-        id: currentRoute.id,
+        userId: userId,
       });
-      console.log(response);
-    } else {
-      try {
-        const response = await saveRoute({
-          route: points,
-          icon: getUrl(points),
-          userId: userId,
-        });
-        if ('data' in response) {
-          dispatch(saveRouteAction(transformRoute(response.data)));
-          dispatch(setInitialState());
-        }
-      } catch (error) {
-        console.log(error);
+      if ('data' in response) {
+        dispatch(saveRouteAction(transformRoute(response.data)));
+        dispatch(setInitialState());
       }
+    } catch (error) {
+      console.log(error);
     }
+
     navigation.navigate('Home', {
       screen: 'Map',
     });
@@ -72,19 +145,32 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
       <ScrollView
         style={styles.content}
         contentContainerStyle={styles.contentContainer}>
-        <ObstacleType theme={theme} />
+        <ObstacleType
+          theme={theme}
+          setModalActive={handleModalActive}
+          Obstacle={info.obstacle?.icon ?? null}
+        />
         <View style={styles.section}>
-          <ImageSelector />
+          <ImageSelector images={info.images} setImages={(images) => setInfo({...info, images: images})} />
         </View>
-        <Description />
+        <Description
+          description={info.description}
+          setDescription={value => setInfo({ ...info, description: value })}
+        />
       </ScrollView>
 
       <Controls
         handleCancel={() => navigation.goBack()}
         handleSaveRoute={handleSaveRoute}
         Loading={saveLoading}
-        mode='save'
+        mode="save"
         theme={theme}
+      />
+      <ObstaclesDropDown
+        data={data}
+        modalRef={ref}
+        obstacle={info.obstacle}
+        setObstacle={value => setObstacle(value)}
       />
     </View>
   );
@@ -99,8 +185,7 @@ const styles = StyleSheet.create({
   section: {
     borderRadius: 5,
   },
-  content: {
-  },
+  content: {},
   contentContainer: {
     rowGap: 10,
   },

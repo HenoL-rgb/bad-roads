@@ -4,7 +4,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import React from 'react';
-import ImageSelector from './ImageSelector';
+import ImageSelector from '../../components/save-edit-page/ImageSelector';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
 import {
   useSaveRouteMutation,
@@ -19,7 +19,7 @@ import {
 } from '../../store/slices/routes.slice';
 import { transformRoute } from '../../utils/transformRoute';
 import Description from '../../components/save-edit-page/Description';
-import ObstacleType from '../../components/save-edit-page/ObstacleType';
+import ObstacleType from '../../components/save-edit-page/ObstacleType/ObstacleType';
 import Controls from '../../components/save-edit-page/Controls';
 import TopIcon from '../../components/save-edit-page/TopIcon';
 
@@ -72,7 +72,7 @@ export default function EditRoute({ navigation, route }: SaveRouteProps) {
       <ScrollView
         style={styles.content}
         contentContainerStyle={styles.contentContainer}>
-        <ObstacleType theme={theme} />
+        {/* <ObstacleType theme={theme} /> */}
         <View style={styles.section}>
           <ImageSelector />
         </View>

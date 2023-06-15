@@ -1,5 +1,5 @@
 import { View, StyleSheet, Text } from 'react-native';
-import React, { forwardRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Modal, { ModalRefProps } from './Modal';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Pressable } from 'react-native';
@@ -7,7 +7,6 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
-  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import { ActivityIndicator } from 'react-native';

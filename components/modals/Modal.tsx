@@ -4,6 +4,7 @@ import React, {
   PropsWithChildren,
   useCallback,
   useImperativeHandle,
+  useRef,
 } from 'react';
 import Animated, {
   useAnimatedProps,
@@ -12,7 +13,6 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { useFocusEffect } from '@react-navigation/native';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -23,6 +23,7 @@ export type ModalRefProps = {
 const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
   ({ children }, ref) => {
     const translateY = useSharedValue(0);
+    const height = useSharedValue(0);
 
     const active = useSharedValue(false);
 
@@ -42,10 +43,10 @@ const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
           active.value = value;
           scrollTo(0);
         } else {
-          scrollTo(-SCREEN_HEIGHT / 1.3);
+          scrollTo(-SCREEN_HEIGHT + (height.value / 7));
         }
       },
-      [active, scrollTo],
+      [active, scrollTo, height.value],
     );
 
     useImperativeHandle(ref, () => ({ setActive }), [setActive]);
@@ -93,11 +94,13 @@ const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
           ]}
           pointerEvents="none"></Animated.View>
         <Animated.View
+          onLayout={(event) => height.value = event.nativeEvent.layout.height}
           style={[
             {
               minHeight: 350,
               width: 340,
               backgroundColor: 'white',
+              overflow: 'hidden',
               position: 'absolute',
               alignSelf: 'center',
               top: SCREEN_HEIGHT,

@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   StyleSheet,
   RefreshControl,
   ActivityIndicator,
@@ -10,29 +9,24 @@ import { Route } from '../types/Route';
 import RouteListItem from './RouteListItem';
 import { FlashList } from '@shopify/flash-list';
 import {
-  QueryDefinition,
   BaseQueryFn,
   FetchArgs,
   FetchBaseQueryError,
+  MutationDefinition,
 } from '@reduxjs/toolkit/dist/query';
-import { QueryActionCreatorResult } from '@reduxjs/toolkit/dist/query/core/buildInitiate';
 import { colors } from 'react-native-elements';
+import { MutationTrigger } from '@reduxjs/toolkit/dist/query/react/buildHooks';
+import { GetRoutesResponse } from '../types/GetAllRoutesQuery';
 
 type RouteListProps = {
   routes: Route[];
   navigate: (lat: number, lon: number) => void;
-  refetch: () => QueryActionCreatorResult<
-    QueryDefinition<
-      number,
-      BaseQueryFn<
-        string | FetchArgs,
-        unknown,
-        FetchBaseQueryError,
-        object,
-        object
-      >,
+  refetch: MutationTrigger<
+    MutationDefinition<
+      object,
+      BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,
       never,
-      any,
+      GetRoutesResponse[],
       'routesApi'
     >
   >;
@@ -60,7 +54,7 @@ export default function RouteList({
         <FlashList
           data={routes}
           refreshControl={
-            <RefreshControl refreshing={loading} onRefresh={refetch} />
+            <RefreshControl refreshing={loading} onRefresh={() => refetch({})} />
           }
           renderItem={renderItem}
           estimatedItemSize={80}

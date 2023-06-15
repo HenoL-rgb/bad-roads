@@ -15,7 +15,7 @@ enum RootStack {
 
 function AllRoutes() {
   const navigation = useNavigation<RootProps>();
-  const {routes, refetch, isLoading} = useGetAllRoutes();
+  const {routes, getAllRoutes, isLoading} = useGetAllRoutes();
   const theme = useAppSelector(state => state.themeReducer)
 
   function routeNavigate(lat: number, lon: number) {
@@ -31,7 +31,7 @@ function AllRoutes() {
         <RouteList
           routes={routes}
           navigate={routeNavigate}
-          refetch={refetch}
+          refetch={getAllRoutes}
           loading={isLoading}
         />
       )}
