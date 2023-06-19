@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 import ImageSelector from '../../components/save-edit-page/ImageSelector';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
 import {
+  useGetObstaclesQuery,
   useSaveRouteMutation,
 } from '../../store/api/routes.api';
 import { getUrl } from '../../utils/getUrl';
@@ -19,7 +20,7 @@ import Controls from '../../components/save-edit-page/Controls';
 import TopIcon from '../../components/save-edit-page/TopIcon';
 import ObstaclesDropDown from '../../components/save-edit-page/ObstacleType/ObstaclesDropDown';
 import { ModalRefProps } from '../../components/modals/Modal';
-import { ImageOrVideo } from 'react-native-image-crop-picker';
+import { Image, ImageOrVideo } from 'react-native-image-crop-picker';
 import * as assets from '../../pages/save-edit-route/assets'
 
 type SaveRouteProps = NativeStackScreenProps<StackParamList, 'SaveRoute'>;
@@ -28,9 +29,10 @@ type Info = {
   obstacle: {
     icon: keyof typeof assets;
     id: number;
+    description: string;
   } | null;
   description: string | null;
-  images: ImageOrVideo[];
+  images: Image[];
 };
 
 const data: {id: number, icon: keyof typeof assets, description: string}[] = [
@@ -47,6 +49,7 @@ const data: {id: number, icon: keyof typeof assets, description: string}[] = [
 
 export default function SaveRoute({ navigation, route }: SaveRouteProps) {
   const [saveRoute, { isLoading: saveLoading }] = useSaveRouteMutation();
+  
   const [info, setInfo] = useState<Info>({
     obstacle: null,
     description: null,
@@ -69,6 +72,7 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
       obstacle: {
         icon: obstacleFound.icon,
         id: obstacleFound.id,
+        description: obstacleFound.description,
       },
     });
     ref.current.setActive(false);
@@ -81,28 +85,34 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
 
     ref.current.setActive(true);
   }
+
+  function handleImages(images: Image[]) {
+    setInfo({...info, images: images})
+  }
   //update correct
   async function handleSaveRoute(): Promise<void> {
-    if (!userId) return;
+    if (!userId || !info.obstacle) return;
     getUrl(points);
 
-    try {
       const response = await saveRoute({
         route: points,
         icon: getUrl(points),
         userId: userId,
+        obstacleId: info.obstacle.id,
+        description: info.description ? info.description : '',
+        images: info.images.map(image => `${image.data}`),
       });
+      
       if ('data' in response) {
         dispatch(saveRouteAction(transformRoute(response.data)));
         dispatch(setInitialState());
       }
-    } catch (error) {
-      console.log(error);
-    }
+      navigation.navigate('Home', {
+        screen: 'Map',
+      });
+    
 
-    navigation.navigate('Home', {
-      screen: 'Map',
-    });
+    
   }
 
   return (
@@ -118,7 +128,7 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
           Obstacle={info.obstacle?.icon ?? null}
         />
         <View style={styles.section}>
-          <ImageSelector images={info.images} setImages={(images) => setInfo({...info, images: images})} />
+          <ImageSelector images={info.images} setImages={handleImages} />
         </View>
         <Description
           description={info.description}

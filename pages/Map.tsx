@@ -21,7 +21,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetRefProps } from '../components/BottomSheet';
-import BottomSheetContent from '../components/BottomSheetContent';
+import BottomSheetContent from '../components/bottom-sheet-content/BottomSheetContent';
 import { ModalRefProps } from '../components/modals/Modal';
 import DeleteModal from '../components/modals/DeleteModal';
 import { colors } from '../utils/colors';

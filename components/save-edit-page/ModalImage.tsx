@@ -4,11 +4,7 @@ import { ImageOrVideo } from 'react-native-image-crop-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackParamList } from '../../pages/AppWrapper';
 import { useNavigation } from '@react-navigation/native';
-import Animated, {
-  FadeOutLeft,
-  Layout,
-  ZoomIn,
-} from 'react-native-reanimated';
+import Animated, { FadeOutLeft, Layout, ZoomIn } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../../utils/colors';
 
@@ -37,13 +33,12 @@ export default function ModalImage({
       entering={ZoomIn.delay(100 * clickedId)}
       layout={Layout.delay(120)}
       style={styles.pressable}
-      //   onTouchEnd={() =>
-      //     navigation.navigate('Gallery', {
-      //       images: images,
-      //       clickedId: clickedId,
-      //     })
-      //   }
-    >
+      onPress={() =>
+        navigation.navigate('Gallery', {
+          images: images,
+          clickedId: clickedId,
+        })
+      }>
       <Image source={{ uri: image.path }} style={styles.image} />
       <Pressable style={styles.cancel} onPress={() => deleteImage(image.path)}>
         <Icon name="close" size={11} color={colors.white} />

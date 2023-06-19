@@ -8,8 +8,11 @@ export type GetRoutesResponse = {
   userId: number;
   isApproved: boolean;
   icon: string;
-  images: string[];
+  images: {
+    path: string;
+  }[];
   obstacle: Obstacle;
+  description: string;
   dislikedUsers: {
     id: number;
   }[];
@@ -29,7 +32,9 @@ export type GetRouteByIdResponse = {
   userId: number;
   isApproved: boolean;
   icon: string;
-  images: string[];
+  images: {
+    path: string;
+  }[];
   dislikedUsers: {
     id: number;
   }[];

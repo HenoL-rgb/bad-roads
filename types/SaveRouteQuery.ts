@@ -4,6 +4,9 @@ export type SaveRoute = {
   route: Point[];
   icon: string;
   userId: number;
+  obstacleId: number;
+  description: string;
+  images: string[];
 };
 
 export type SaveRouteResponse = {
@@ -14,7 +17,10 @@ export type SaveRouteResponse = {
   route: string;
   updatedAt: string;
   userId: number;
-  images: string[];
+  images: {
+    path: string;
+  }[];
+  description: string;
   obstacle: Obstacle;
   dislikedUsers: {
     id: number;

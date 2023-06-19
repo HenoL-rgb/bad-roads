@@ -81,6 +81,12 @@ export const routesApi = createApi({
         method: "POST",
         body
       })
+    }),
+
+    getObstacles: build.query({
+      query: () => ({
+        url: 'api/obstacles'
+      })
     })
   }),
 });
@@ -95,5 +101,6 @@ export const {
   useLikeRouteMutation,
   useDislikeRouteMutation,
   useGetRouteByIdQuery,
+  useGetObstaclesQuery
   //useGetLikedByUserIdQuery
 } = routesApi;

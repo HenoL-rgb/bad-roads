@@ -11,7 +11,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import { Login, LoginResponse } from '../../types/LoginQuery';
 import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 
-const HOST_IP = '10.211.48.204:7000';
+export const HOST_IP = '10.211.48.200:7000';
 //const HOST_IP = '192.168.100.8:7000';
 //const HOST_IP = '192.168.194.72:7000';
 
@@ -21,10 +21,12 @@ const baseQuery = fetchBaseQuery({
     const userData = (getState() as RootState).userReducer;
     const token = await EncryptedStorage.getItem('token');
 
-    if (userData.isAuth && token && endpoint !== 'auth/refresh') {
+    if (userData.isAuth && token && endpoint !== 'refresh') {
+
       headers.set('Authorization', `Bearer ${token}`);
     } else if (endpoint === 'refresh') {
       const refresh = await EncryptedStorage.getItem('refresh');
+
       headers.set('refresh', `${refresh}`);
     }
 
@@ -38,6 +40,7 @@ export const baseQueryWithReauth: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
+
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error && result.error.status === 401) {
@@ -45,18 +48,28 @@ export const baseQueryWithReauth: BaseQueryFn<
       unknown,
       FetchBaseQueryError,
       FetchBaseQueryMeta
-    > = await baseQuery('auth/refresh', api, extraOptions);
+    > = await baseQuery(
+      { url: 'auth/refresh' },
+      { ...api, endpoint: 'refresh' },
+      extraOptions,
+    );
     // store the new token
-    console.log('send refresh');
-    
-    if (refreshResult.error && refreshResult.error.status === 401) {      
+
+    if (refreshResult.error && refreshResult.error.status === 401) {
       await EncryptedStorage.clear();
       api.dispatch(setAuth(false));
       return result;
     }
-      // retry the initial query
-      result = await baseQuery(args, api, extraOptions);
-    
+
+    const data = refreshResult.data as {
+      accessToken: string;
+      refreshToken: string;
+    };
+
+    await EncryptedStorage.setItem('token', data.accessToken);
+    await EncryptedStorage.setItem('refresh', data.refreshToken);
+    // retry the initial query
+    result = await baseQuery(args, api, extraOptions);
   }
   return result;
 };
@@ -154,7 +167,7 @@ export const authApi = createApi({
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-    
+
           await EncryptedStorage.setItem('token', data.accessToken);
           await EncryptedStorage.setItem('refresh', data.refreshToken);
           dispatch(

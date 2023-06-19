@@ -47,6 +47,7 @@ export default function EditRoute({ navigation, route }: SaveRouteProps) {
           route: points,
           icon: getUrl(points),
           userId: userId,
+          
         });
         if ('data' in response) {
           dispatch(saveRouteAction(transformRoute(response.data)));

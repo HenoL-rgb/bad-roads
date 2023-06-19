@@ -34,7 +34,7 @@ export type StackParamList = {
   };
   Settings: undefined;
   Gallery: {
-    images: ImageOrVideo[];
+    images: ImageOrVideo[] | {path: string}[];
     clickedId: number;
   };
   SaveRoute: {

@@ -15,7 +15,7 @@ import {
 const AnimatedImage = Animated.createAnimatedComponent(Image);
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-export default function GalleryImage({ image }: { image: ImageOrVideo }) {
+export default function GalleryImage({ image }: { image: {path: string} }) {
   const scale = useSharedValue(1);
   const focalX = useSharedValue(0);
   const focalY = useSharedValue(0);

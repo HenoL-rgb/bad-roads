@@ -16,7 +16,7 @@ enum RootStack {
 
 function DangerRoutes() {
   const navigation = useNavigation<RootProps>();
-  const {routes, refetch, isLoading} = useGetAllRoutes();
+  const {routes, getAllRoutes, isLoading} = useGetAllRoutes();
   const theme = useAppSelector(state => state.themeReducer);
 
   const dangerRoutes: Route[] = routes.filter(route => {    
@@ -38,7 +38,7 @@ function DangerRoutes() {
         <RouteList
           routes={dangerRoutes}
           navigate={routeNavigate}
-          refetch={refetch}
+          refetch={getAllRoutes}
           loading={isLoading}
         />
     </View>

@@ -9,7 +9,7 @@ import {
 import React, { useRef, useState } from 'react';
 import ModalImage from './ModalImage';
 import { colors } from '../../utils/colors';
-import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
+import ImagePicker, { Image, ImageOrVideo } from 'react-native-image-crop-picker';
 import { useAppSelector } from '../../hooks/redux-hooks';
 import Animated, {
   useAnimatedScrollHandler,
@@ -23,8 +23,8 @@ import Animated, {
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 type ImageSelectorProps = {
-  images: ImageOrVideo[];
-  setImages: (images: ImageOrVideo[]) => void;
+  images: Image[];
+  setImages: (images: Image[]) => void;
 }
 
 export default function ImageSelector({images, setImages}: ImageSelectorProps) {
@@ -42,9 +42,9 @@ export default function ImageSelector({images, setImages}: ImageSelectorProps) {
     'worklet';
     ImagePicker.openPicker({
       multiple: true,
+      includeBase64: true,
     })
       .then(images => {
-        console.log(images);
         setImages([...images]);
       })
       .catch(console.log);
