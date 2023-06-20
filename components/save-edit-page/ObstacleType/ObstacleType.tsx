@@ -1,10 +1,8 @@
 import { View, Text, StyleSheet } from 'react-native';
-import React, { useRef } from 'react';
+import React from 'react';
 import { Theme } from '@react-navigation/native';
 import { colors } from '../../../utils/colors';
-import {Other} from '../../../pages/save-edit-route/assets'
-import ObstaclesDropDown from './ObstaclesDropDown';
-import { ModalRefProps } from '../../modals/Modal';
+
 import { SvgProps } from 'react-native-svg';
 import * as assets from '../../../pages/save-edit-route/assets'
 

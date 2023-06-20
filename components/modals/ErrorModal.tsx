@@ -10,7 +10,7 @@ type Props = {
 export default function ErrorModal({modalRef, error}: Props) {
   return <Modal ref={modalRef}>
     <View>
-      
+      <Text>{error}</Text>
     </View>
   </Modal>;
 }

@@ -1,15 +1,9 @@
-import { StyleSheet, FlatList, Dimensions, Pressable, Text } from 'react-native';
-import React, {
-  useLayoutEffect,
-  useState,
-  useRef,
-  useCallback,
-  useEffect,
-} from 'react';
+import { StyleSheet, FlatList, Dimensions, ViewToken } from 'react-native';
+import React, { useLayoutEffect, useState, useRef, useCallback } from 'react';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackParamList } from './AppWrapper';
-import { DarkTheme, useFocusEffect } from '@react-navigation/native';
+import { DarkTheme } from '@react-navigation/native';
 import { colors } from '../utils/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Animated from 'react-native-reanimated';
@@ -18,11 +12,15 @@ import GalleryImage from '../components/GalleryImage';
 import { ImageOrVideo } from 'react-native-image-crop-picker';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
-const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-type Props = NativeStackScreenProps<StackParamList, 'Gallery'>;
+type GalleryProps = NativeStackScreenProps<StackParamList, 'Gallery'>;
 
-export default function Gallery({ navigation, route }: Props) {
+type RenderItem = {
+  item: ImageOrVideo | { path: string };
+};
+
+export default function Gallery({ navigation, route }: GalleryProps) {
   const { images, clickedId } = route.params;
   const [currentImage, setCurrentImage] = useState(clickedId);
   const listRef = useRef<FlatList>(null);
@@ -49,15 +47,24 @@ export default function Gallery({ navigation, route }: Props) {
     });
   }, [currentImage, images.length, navigation]);
 
-  const viewableItemsChanged = useRef(({ viewableItems }: any) => { 
-      setCurrentImage(viewableItems[0].index);
-  }).current;
+  const viewableItemsChanged = useRef(
+    ({
+      viewableItems,
+    }: {
+      viewableItems: ViewToken[];
+      changed: ViewToken[];
+    }) => {
+      if (viewableItems[0].index) {
+        setCurrentImage(viewableItems[0].index);
+      }
+    },
+  ).current;
 
-  const renderItem = useCallback(({ item }: any) => {
+  const renderItem = useCallback(({ item }: RenderItem) => {
     return <GalleryImage image={item} />;
   }, []);
 
-  return ( 
+  return (
     <GestureHandlerRootView style={styles.wrapper}>
       <FlatList
         data={images}

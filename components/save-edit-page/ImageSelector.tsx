@@ -1,15 +1,13 @@
 import {
-  View,
   Text,
   Pressable,
   StyleSheet,
-  ScrollView,
   Dimensions,
 } from 'react-native';
 import React, { useRef, useState } from 'react';
 import ModalImage from './ModalImage';
 import { colors } from '../../utils/colors';
-import ImagePicker, { Image, ImageOrVideo } from 'react-native-image-crop-picker';
+import ImagePicker, { Image } from 'react-native-image-crop-picker';
 import { useAppSelector } from '../../hooks/redux-hooks';
 import Animated, {
   useAnimatedScrollHandler,
@@ -96,23 +94,6 @@ export default function ImageSelector({images, setImages}: ImageSelectorProps) {
         ]}>
         Images:
       </Text>
-      {/* <Animated.FlatList
-        data={images}
-        horizontal
-        itemLayoutAnimation={Layout.delay(300)}
-        renderItem={({ item, index }) => (
-          <ModalImage
-            image={item}
-            images={images}
-            clickedId={index}
-            deleteImage={deleteImage}
-            
-          />
-        )}
-        keyExtractor={item => item.path}
-        
-        
-      /> */}
       <Animated.ScrollView
         ref={listRef}
         onContentSizeChange={listSizeChangeHandler}

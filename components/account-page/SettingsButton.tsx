@@ -8,7 +8,11 @@ import { colors } from '../../utils/colors';
 
 type RootProp = NativeStackNavigationProp<StackParamList>;
 
-export default function SettingsButton(props: any) {
+export default function SettingsButton(props: {
+  tintColor?: string | undefined;
+  pressColor?: string | undefined;
+  pressOpacity?: number | undefined;
+}) {
   const navigation = useNavigation<RootProp>();
   return (
     

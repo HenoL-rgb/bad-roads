@@ -3,7 +3,6 @@ import React, { useRef, useState } from 'react';
 import ImageSelector from '../../components/save-edit-page/ImageSelector';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
 import {
-  useGetObstaclesQuery,
   useSaveRouteMutation,
 } from '../../store/api/routes.api';
 import { getUrl } from '../../utils/getUrl';
@@ -20,7 +19,7 @@ import Controls from '../../components/save-edit-page/Controls';
 import TopIcon from '../../components/save-edit-page/TopIcon';
 import ObstaclesDropDown from '../../components/save-edit-page/ObstacleType/ObstaclesDropDown';
 import { ModalRefProps } from '../../components/modals/Modal';
-import { Image, ImageOrVideo } from 'react-native-image-crop-picker';
+import { Image } from 'react-native-image-crop-picker';
 import * as assets from '../../pages/save-edit-route/assets'
 
 type SaveRouteProps = NativeStackScreenProps<StackParamList, 'SaveRoute'>;

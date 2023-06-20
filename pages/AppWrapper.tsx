@@ -14,13 +14,6 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native';
-import {
-  QueryDefinition,
-  BaseQueryFn,
-  FetchArgs,
-  FetchBaseQueryError,
-} from '@reduxjs/toolkit/dist/query';
-import { QueryActionCreatorResult } from '@reduxjs/toolkit/dist/query/core/buildInitiate';
 import { Point } from 'react-native-yamap';
 import { MapCurrentRoute } from '../types/Route';
 import { colors } from '../utils/colors';
@@ -48,7 +41,6 @@ export const RootStack = createNativeStackNavigator<StackParamList>();
 function AppWrapper(): JSX.Element {
   const theme = useAppSelector(state => state.themeReducer);
   const {
-    data,
     isLoading: loadRefresh,
     isError,
     refetch: retryConnection,

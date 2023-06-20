@@ -2,8 +2,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Point } from '../../types/Point';
 import { MapCurrentRoute, Route } from '../../types/Route';
 import { ApproveRoute } from '../../types/ApproveRouteQuery';
-import { DeleteRoute, GetRoutesResponse } from '../../types/GetAllRoutesQuery';
-import { SaveRouteResponse } from '../../types/SaveRouteQuery';
+import { DeleteRoute } from '../../types/GetAllRoutesQuery';
 
 enum modes {
   IDLE,

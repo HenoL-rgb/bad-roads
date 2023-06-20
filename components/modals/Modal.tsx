@@ -46,10 +46,7 @@ const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
         }
       },
       [active, scrollTo, height.value],
-    );
-
-    console.log(SCREEN_HEIGHT);
-    
+    );    
 
     useImperativeHandle(ref, () => ({ setActive }), [setActive]);
 

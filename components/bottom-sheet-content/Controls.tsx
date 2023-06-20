@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   Pressable,
   ActivityIndicator,
   StyleSheet,
@@ -25,16 +24,17 @@ export default function Controls({
   editRoute,
   deleteRoute,
   handleApprove,
-  routeId,
   user,
   approveLoading,
 }: ControlsType) {
+    
   const isAdmin = user
     ? user.roles.some(
         (role: { value: string; description: string }) =>
           role.value === 'ADMIN',
       )
     : false;
+
   return (
     <View style={styles.routeControls}>
       {(isAdmin || (data.author.email === user?.email && !data.isApproved)) && (

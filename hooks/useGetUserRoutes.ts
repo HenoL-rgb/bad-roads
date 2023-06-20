@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useGetRoutesByUserIdQuery } from '../store/api/routes.api';
 import { useAppSelector } from './redux-hooks';
 import {
-  GetRouteByIdResponse,
   GetRoutesResponse,
 } from '../types/GetAllRoutesQuery';
 import { transformRoute } from '../utils/transformRoute';

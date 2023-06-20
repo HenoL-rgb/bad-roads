@@ -31,51 +31,6 @@ export default function ObstaclesDropDown({
             key={item.id}
           />
         ))}
-        {data?.map(item => (
-          <ObstaclesItem
-            icon={item.icon}
-            id={item.id}
-            description={item.description}
-            handlePress={id => setObstacle(id)}
-            key={item.id}
-          />
-        ))}
-        {data?.map(item => (
-          <ObstaclesItem
-            icon={item.icon}
-            id={item.id}
-            description={item.description}
-            handlePress={id => setObstacle(id)}
-            key={item.id}
-          />
-        ))}
-        {data?.map(item => (
-          <ObstaclesItem
-            icon={item.icon}
-            id={item.id}
-            description={item.description}
-            handlePress={id => setObstacle(id)}
-            key={item.id}
-          />
-        ))}
-        {data?.map(item => (
-          <ObstaclesItem
-            icon={item.icon}
-            id={item.id}
-            description={item.description}
-            handlePress={id => setObstacle(id)}
-            key={item.id}
-          />
-        ))}
-        {data?.map(item => (
-          <ObstaclesItem
-            icon={item.icon}
-            id={item.id}
-            description={item.description}
-            handlePress={id => setObstacle(id)}
-            key={item.id}
-          />
-        ))}
       </ScrollView>
     </Modal>
   );
