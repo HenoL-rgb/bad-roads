@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Account from '../pages/Account';
 import Map from '../pages/Map';
 import useGetTheme from '../hooks/useGetTheme.hook';
-import SettingsButton from '../components/SettingsButton';
+import SettingsButton from '../components/account-page/SettingsButton';
 
 export type TabNavParamList = {
   Map: {

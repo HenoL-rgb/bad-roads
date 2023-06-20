@@ -1,7 +1,7 @@
 import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import MyRoutes from '../components/MyRoutes';
-import RoutesToApprove from '../components/RoutesToApprove';
+import MyRoutes from '../components/account-page/MyRoutes';
+import RoutesToApprove from '../components/account-page/RoutesToApprove';
 import DangerRoutes from '../components/DangerRoutes';
 
 import { useAppSelector } from '../hooks/redux-hooks';

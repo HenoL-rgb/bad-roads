@@ -7,7 +7,7 @@ import { ImageOrVideo } from 'react-native-image-crop-picker';
 
 type ImageBoxProps = {
   path: string;
-  images: {path: string}[];
+  images: { path: string }[];
   clickedId: number;
 };
 type Props = NativeStackNavigationProp<StackParamList>;
@@ -28,8 +28,9 @@ export default function ImageBox({ path, images, clickedId }: ImageBoxProps) {
           uri: path,
         }}
         style={{
-          width: 100,
-          height: 100,
+          borderRadius: 5,
+          width: 150,
+          height: 150,
         }}
       />
     </Pressable>

@@ -1,4 +1,4 @@
-import { StyleSheet, FlatList, Dimensions } from 'react-native';
+import { StyleSheet, FlatList, Dimensions, Pressable, Text } from 'react-native';
 import React, {
   useLayoutEffect,
   useState,
@@ -25,7 +25,7 @@ type Props = NativeStackScreenProps<StackParamList, 'Gallery'>;
 export default function Gallery({ navigation, route }: Props) {
   const { images, clickedId } = route.params;
   const [currentImage, setCurrentImage] = useState(clickedId);
-  const listRef = useRef<any>();
+  const listRef = useRef<FlatList>(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -47,25 +47,17 @@ export default function Gallery({ navigation, route }: Props) {
           onPress={() => navigation.goBack()}></AnimatedIcon>
       ),
     });
-    
   }, [currentImage, images.length, navigation]);
 
-  const viewableItemsChanged = useRef(({ viewableItems }: any) => {
-    setCurrentImage(viewableItems[0].index);
+  const viewableItemsChanged = useRef(({ viewableItems }: any) => { 
+      setCurrentImage(viewableItems[0].index);
   }).current;
 
   const renderItem = useCallback(({ item }: any) => {
     return <GalleryImage image={item} />;
   }, []);
 
-  useEffect(() => {
-    listRef.current.scrollToIndex({
-      index: clickedId,
-      animated: false,
-    });
-  }, [clickedId]);
-
-  return (
+  return ( 
     <GestureHandlerRootView style={styles.wrapper}>
       <FlatList
         data={images}
@@ -73,6 +65,7 @@ export default function Gallery({ navigation, route }: Props) {
         horizontal
         pagingEnabled
         bounces={false}
+        initialScrollIndex={clickedId}
         scrollEventThrottle={32}
         keyExtractor={item => item.path}
         onViewableItemsChanged={viewableItemsChanged}

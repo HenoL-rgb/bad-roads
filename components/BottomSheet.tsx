@@ -19,6 +19,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Gesture } from 'react-native-gesture-handler';
+import { useAppSelector } from '../hooks/redux-hooks';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -39,6 +40,7 @@ const BottomSheet = forwardRef<
   const translateY = useSharedValue(0);
   const context = useSharedValue({ y: 0 });
   const active = useSharedValue(false);
+  const theme = useAppSelector(state => state.themeReducer);
 
   const scrollTo = useCallback(
     (destination: number) => {
@@ -113,7 +115,12 @@ const BottomSheet = forwardRef<
         ]}
         pointerEvents="none"></Animated.View>
       <GestureDetector gesture={tap}>
-        <Animated.View style={[styles.bottomSheetContainer, rBottomSheetStyle]}>
+        <Animated.View
+          style={[
+            styles.bottomSheetContainer,
+            rBottomSheetStyle,
+            { backgroundColor: theme.colors.background },
+          ]}>
           <View style={styles.line}></View>
           {children}
         </Animated.View>
@@ -130,7 +137,6 @@ const styles = StyleSheet.create({
   bottomSheetContainer: {
     height: SCREEN_HEIGHT,
     width: '100%',
-    backgroundColor: 'white',
     position: 'absolute',
     top: SCREEN_HEIGHT,
     borderRadius: 25,

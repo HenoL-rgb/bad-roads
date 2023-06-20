@@ -31,7 +31,7 @@ function AllRoutes() {
         <RouteList
           routes={routes}
           navigate={routeNavigate}
-          refetch={getAllRoutes}
+          refetchMut={getAllRoutes}
           loading={isLoading}
         />
       )}

@@ -38,7 +38,7 @@ function DangerRoutes() {
         <RouteList
           routes={dangerRoutes}
           navigate={routeNavigate}
-          refetch={getAllRoutes}
+          refetchMut={getAllRoutes}
           loading={isLoading}
         />
     </View>

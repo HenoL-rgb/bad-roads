@@ -41,22 +41,7 @@ export default function EditRoute({ navigation, route }: SaveRouteProps) {
         id: currentRoute.id,
       });
       console.log(response);
-    } else {
-      try {
-        const response = await saveRoute({
-          route: points,
-          icon: getUrl(points),
-          userId: userId,
-          
-        });
-        if ('data' in response) {
-          dispatch(saveRouteAction(transformRoute(response.data)));
-          dispatch(setInitialState());
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
+    } 
     navigation.navigate('Home', {
       screen: 'Map',
     });

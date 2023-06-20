@@ -1,4 +1,5 @@
 import { Point } from './Point';
+import * as assets from '../pages/save-edit-route/assets'
 
 export type SaveRoute = {
   route: Point[];
@@ -31,7 +32,7 @@ export type SaveRouteResponse = {
 };
 
 export type Obstacle = {
-  icon: string;
+  icon: keyof typeof assets;
   id: number;
   description: string;
 }

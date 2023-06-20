@@ -1,4 +1,5 @@
 import { Obstacle } from './SaveRouteQuery';
+import * as assets from '../pages/save-edit-route/assets'
 
 export type GetRoutesResponse = {
   createdAt: string;
@@ -30,8 +31,10 @@ export type GetRouteByIdResponse = {
   route: string;
   id: number;
   userId: number;
+  description: string;
   isApproved: boolean;
   icon: string;
+  obstacle: Obstacle;
   images: {
     path: string;
   }[];

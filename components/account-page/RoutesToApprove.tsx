@@ -1,11 +1,11 @@
 import { View } from 'react-native';
 import React, { memo } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { TabNavParamList } from '../pages/Home';
-import RouteList from './RouteList';
+import { TabNavParamList } from '../../pages/Home';
+import RouteList from '../RouteList';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import useGetAllRoutes from '../hooks/useGetAllRoutes';
-import { useAppSelector } from '../hooks/redux-hooks';
+import useGetAllRoutes from '../../hooks/useGetAllRoutes';
+import { useAppSelector } from '../../hooks/redux-hooks';
 
 type RootProps = BottomTabNavigationProp<TabNavParamList>;
 
@@ -15,7 +15,7 @@ enum RootStack {
 
  function RoutesToApprove() {
   const navigation = useNavigation<RootProps>();
-  const {routes, refetch, isLoading} = useGetAllRoutes();
+  const {routes, getAllRoutes, isLoading} = useGetAllRoutes();
   const theme = useAppSelector(state => state.themeReducer)
 
   const notApprovedRoutes = routes.filter(route => !route.isApproved)
@@ -32,7 +32,7 @@ enum RootStack {
         <RouteList
           routes={notApprovedRoutes}
           navigate={routeNavigate}
-          refetch={refetch}
+          refetchMut={getAllRoutes}
           loading={isLoading}
         />
     </View>

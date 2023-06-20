@@ -4,8 +4,10 @@ import { useAppDispatch, useAppSelector } from './redux-hooks';
 import { setRoutes } from '../store/slices/routes.slice';
 import { GetRoutesResponse } from '../types/GetAllRoutesQuery';
 import { transformRoute } from '../utils/transformRoute';
+import { Route } from '../types/Route';
+import { RefetchMutationType } from '../components/RouteList';
 
-const useGetAllRoutes = () => {
+const useGetAllRoutes = (): {routes: Route[], isLoading: boolean, getAllRoutes: RefetchMutationType} => {
   const dispatch = useAppDispatch();
   const routes = useAppSelector(state => state.routesReducer.routes);
   const [getAllRoutes, {isLoading}] = useGetAllRoutesMutation({});

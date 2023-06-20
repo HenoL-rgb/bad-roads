@@ -20,14 +20,10 @@ import {
   setDislike,
   setLike,
 } from '../../store/slices/routes.slice';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../../utils/colors';
 import { setUserDislike, setUserLike } from '../../store/slices/user.slice';
-import { HOST_IP } from '../../store/api/auth.api';
 import ImageBox from '../ImageBox';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { StackParamList } from '../../pages/AppWrapper';
-import User from './User';
+import FastInfoType from './FastInfoType';
 import Controls from './Controls';
 import MarkButtons from './MarkButtons';
 
@@ -54,6 +50,7 @@ function BottomSheetContent({
   const [approveRoute, { isLoading: approveLoading }] =
     useApproveRouteMutation();
   const user = useAppSelector(state => state.userReducer.user);
+  const theme = useAppSelector(state => state.themeReducer);
 
   const { data, refetch } = useGetRouteByIdQuery(routeId, {
     skip: routeId ? false : true,
@@ -111,34 +108,81 @@ function BottomSheetContent({
   return (
     <>
       {data ? (
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <User data={data} />
-            <Controls
-              approveLoading={approveLoading}
-              data={data}
-              routeId={routeId}
-              user={user}
-              editRoute={() => editRoute(routeId)}
-              deleteRoute={() => deleteRoute(routeId)}
-              handleApprove={handleApprove}
-            />
-            <MarkButtons
-              handleDislike={handleDislike}
-              handleLike={handleLike}
-              data={data}
-              mark={mark}
-            />
-            <ScrollView contentContainerStyle={styles.images} horizontal>
+        <View style={[styles.centeredView]}>
+          <View
+            style={[
+              styles.modalView,
+              {
+                backgroundColor: theme.colors.background,
+              },
+            ]}>
+            <View
+              style={[
+                styles.header,
+                {
+                  backgroundColor: theme.colors.card,
+                },
+              ]}>
+              <FastInfoType data={data} />
+              <Controls
+                approveLoading={approveLoading}
+                data={data}
+                routeId={routeId}
+                user={user}
+                editRoute={() => editRoute(routeId)}
+                deleteRoute={() => deleteRoute(routeId)}
+                handleApprove={handleApprove}
+              />
+              <MarkButtons
+                handleDislike={handleDislike}
+                handleLike={handleLike}
+                data={data}
+                mark={mark}
+              />
+            </View>
+
+            <ScrollView
+              style={{ maxHeight: 180 }}
+              contentContainerStyle={[
+                styles.images,
+                { backgroundColor: theme.colors.card },
+              ]}
+              bounces={false}
+              showsHorizontalScrollIndicator={false}
+              horizontal>
               {data.images.map((image, index) => (
-                <ImageBox path={image.path} key={image.path} images={data.images} clickedId={index} />
+                <ImageBox
+                  path={image.path}
+                  key={image.path}
+                  images={data.images}
+                  clickedId={index}
+                />
               ))}
             </ScrollView>
+            <View
+              style={[
+                styles.description,
+                { backgroundColor: theme.colors.card },
+              ]}>
+              <Text
+                style={[styles.descriptionTitle, { color: theme.colors.text }]}>
+                Description
+              </Text>
+              <ScrollView>
+                <Text style={[styles.modalText, { color: theme.colors.text }]}>
+                  {data.description}
+                </Text>
+              </ScrollView>
+            </View>
           </View>
         </View>
       ) : (
         <View style={styles.centeredView}>
-          <ActivityIndicator size="large" color={colors.blue} />
+          <ActivityIndicator
+            size="large"
+            color={colors.blue}
+            style={{ marginTop: 20 }}
+          />
         </View>
       )}
     </>
@@ -153,15 +197,25 @@ const styles = StyleSheet.create({
   },
   modalView: {
     flex: 1,
-    margin: 20,
+    margin: 15,
     backgroundColor: 'white',
     borderRadius: 20,
     rowGap: 6,
   },
 
+  header: {
+    padding: 5,
+    borderRadius: 5,
+  },
+
   images: {
-    flexDirection: 'row',
-    columnGap: 5,
+    columnGap: 3,
+    padding: 10,
+    height: 'auto',
+    maxHeight: 200,
+    backgroundColor: '#f7f7f7',
+    alignSelf: 'flex-start',
+    borderRadius: 5,
   },
 
   textStyle: {
@@ -171,7 +225,20 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
-    textAlign: 'center',
+    paddingLeft: 2,
+    fontSize: 16,
     color: colors.black,
+  },
+  description: {
+    flex: 1,
+    padding: 5,
+    borderRadius: 5,
+    maxHeight: 250,
+    backgroundColor: colors.eyePress,
+    justifyContent: 'flex-start',
+  },
+  descriptionTitle: {
+    fontSize: 20,
+    marginBottom: 10,
   },
 });

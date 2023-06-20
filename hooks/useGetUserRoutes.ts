@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useGetRoutesByUserIdQuery } from '../store/api/routes.api';
 import { useAppSelector } from './redux-hooks';
-import { GetRouteByIdResponse, GetRoutesResponse } from '../types/GetAllRoutesQuery';
+import {
+  GetRouteByIdResponse,
+  GetRoutesResponse,
+} from '../types/GetAllRoutesQuery';
+import { transformRoute } from '../utils/transformRoute';
+import { Route } from '../types/Route';
 
 const useGetUserRoutes = () => {
-  const [routes, setRoutes] = useState<GetRoutesResponse[]>([]);
+  const [routes, setRoutes] = useState<Route[]>([]);
   const userId = useAppSelector(state => state.userReducer.user?.id);
   const {
     data: routesData,
@@ -17,14 +22,14 @@ const useGetUserRoutes = () => {
   useEffect(() => {
     setRoutes(
       routesData
-        ? routesData?.map(
-            (routeData: GetRoutesResponse) => ({ ...routeData, route: JSON.parse(routeData.route) }),
+        ? routesData?.map((routeData: GetRoutesResponse) =>
+            transformRoute(routeData),
           )
         : [],
     );
   }, [routesData]);
 
-  return {routes, refetch, isLoading};
+  return { routes, refetch, isLoading };
 };
 
-export default useGetUserRoutes
+export default useGetUserRoutes;

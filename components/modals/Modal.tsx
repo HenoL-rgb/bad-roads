@@ -42,7 +42,7 @@ const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
           active.value = value;
           scrollTo(0);
         } else {
-          scrollTo(-SCREEN_HEIGHT + (height.value / 7));
+          scrollTo(-SCREEN_HEIGHT + (height.value / 2));
         }
       },
       [active, scrollTo, height.value],
