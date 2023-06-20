@@ -2,7 +2,6 @@ import {
   View,
   Switch,
   StyleSheet,
-  Pressable,
 } from 'react-native';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
@@ -28,11 +27,10 @@ import BackButton from '../components/BackButton';
 type Props = NativeStackScreenProps<StackParamList, 'Settings'>;
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function Settings({ navigation }: Props) {
   const dispatch = useAppDispatch();
-  const { dark, colors } = useAppSelector(state => state.themeReducer);
+  const { dark } = useAppSelector(state => state.themeReducer);
 
   const progress = useDerivedValue(() => {
     return dark

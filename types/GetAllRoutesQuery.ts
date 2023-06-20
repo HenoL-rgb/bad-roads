@@ -1,5 +1,4 @@
 import { Obstacle } from './SaveRouteQuery';
-import * as assets from '../pages/save-edit-route/assets'
 
 export type GetRoutesResponse = {
   createdAt: string;

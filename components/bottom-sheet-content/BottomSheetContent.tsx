@@ -1,10 +1,8 @@
 import {
   View,
   Text,
-  Pressable,
   StyleSheet,
   ActivityIndicator,
-  Image,
   ScrollView,
 } from 'react-native';
 import React, { memo, useEffect, useState } from 'react';

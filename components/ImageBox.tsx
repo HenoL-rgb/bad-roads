@@ -1,9 +1,8 @@
-import { View, Text, Image, Pressable } from 'react-native';
+import { Image, Pressable } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackParamList } from '../pages/AppWrapper';
-import { ImageOrVideo } from 'react-native-image-crop-picker';
 
 type ImageBoxProps = {
   path: string;

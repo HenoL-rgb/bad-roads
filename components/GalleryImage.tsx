@@ -1,4 +1,4 @@
-import { View, Text, Image, Dimensions } from 'react-native';
+import { Image, Dimensions } from 'react-native';
 import React from 'react';
 import Animated, {
   useAnimatedGestureHandler,
@@ -6,7 +6,6 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { ImageOrVideo } from 'react-native-image-crop-picker';
 import {
   PinchGestureHandler,
   PinchGestureHandlerGestureEvent,

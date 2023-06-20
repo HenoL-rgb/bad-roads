@@ -1,7 +1,6 @@
-import { View, Text, StyleSheet, useColorScheme } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
 import Form from '../components/Form';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStack } from '../navigation/AuthContainer';
 import { Pressable } from 'react-native';
