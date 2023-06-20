@@ -1,4 +1,10 @@
-import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+} from 'react-native';
 import React from 'react';
 import { Theme } from '@react-navigation/native';
 import { colors } from '../../utils/colors';
@@ -24,16 +30,18 @@ export default function Controls({
         <Text style={[{ color: theme.colors.text }]}>CANCEL</Text>
       </Pressable>
       <Pressable
-        style={[
+        style={({ pressed }) => [
           styles.cancelBtn,
           styles.saveBtn,
-          { backgroundColor: theme.colors.text },
+          { backgroundColor: theme.colors.text, opacity: pressed ? 0.8 : 1 },
         ]}
         onPress={handleSaveRoute}>
         {Loading ? (
           <ActivityIndicator size={'small'} color={colors.white} />
         ) : (
-          <Text style={[{ color: theme.colors.card }]}>{mode.toUpperCase()}</Text>
+          <Text style={[{ color: theme.colors.card }]}>
+            {mode.toUpperCase()}
+          </Text>
         )}
       </Pressable>
     </View>

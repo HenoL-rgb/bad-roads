@@ -1,11 +1,20 @@
-import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+} from 'react-native';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../utils/colors';
+import { useAppSelector } from '../hooks/redux-hooks';
 
 type FormProps = {
   onSubmit: (data: { email: string; password: string }) => void;
+  isLoading: boolean;
 };
 
 enum visibilityIcon {
@@ -13,7 +22,7 @@ enum visibilityIcon {
   HIDDEN = 'visibility-off',
 }
 
-export default function Form({ onSubmit }: FormProps) {
+export default function Form({ onSubmit, isLoading }: FormProps) {
   const {
     control,
     handleSubmit,
@@ -26,6 +35,8 @@ export default function Form({ onSubmit }: FormProps) {
   });
 
   const [showPass, setShowPass] = useState(true);
+  const theme = useAppSelector(state => state.themeReducer);
+  const textStyle = { color: theme.colors.text };
 
   return (
     <View style={styles.wrapper}>
@@ -40,12 +51,12 @@ export default function Form({ onSubmit }: FormProps) {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            style={styles.emailInput}
+            style={[styles.emailInput, textStyle]}
           />
         )}
         name="email"
       />
-      {errors.email && <Text>This is required.</Text>}
+      {errors.email && <Text style={textStyle}>This is required.</Text>}
 
       <Controller
         control={control}
@@ -61,32 +72,37 @@ export default function Form({ onSubmit }: FormProps) {
               onChangeText={onChange}
               value={value}
               secureTextEntry={showPass}
-              style={styles.input}
+              style={[styles.input, textStyle]}
             />
-            <Pressable onPress={() => setShowPass(!showPass)} style={({pressed}) => [
-              {
-                backgroundColor: pressed ? colors.eyePress : 'transparent',
-                padding: 5,
-                borderRadius: 30,
-              }
-            ]}>
+            <Pressable
+              onPress={() => setShowPass(!showPass)}
+              style={({ pressed }) => [
+                {
+                  backgroundColor: pressed ? colors.eyePress : 'transparent',
+                  padding: 5,
+                  borderRadius: 30,
+                },
+              ]}>
               <Icon
                 name={showPass ? visibilityIcon.VISIBLE : visibilityIcon.HIDDEN}
                 size={20}
-                color="white"
+                color={theme.colors.text}
               />
             </Pressable>
           </View>
         )}
         name="password"
       />
-      {errors.password && <Text>This is required.</Text>}
+      {errors.password && <Text style={textStyle}>This is required.</Text>}
 
-      <Pressable onPress={handleSubmit(onSubmit)} style={({pressed}) => [
-        {...styles.submitBtn,
-        }
-      ]}>
-        <Text style={styles.btnText}>Submit</Text>
+      <Pressable
+        onPress={handleSubmit(onSubmit)}
+        style={({ pressed }) => [{ ...styles.submitBtn, opacity: pressed ? 0.8 : 1 }]}>
+        {isLoading ? (
+          <ActivityIndicator size='small' color={colors.white} />
+        ) : (
+          <Text style={styles.btnText}>Submit</Text>
+        )}
       </Pressable>
     </View>
   );
@@ -141,7 +157,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.white,
   },
-  showPassBtn: {
-    
-  }
+  showPassBtn: {},
 });

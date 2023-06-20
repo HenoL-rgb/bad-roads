@@ -1,7 +1,7 @@
 import { View, StyleSheet } from 'react-native';
 import React from 'react';
 import { Marker } from 'react-native-yamap';
-import Animated, { ZoomInDown } from 'react-native-reanimated';
+import Animated, { ZoomInDown, ZoomOutDown } from 'react-native-reanimated';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { setCurrentMarker } from '../store/slices/routes.slice';
 
@@ -24,7 +24,7 @@ export default function MapMarkers() {
           onPress={() => {
             dispatch(setCurrentMarker(CurrentMarker.END));
           }}>
-          <Animated.View entering={ZoomInDown.springify().mass(0.1).damping(10)} style={styles.marker}>
+          <Animated.View entering={ZoomInDown.springify().mass(0.1).damping(10)} exiting={ZoomOutDown} style={styles.marker}>
             <View style={styles.markerTop}></View>
             <View style={styles.markerBottom}></View>
           </Animated.View>
@@ -40,7 +40,7 @@ export default function MapMarkers() {
               dispatch(setCurrentMarker(CurrentMarker.START));
             }
           }}>
-          <View style={styles.marker}>
+          <Animated.View entering={ZoomInDown.springify().mass(0.1).damping(10)} exiting={ZoomOutDown} style={styles.marker}>
             <View
               style={{
                 ...styles.markerTop,
@@ -51,7 +51,7 @@ export default function MapMarkers() {
                 ...styles.markerBottom,
                 backgroundColor: 'green',
               }}></View>
-          </View>
+          </Animated.View>
         </Marker>
       )}
     </>

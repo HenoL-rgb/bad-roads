@@ -1,34 +1,29 @@
 import {
-  Text,
-  SafeAreaView,
   View,
   Switch,
   StyleSheet,
-  Button,
   Pressable,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { setTheme } from '../store/slices/theme.slice';
 import {
   DarkTheme,
   DefaultTheme,
   useFocusEffect,
-  useNavigation,
 } from '@react-navigation/native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Animated, {
   interpolateColor,
   useAnimatedStyle,
   useDerivedValue,
-  useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { withTheme } from 'react-native-elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStack, StackParamList } from './AppWrapper';
+import { StackParamList } from './AppWrapper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { clearUser, setAuth } from '../store/slices/user.slice';
+import { setAuth } from '../store/slices/user.slice';
+import BackButton from '../components/BackButton';
 
 type Props = NativeStackScreenProps<StackParamList, 'Settings'>;
 
@@ -101,12 +96,7 @@ export default function Settings({ navigation }: Props) {
         </Animated.Text>
       ),
       headerLeft: props => (
-        <AnimatedIcon
-          name="arrow-back"
-          style={[{ paddingRight: 20, justifyContent: 'center' }, rTextStyle]}
-          size={24}
-          {...props}
-          onPress={() => navigation.goBack()}></AnimatedIcon>
+        <BackButton props={props} style={rTextStyle} />
       ),
       headerRight: props => (
         <AnimatedIcon

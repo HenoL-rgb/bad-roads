@@ -26,7 +26,7 @@ import { ModalRefProps } from '../components/modals/Modal';
 import DeleteModal from '../components/modals/DeleteModal';
 import { colors } from '../utils/colors';
 import { StackParamList } from './AppWrapper';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import {
   setMode,
   setMarkersVisible,
@@ -66,6 +66,7 @@ export default function Map({ route }: Props) {
   const modalRef = useRef<ModalRefProps>(null);
   const [delRoute, { isLoading: deleteLoading }] = useDeleteRouteMutation();
   const navigation = useNavigation<RootNavigation>();
+  const theme = useAppSelector(state => state.themeReducer);
 
   const openSheet: () => void = useCallback(() => {
     bottomSheetRef.current?.scrollTo(-350);
@@ -141,9 +142,13 @@ export default function Map({ route }: Props) {
     }
   }
 
+  useFocusEffect(useCallback(() => {
+    dispatch(setInitialState())
+  }, [dispatch]))
+
   if (isLoading) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: theme.colors.background }}>
         <ActivityIndicator size="large" color={colors.blue} />
       </View>
     );

@@ -1,10 +1,16 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { View, Text } from 'react-native';
+import React from 'react';
+import Modal, { ModalRefProps } from './Modal';
 
-export default function ErrorModal() {
-  return (
+type Props = {
+  modalRef: React.RefObject<ModalRefProps>;
+  error: string;
+};
+
+export default function ErrorModal({modalRef, error}: Props) {
+  return <Modal ref={modalRef}>
     <View>
-      <Text>ErrorModal</Text>
+      
     </View>
-  )
+  </Modal>;
 }

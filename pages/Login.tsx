@@ -6,14 +6,16 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStack } from '../navigation/AuthContainer';
 import { Pressable } from 'react-native';
 import { useLoginMutation } from '../store/api/auth.api';
+import { useAppSelector } from '../hooks/redux-hooks';
 
 type Props = NativeStackScreenProps<AuthStack, 'Login'>;
 
 export default function Login({ navigation }: Props) {
-  const isDarkMode = useColorScheme() === 'dark';
+  const theme = useAppSelector(state => state.themeReducer);
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: theme.colors.background
   };
+  const textStyle = {color: theme.colors.text};
 
   const [login, {isLoading}] = useLoginMutation();
 
@@ -23,12 +25,12 @@ export default function Login({ navigation }: Props) {
 
   return (
     <View style={{ ...styles.wrapper, ...backgroundStyle }}>
-      <Text style={styles.title}>Login</Text>
-      <Form onSubmit={onSubmit} />
+      <Text style={[styles.title, textStyle]}>Login</Text>
+      <Form onSubmit={onSubmit} isLoading={isLoading} />
       <View style={styles.linkWrapper}>
-        <Text>Dont have an account?</Text>
+        <Text style={textStyle}>Dont have an account?</Text>
         <Pressable onPress={() => navigation.goBack()}>
-          <Text style={styles.link}>Register</Text>
+          <Text style={[styles.link, textStyle]}>Register</Text>
         </Pressable>
       </View>
     </View>

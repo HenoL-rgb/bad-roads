@@ -43,6 +43,8 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     flexDirection: 'row',
+    width: 400,
+    paddingRight: 5,
   },
   iconWrapper: {
     padding: 10,

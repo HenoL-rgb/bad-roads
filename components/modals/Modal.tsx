@@ -42,11 +42,14 @@ const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
           active.value = value;
           scrollTo(0);
         } else {
-          scrollTo(-SCREEN_HEIGHT + (height.value / 2));
+          scrollTo(-SCREEN_HEIGHT / 2 - height.value / 1.5 );
         }
       },
       [active, scrollTo, height.value],
     );
+
+    console.log(SCREEN_HEIGHT);
+    
 
     useImperativeHandle(ref, () => ({ setActive }), [setActive]);
 
@@ -97,6 +100,7 @@ const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
           style={[
             {
               minHeight: 350,
+              maxHeight: 600,
               width: 340,
               backgroundColor: 'white',
               overflow: 'hidden',

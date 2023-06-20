@@ -6,29 +6,31 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStack } from '../navigation/AuthContainer';
 import { Pressable } from 'react-native';
 import { useRegisterMutation } from '../store/api/auth.api';
+import { useAppSelector } from '../hooks/redux-hooks';
 
 type Props = NativeStackScreenProps<AuthStack, 'Register'>;
 
 export default function Register({ navigation }: Props) {
-  const isDarkMode = useColorScheme() === 'dark';
+  const theme = useAppSelector(state => state.themeReducer);
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: theme.colors.background
   };
+  const textStyle = {color: theme.colors.text}
 
-  const [register] = useRegisterMutation();
+  const [register, {isLoading}] = useRegisterMutation();
 
   const onSubmit = async (data: { email: string; password: string }) => {
-    const response = await register({...data, email: data.email.toLowerCase()});
+    await register({...data, email: data.email.toLowerCase()});
   };
 
   return (
     <View style={{ ...styles.wrapper, ...backgroundStyle }}>
-      <Text style={styles.title}>Register</Text>
-      <Form onSubmit={onSubmit} />
+      <Text style={[styles.title, textStyle]}>Register</Text>
+      <Form onSubmit={onSubmit} isLoading={isLoading}/>
       <View style={styles.linkWrapper}>
-        <Text>Already have an account?</Text>
+        <Text style={textStyle}>Already have an account?</Text>
         <Pressable onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.link}>Login</Text>
+          <Text style={[styles.link, textStyle]}>Login</Text>
         </Pressable>
       </View>
     </View>

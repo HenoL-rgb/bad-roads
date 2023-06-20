@@ -140,15 +140,13 @@ function BottomSheetContent({
                 mark={mark}
               />
             </View>
-
-            <ScrollView
-              style={{ maxHeight: 180 }}
-              contentContainerStyle={[
+            <View style={[
                 styles.images,
                 { backgroundColor: theme.colors.card },
-              ]}
-              bounces={false}
+              ]}>
+            <ScrollView
               showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.imagesContainer}
               horizontal>
               {data.images.map((image, index) => (
                 <ImageBox
@@ -159,6 +157,8 @@ function BottomSheetContent({
                 />
               ))}
             </ScrollView>
+            </View>
+            
             <View
               style={[
                 styles.description,
@@ -209,13 +209,13 @@ const styles = StyleSheet.create({
   },
 
   images: {
-    columnGap: 3,
     padding: 10,
-    height: 'auto',
-    maxHeight: 200,
     backgroundColor: '#f7f7f7',
-    alignSelf: 'flex-start',
     borderRadius: 5,
+  },
+
+  imagesContainer: {
+    columnGap: 3,
   },
 
   textStyle: {
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   descriptionTitle: {
-    fontSize: 20,
+    fontSize: 18,
     marginBottom: 10,
   },
 });
