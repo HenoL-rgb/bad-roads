@@ -10,6 +10,7 @@ import type {
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { Login, LoginResponse } from '../../types/LoginQuery';
 import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
+import { IError } from '../../pages/AppWrapper';
 
 export const HOST_IP = '10.211.48.200:7000';
 //const HOST_IP = '192.168.100.8:7000';
@@ -22,7 +23,6 @@ const baseQuery = fetchBaseQuery({
     const token = await EncryptedStorage.getItem('token');
 
     if (userData.isAuth && token && endpoint !== 'refresh') {
-
       headers.set('Authorization', `Bearer ${token}`);
     } else if (endpoint === 'refresh') {
       const refresh = await EncryptedStorage.getItem('refresh');
@@ -33,32 +33,38 @@ const baseQuery = fetchBaseQuery({
     return headers;
   },
   credentials: 'include',
-});
+}) as BaseQueryFn<
+string | FetchArgs,
+unknown,
+IError
+>;
 
 export const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,
-  FetchBaseQueryError
+  IError
 > = async (args, api, extraOptions) => {
-
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error && result.error.status === 401) {
     const refreshResult: QueryReturnValue<
       unknown,
-      FetchBaseQueryError,
-      FetchBaseQueryMeta
+      IError
     > = await baseQuery(
       { url: 'auth/refresh' },
       { ...api, endpoint: 'refresh' },
       extraOptions,
     );
     // store the new token
-
-    if (refreshResult.error && refreshResult.error.status === 401) {
-      await EncryptedStorage.clear();
-      api.dispatch(setAuth(false));
-      return result;
+    if (refreshResult.error) {
+    
+      if (refreshResult.error.status === 401) {
+        await EncryptedStorage.clear();
+        api.dispatch(setAuth(false));
+        return result;
+      } else {
+        throw new Error(refreshResult.error.data.message);
+      }
     }
 
     const data = refreshResult.data as {
@@ -107,7 +113,6 @@ export const authApi = createApi({
           dispatch(setAuth(true));
         } catch (error) {
           dispatch(setAuth(false));
-          throw new Error('Error while login');
         }
       },
     }),

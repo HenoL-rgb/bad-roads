@@ -1,25 +1,33 @@
 import { View, Text, StyleSheet } from 'react-native';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import Form from '../components/Form';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStack } from '../navigation/AuthContainer';
 import { Pressable } from 'react-native';
 import { useLoginMutation } from '../store/api/auth.api';
 import { useAppSelector } from '../hooks/redux-hooks';
+import { ModalRefProps } from '../components/modals/Modal';
+import ErrorModal from '../components/modals/ErrorModal';
+import { IError } from './AppWrapper';
 
 type Props = NativeStackScreenProps<AuthStack, 'Login'>;
 
 export default function Login({ navigation }: Props) {
   const theme = useAppSelector(state => state.themeReducer);
   const backgroundStyle = {
-    backgroundColor: theme.colors.background
+    backgroundColor: theme.colors.background,
   };
-  const textStyle = {color: theme.colors.text};
+  const textStyle = { color: theme.colors.text };
 
-  const [login, {isLoading}] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
+  const [error, setError] = useState<string>('Error');
+  const modalRef = useRef<ModalRefProps>(null);
 
   const onSubmit = async (data: { email: string; password: string }) => {
-    await login({...data, email: data.email.toLowerCase()});
+    login({ ...data, email: data.email.toLowerCase() }).unwrap().catch((error: IError) => {
+      setError(error.data.message);
+      modalRef.current?.setActive(true);
+    })
   };
 
   return (
@@ -32,6 +40,7 @@ export default function Login({ navigation }: Props) {
           <Text style={[styles.link, textStyle]}>Register</Text>
         </Pressable>
       </View>
+      <ErrorModal modalRef={modalRef} error={error} />
     </View>
   );
 }

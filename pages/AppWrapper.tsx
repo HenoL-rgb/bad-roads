@@ -38,17 +38,27 @@ export type StackParamList = {
 
 export const RootStack = createNativeStackNavigator<StackParamList>();
 
+export type IError = {
+  data: {
+    message: string;
+  },
+  status: number;
+}
+
 function AppWrapper(): JSX.Element {
   const theme = useAppSelector(state => state.themeReducer);
   const {
     isLoading: loadRefresh,
+    error,
     isError,
     refetch: retryConnection,
   } = useRefreshQuery({}, {});
 
   const { isAuth } = useAppSelector(state => state.userReducer);
   
-  if (isError && isAuth === null) {
+  if (isError && ('data' in error && error.status !== 401) && isAuth === null) {
+    console.log("App wrapper ", error);
+    
     return (
       <View style={styles.container}>
         <Text>Server error :(</Text>
