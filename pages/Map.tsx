@@ -1,13 +1,7 @@
-import {
-  View,
-  NativeSyntheticEvent,
-  ActivityIndicator,
-} from 'react-native';
+import { View, NativeSyntheticEvent, ActivityIndicator } from 'react-native';
 import React, { useCallback, useRef } from 'react';
 import YaMap from 'react-native-yamap';
-import {
-  useDeleteRouteMutation,
-} from '../store/api/routes.api';
+import { useDeleteRouteMutation } from '../store/api/routes.api';
 import { Point } from '../types/Point';
 import { RouteSection } from '../types/Route';
 import MapButtons from '../components/MapButtons';
@@ -34,6 +28,7 @@ import {
   setInitialState,
   setCurrentMarker,
   setPoints,
+  deleteRouteAction,
 } from '../store/slices/routes.slice';
 import useGetAllRoutes from '../hooks/useGetAllRoutes';
 
@@ -79,18 +74,20 @@ export default function Map({ route }: Props) {
   }, [dispatch]);
 
   const hideSheet: () => void = useCallback(() => {
-    dispatch(setCurrentRoute({
-      start: null,
-      end: null,
-      id: 0,
-    }));
+    dispatch(
+      setCurrentRoute({
+        start: null,
+        end: null,
+        id: 0,
+      }),
+    );
   }, [dispatch]);
 
   const deleteRoute: (routeId: number) => Promise<void> = useCallback(
     async (routeId: number) => {
       const response = await delRoute({ routeId });
       console.log(response);
-      
+      dispatch(deleteRouteAction({ routeId }));
       dispatch(setInitialState());
       modalRef.current?.setActive(false);
       bottomSheetRef.current?.scrollTo(0);
@@ -142,13 +139,21 @@ export default function Map({ route }: Props) {
     }
   }
 
-  useFocusEffect(useCallback(() => {
-    dispatch(setInitialState())
-  }, [dispatch]))
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(setInitialState());
+    }, [dispatch]),
+  );
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: theme.colors.background }}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: theme.colors.background,
+        }}>
         <ActivityIndicator size="large" color={colors.blue} />
       </View>
     );

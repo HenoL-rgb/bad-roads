@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { SaveRoute, SaveRouteResponse } from '../../types/SaveRouteQuery';
+import { Obstacle, SaveRoute, SaveRouteResponse } from '../../types/SaveRouteQuery';
 import { DeleteRoute, DeleteRouteResponse, GetRouteByIdResponse, GetRoutesResponse } from '../../types/GetAllRoutesQuery';
 import { baseQueryWithReauth } from './auth.api';
 import { UpdateRoute, UpdateRouteResponse } from '../../types/UpdateRouteQuery';
@@ -83,7 +83,7 @@ export const routesApi = createApi({
       })
     }),
 
-    getObstacles: build.query({
+    getObstacles: build.query<Obstacle[], void>({
       query: () => ({
         url: 'api/obstacles'
       })

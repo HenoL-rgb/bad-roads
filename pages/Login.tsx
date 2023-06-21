@@ -33,7 +33,7 @@ export default function Login({ navigation }: Props) {
   return (
     <View style={{ ...styles.wrapper, ...backgroundStyle }}>
       <Text style={[styles.title, textStyle]}>Login</Text>
-      <Form onSubmit={onSubmit} isLoading={isLoading} />
+      <Form onSubmit={onSubmit} isLoading={isLoading} mode='login' />
       <View style={styles.linkWrapper}>
         <Text style={textStyle}>Dont have an account?</Text>
         <Pressable onPress={() => navigation.goBack()}>

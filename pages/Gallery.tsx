@@ -10,6 +10,7 @@ import Animated from 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import GalleryImage from '../components/GalleryImage';
 import { ImageOrVideo } from 'react-native-image-crop-picker';
+import { ListRenderItem } from 'react-native';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -60,7 +61,12 @@ export default function Gallery({ navigation, route }: GalleryProps) {
     },
   ).current;
 
-  const renderItem = useCallback(({ item }: RenderItem) => {
+  const renderItem: ListRenderItem<
+    | ImageOrVideo
+    | {
+        path: string;
+      }
+  > = useCallback(({ item }) => {
     return <GalleryImage image={item} />;
   }, []);
 

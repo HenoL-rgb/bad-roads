@@ -6,15 +6,17 @@ import {
   Pressable,
   ActivityIndicator,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../utils/colors';
 import { useAppSelector } from '../hooks/redux-hooks';
+import { useFocusEffect } from '@react-navigation/native';
 
 type FormProps = {
   onSubmit: (data: { email: string; password: string }) => void;
   isLoading: boolean;
+  mode: 'register' | 'login'
 };
 
 enum visibilityIcon {
@@ -22,11 +24,12 @@ enum visibilityIcon {
   HIDDEN = 'visibility-off',
 }
 
-export default function Form({ onSubmit, isLoading }: FormProps) {
+export default function Form({ onSubmit, isLoading, mode }: FormProps) {
   const {
     control,
     handleSubmit,
     formState: { errors },
+    reset
   } = useForm({
     defaultValues: {
       email: '',
@@ -38,16 +41,29 @@ export default function Form({ onSubmit, isLoading }: FormProps) {
   const theme = useAppSelector(state => state.themeReducer);
   const textStyle = { color: theme.colors.text };
 
+  useFocusEffect(useCallback(() => {
+    reset();
+  }, [reset]))
+
   return (
     <View style={styles.wrapper}>
       <Controller
         control={control}
         rules={{
-          required: true,
+          required: {
+            value: true,
+            message: 'This field is required'
+          },
+          pattern:  {
+            value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+            
+            message: 'Invalid email'
+          }
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             placeholder="Email"
+            placeholderTextColor={textStyle.color}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -56,13 +72,19 @@ export default function Form({ onSubmit, isLoading }: FormProps) {
         )}
         name="email"
       />
-      {errors.email && <Text style={textStyle}>This is required.</Text>}
+      {errors.email && <Text style={[textStyle, {width: 250, color: colors.red}]}>{errors.email.message}</Text>}
 
       <Controller
         control={control}
         rules={{
           maxLength: 100,
           required: true,
+          pattern: mode === 'register' ? {
+            value:
+              /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+            message:
+              'Password should >8 characters & contain at least one uppercase, lowercase letter, one number & special character',
+          } : undefined,
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <View style={styles.inputWrapper}>
@@ -70,6 +92,7 @@ export default function Form({ onSubmit, isLoading }: FormProps) {
               placeholder="Password"
               onBlur={onBlur}
               onChangeText={onChange}
+              placeholderTextColor={textStyle.color}
               value={value}
               secureTextEntry={showPass}
               style={[styles.input, textStyle]}
@@ -93,13 +116,15 @@ export default function Form({ onSubmit, isLoading }: FormProps) {
         )}
         name="password"
       />
-      {errors.password && <Text style={textStyle}>This is required.</Text>}
+      {errors.password && <Text style={[textStyle, {width: 250, color: colors.red}]}>{errors.password.message}</Text>}
 
       <Pressable
         onPress={handleSubmit(onSubmit)}
-        style={({ pressed }) => [{ ...styles.submitBtn, opacity: pressed ? 0.8 : 1 }]}>
+        style={({ pressed }) => [
+          { ...styles.submitBtn, opacity: pressed ? 0.8 : 1 },
+        ]}>
         {isLoading ? (
-          <ActivityIndicator size='small' color={colors.white} />
+          <ActivityIndicator size="small" color={colors.white} />
         ) : (
           <Text style={styles.btnText}>Submit</Text>
         )}

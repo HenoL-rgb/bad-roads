@@ -1,8 +1,9 @@
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import React, { useRef, useState } from 'react';
 import ImageSelector from '../../components/save-edit-page/ImageSelector';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
 import {
+  useGetObstaclesQuery,
   useSaveRouteMutation,
 } from '../../store/api/routes.api';
 import { getUrl } from '../../utils/getUrl';
@@ -20,7 +21,9 @@ import TopIcon from '../../components/save-edit-page/TopIcon';
 import ObstaclesDropDown from '../../components/save-edit-page/ObstacleType/ObstaclesDropDown';
 import { ModalRefProps } from '../../components/modals/Modal';
 import { Image } from 'react-native-image-crop-picker';
-import * as assets from '../../pages/save-edit-route/assets'
+import * as assets from '../../pages/save-edit-route/assets';
+import { Obstacle } from '../../types/SaveRouteQuery';
+import { colors } from '../../utils/colors';
 
 type SaveRouteProps = NativeStackScreenProps<StackParamList, 'SaveRoute'>;
 
@@ -34,21 +37,10 @@ type Info = {
   images: Image[];
 };
 
-const data: {id: number, icon: keyof typeof assets, description: string}[] = [
-  {
-    id: 1,
-    icon: 'Other',
-    description:
-      'Указатель предупреждает участников дорожного движения' +
-      ' о подъезде к участку дороги, на котором имеются опасности,' +
-      ' не предусмотренные другими предупреждающими знаками',
-  },
-  
-];
-
 export default function SaveRoute({ navigation, route }: SaveRouteProps) {
   const [saveRoute, { isLoading: saveLoading }] = useSaveRouteMutation();
-  
+  const { data: obstaclesData, isLoading } = useGetObstaclesQuery();
+
   const [info, setInfo] = useState<Info>({
     obstacle: null,
     description: null,
@@ -61,7 +53,10 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
   const ref = useRef<ModalRefProps>(null);
 
   const setObstacle = (id: number) => {
-    const obstacleFound = data.find(item => item.id === id);
+    const obstacleFound = obstaclesData?.find(
+      (item: Obstacle) => item.id === id,
+    );
+
     if (!obstacleFound || !ref.current) {
       return;
     }
@@ -86,32 +81,37 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
   }
 
   function handleImages(images: Image[]) {
-    setInfo({...info, images: images})
+    setInfo({ ...info, images: images });
   }
   //update correct
   async function handleSaveRoute(): Promise<void> {
     if (!userId || !info.obstacle) return;
     getUrl(points);
 
-      const response = await saveRoute({
-        route: points,
-        icon: getUrl(points),
-        userId: userId,
-        obstacleId: info.obstacle.id,
-        description: info.description ? info.description : '',
-        images: info.images.map(image => `${image.data}`),
-      });
-      
-      if ('data' in response) {
-        dispatch(saveRouteAction(transformRoute(response.data)));
-        dispatch(setInitialState());
-      }
-      navigation.navigate('Home', {
-        screen: 'Map',
-      });
-    
+    const response = await saveRoute({
+      route: points,
+      icon: getUrl(points),
+      userId: userId,
+      obstacleId: info.obstacle.id,
+      description: info.description ? info.description : '',
+      images: info.images.map(image => `${image.data}`),
+    });
 
-    
+    if ('data' in response) {
+      dispatch(saveRouteAction(transformRoute(response.data)));
+      dispatch(setInitialState());
+    }
+    navigation.navigate('Home', {
+      screen: 'Map',
+    });
+  }
+
+  if (isLoading) {
+    return (
+      <View style={[styles.wrapper, { backgroundColor: theme.colors.card }]}>
+        <ActivityIndicator size="large" color={colors.blue} />
+      </View>
+    );
   }
 
   return (
@@ -142,11 +142,13 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
         mode="save"
         theme={theme}
       />
-      <ObstaclesDropDown
-        data={data}
-        modalRef={ref}
-        setObstacle={value => setObstacle(value)}
-      />
+      {obstaclesData && (
+        <ObstaclesDropDown
+          data={obstaclesData}
+          modalRef={ref}
+          setObstacle={value => setObstacle(value)}
+        />
+      )}
     </View>
   );
 }

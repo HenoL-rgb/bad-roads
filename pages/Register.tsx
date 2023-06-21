@@ -1,11 +1,14 @@
 import { View, Text, StyleSheet } from 'react-native';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import Form from '../components/Form';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStack } from '../navigation/AuthContainer';
 import { Pressable } from 'react-native';
 import { useRegisterMutation } from '../store/api/auth.api';
 import { useAppSelector } from '../hooks/redux-hooks';
+import { ModalRefProps } from '../components/modals/Modal';
+import { IError } from './AppWrapper';
+import ErrorModal from '../components/modals/ErrorModal';
 
 type Props = NativeStackScreenProps<AuthStack, 'Register'>;
 
@@ -15,23 +18,29 @@ export default function Register({ navigation }: Props) {
     backgroundColor: theme.colors.background
   };
   const textStyle = {color: theme.colors.text}
+  const modalRef = useRef<ModalRefProps>(null);
 
   const [register, {isLoading}] = useRegisterMutation();
+  const [error, setError] = useState<string>('Error');
 
   const onSubmit = async (data: { email: string; password: string }) => {
-    await register({...data, email: data.email.toLowerCase()});
+    register({...data, email: data.email.toLowerCase()}).unwrap().catch((error: IError) => {
+      setError(error.data.message);
+      modalRef.current?.setActive(true);
+    });
   };
 
   return (
     <View style={{ ...styles.wrapper, ...backgroundStyle }}>
       <Text style={[styles.title, textStyle]}>Register</Text>
-      <Form onSubmit={onSubmit} isLoading={isLoading}/>
+      <Form onSubmit={onSubmit} isLoading={isLoading} mode='register'/>
       <View style={styles.linkWrapper}>
         <Text style={textStyle}>Already have an account?</Text>
         <Pressable onPress={() => navigation.navigate('Login')}>
           <Text style={[styles.link, textStyle]}>Login</Text>
         </Pressable>
       </View>
+      <ErrorModal modalRef={modalRef} error={error} />
     </View>
   );
 }
