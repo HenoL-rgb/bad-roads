@@ -5,6 +5,12 @@ export type Login = {
   password: string;
 };
 
+export type Register = {
+  email: string;
+  password: string;
+  notificationToken: string;
+}
+
 export type LoginResponse = {
   accessToken: string;
   refreshToken: string;

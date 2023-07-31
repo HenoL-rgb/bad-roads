@@ -2,8 +2,9 @@ import {
   View,
   Switch,
   StyleSheet,
+  Linking,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { setTheme } from '../store/slices/theme.slice';
 import {
@@ -23,6 +24,7 @@ import { StackParamList } from './AppWrapper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { setAuth } from '../store/slices/user.slice';
 import BackButton from '../components/BackButton';
+import messaging from '@react-native-firebase/messaging';
 
 type Props = NativeStackScreenProps<StackParamList, 'Settings'>;
 
@@ -38,10 +40,15 @@ export default function Settings({ navigation }: Props) {
       : withTiming(0, { duration: 300 });
   }, [dark]);
 
-  const toggleSwitch = () => {
+  function toggleSwitch() {
     dispatch(setTheme(dark ? DefaultTheme : DarkTheme));
     EncryptedStorage.setItem('theme', dark ? 'light' : 'dark');
-  };
+  }
+
+  function manageNotifications() {
+    //Linking.openSettings();
+
+  }
 
   const rWrapperStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(

@@ -3,8 +3,8 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
-pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+#pod 'react-native-pager-view', :path => '../node_modules/react-native-pager-view', :modular_headers => true
 # If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
 # because `react-native-flipper` depends on (FlipperKit,...) that will be excluded
 #
@@ -24,9 +24,11 @@ end
 
 target 'AwesomeProject' do
   config = use_native_modules!
-
+  use_frameworks! :linkage => :static
+  $RNFirebaseAsStaticFramework = true
   # Flags change depending on the env values.
   flags = get_default_flags()
+
 
   use_react_native!(
     :path => config[:reactNativePath],
@@ -39,7 +41,7 @@ target 'AwesomeProject' do
     #
     # Note that if you have use_frameworks! enabled, Flipper will not work and
     # you should disable the next line.
-    :flipper_configuration => flipper_config,
+    #:flipper_configuration => flipper_config,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
@@ -50,6 +52,9 @@ target 'AwesomeProject' do
   end
 
   post_install do |installer|
+    installer.pods_project.build_configuration_list.build_configurations.each do |configuration|
+      configuration.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+    end
     react_native_post_install(
       installer,
       # Set `mac_catalyst_enabled` to `true` in order to apply patches

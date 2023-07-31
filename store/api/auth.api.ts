@@ -4,16 +4,14 @@ import { clearUser, setAuth, setUser } from '../slices/user.slice';
 import type {
   BaseQueryFn,
   FetchArgs,
-  FetchBaseQueryError,
-  FetchBaseQueryMeta,
 } from '@reduxjs/toolkit/query';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import { Login, LoginResponse } from '../../types/LoginQuery';
 import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 import { IError } from '../../pages/AppWrapper';
+import { LoginResponse, Login, Register } from '../../types/LoginQuery';
 
-export const HOST_IP = '10.211.48.200:7000';
-//const HOST_IP = '192.168.100.8:7000';
+export const HOST_IP = '10.211.48.77:7000';
+//export const HOST_IP = '192.168.100.9:7000';
 //const HOST_IP = '192.168.194.72:7000';
 
 const baseQuery = fetchBaseQuery({
@@ -117,7 +115,7 @@ export const authApi = createApi({
       },
     }),
 
-    register: build.mutation<LoginResponse, Login>({
+    register: build.mutation<LoginResponse, Register>({
       query: body => ({
         url: 'auth/registration',
         method: 'POST',

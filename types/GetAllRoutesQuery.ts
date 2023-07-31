@@ -24,6 +24,7 @@ export type GetRoutesResponse = {
 export type GetRouteByIdResponse = {
   author: {
     email: string;
+    notificationToken: string;
   };
   createdAt: string;
   updatedAt: string;

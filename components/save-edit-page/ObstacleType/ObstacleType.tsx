@@ -1,37 +1,44 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import React from 'react';
 import { Theme } from '@react-navigation/native';
 import { colors } from '../../../utils/colors';
 
 import { SvgProps } from 'react-native-svg';
-import * as assets from '../../../pages/save-edit-route/assets'
+import * as assets from '../../../pages/save-edit-route/assets';
+
+type Key = keyof typeof assets;
 
 type ObstacleTypeProps = {
   theme: Theme;
   setModalActive: () => void;
-  Obstacle: string | null;
+  Obstacle: Key | null;
 };
 
-export default function ObstacleType({ theme, setModalActive, Obstacle }: ObstacleTypeProps) {
-  const Icon = assets['Other'] as React.FC<SvgProps>
+export default function ObstacleType({
+  theme,
+  setModalActive,
+  Obstacle,
+}: ObstacleTypeProps) {
+  const Icon = assets[Obstacle ? Obstacle : 'Other'] as React.FC<SvgProps>;
   return (
     <>
-    <View style={styles.section}>
-      <View style={styles.obstacleType}>
-        <Text style={[styles.text, { color: theme.colors.text }]}>Type:</Text>
-        <View onTouchEnd={setModalActive}
-          style={{
-            height: 50,
-            width: 50,
-            backgroundColor: Obstacle ? colors.eyePress : colors.darkRed,
-            borderRadius: 10,
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            {Obstacle && <Icon />}
-          </View>
+      <View style={styles.section}>
+        <View style={styles.obstacleType}>
+          <Text style={[styles.text, { color: theme.colors.text }]}>Type:</Text>
+            <View
+              onTouchEnd={setModalActive}
+              style={{
+                height: 50,
+                width: 50,
+                borderRadius: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Icon />
+            </View>
+          
+        </View>
       </View>
-    </View>
     </>
   );
 }
@@ -49,5 +56,18 @@ const styles = StyleSheet.create({
   },
   section: {
     borderRadius: 5,
+  },
+  cancelBtn: {
+    paddingLeft: 18,
+    paddingRight: 18,
+    paddingTop: 12,
+    paddingBottom: 12,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectBtn: {
+    marginTop: 3,
+    width: 100,
   },
 });

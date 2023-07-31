@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "359751728980",
+    "project_id": "bad-roads",
+    "storage_bucket": "bad-roads.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:359751728980:android:83958737a3cf430fbc52c1",
+        "android_client_info": {
+          "package_name": "com.awesomeproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "359751728980-34c8fedcibhqcgp3s28tppq06rcoe57q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiKrCkPCp-rMBZXQ_mxLdAgqJxTsLu0Rs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "359751728980-34c8fedcibhqcgp3s28tppq06rcoe57q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "359751728980-l3c5bqvjf5vdn0is17mb6vtplub1sj6n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.iosTes"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:359751728980:android:1c3bb96e618d25f4bc52c1",
+        "android_client_info": {
+          "package_name": "com.iostes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "359751728980-ei3j5fj5nf2lrstl50t8im36lt3dqc4m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.iostes",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "359751728980-34c8fedcibhqcgp3s28tppq06rcoe57q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiKrCkPCp-rMBZXQ_mxLdAgqJxTsLu0Rs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "359751728980-34c8fedcibhqcgp3s28tppq06rcoe57q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "359751728980-l3c5bqvjf5vdn0is17mb6vtplub1sj6n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.iosTes"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

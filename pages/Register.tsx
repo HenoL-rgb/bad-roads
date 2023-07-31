@@ -9,6 +9,7 @@ import { useAppSelector } from '../hooks/redux-hooks';
 import { ModalRefProps } from '../components/modals/Modal';
 import { IError } from './AppWrapper';
 import ErrorModal from '../components/modals/ErrorModal';
+import messaging from '@react-native-firebase/messaging';
 
 type Props = NativeStackScreenProps<AuthStack, 'Register'>;
 
@@ -24,7 +25,10 @@ export default function Register({ navigation }: Props) {
   const [error, setError] = useState<string>('Error');
 
   const onSubmit = async (data: { email: string; password: string }) => {
-    register({...data, email: data.email.toLowerCase()}).unwrap().catch((error: IError) => {
+    const notificationToken = await messaging().getToken();
+    console.log('token ', notificationToken);
+    
+    register({...data, email: data.email.toLowerCase(), notificationToken}).unwrap().catch((error: IError) => {
       setError(error.data.message);
       modalRef.current?.setActive(true);
     });

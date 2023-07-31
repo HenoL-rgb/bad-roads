@@ -3,6 +3,7 @@ import {
   Pressable,
   StyleSheet,
   Dimensions,
+  View
 } from 'react-native';
 import React, { useRef, useState } from 'react';
 import ModalImage from './ModalImage';
@@ -31,6 +32,7 @@ export default function ImageSelector({images, setImages}: ImageSelectorProps) {
   const aWidth = useDerivedValue(() => images.length * 110, [images.length]);
   const listRef = useRef<Animated.ScrollView>(null);
   const translationX = useSharedValue(0);
+  const aHeight = useDerivedValue(() => images.length ? 110 : 0);
 
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationX.value = event.contentOffset.x;
@@ -59,6 +61,9 @@ export default function ImageSelector({images, setImages}: ImageSelectorProps) {
               }),
             )
           : SCREEN_WIDTH,
+      height: withTiming(aHeight.value, {
+        duration: 300
+      })
     };
   });
 
@@ -113,6 +118,7 @@ export default function ImageSelector({images, setImages}: ImageSelectorProps) {
               />
             );
           })}
+       
         </Animated.View>
       </Animated.ScrollView>
 

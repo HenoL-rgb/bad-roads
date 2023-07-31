@@ -2,17 +2,9 @@ import { View, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import React, { useRef, useState } from 'react';
 import ImageSelector from '../../components/save-edit-page/ImageSelector';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
-import {
-  useGetObstaclesQuery,
-  useSaveRouteMutation,
-} from '../../store/api/routes.api';
 import { getUrl } from '../../utils/getUrl';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackParamList } from '../AppWrapper';
-import {
-  saveRouteAction,
-  setInitialState,
-} from '../../store/slices/routes.slice';
 import { transformRoute } from '../../utils/transformRoute';
 import Description from '../../components/save-edit-page/Description';
 import ObstacleType from '../../components/save-edit-page/ObstacleType/ObstacleType';
@@ -24,6 +16,8 @@ import { Image } from 'react-native-image-crop-picker';
 import * as assets from '../../pages/save-edit-route/assets';
 import { Obstacle } from '../../types/SaveRouteQuery';
 import { colors } from '../../utils/colors';
+import { useSaveRouteMutation, useGetObstaclesQuery } from '../../store/api/routes.api';
+import { saveRouteAction, setInitialState } from '../../store/slices/routes.slice';
 
 type SaveRouteProps = NativeStackScreenProps<StackParamList, 'SaveRoute'>;
 
@@ -87,6 +81,7 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
   async function handleSaveRoute(): Promise<void> {
     if (!userId || !info.obstacle) return;
     getUrl(points);
+    console.log('here');
 
     const response = await saveRoute({
       route: points,
@@ -96,7 +91,7 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
       description: info.description ? info.description : '',
       images: info.images.map(image => `${image.data}`),
     });
-
+    
     if ('data' in response) {
       dispatch(saveRouteAction(transformRoute(response.data)));
       dispatch(setInitialState());

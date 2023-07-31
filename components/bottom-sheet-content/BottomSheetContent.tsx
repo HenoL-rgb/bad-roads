@@ -92,12 +92,12 @@ function BottomSheetContent({
   }
 
   async function handleApprove() {
-    if (!user) return;
+    if (!user || !data) return;
 
     try {
-      await approveRoute({ routeId: routeId });
+      await approveRoute({ routeId: routeId, notificationToken: data.author.notificationToken });
       await refetch();
-      dispatch(setApproveRoute({ routeId: routeId }));
+      dispatch(setApproveRoute({ routeId: routeId, notificationToken: data.author.notificationToken }));
     } catch (error) {
       throw new Error('Error while approve route');
     }

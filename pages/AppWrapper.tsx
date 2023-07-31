@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { useAppSelector } from '../hooks/redux-hooks';
 
@@ -20,6 +20,7 @@ import { colors } from '../utils/colors';
 import AuthContainer from '../navigation/AuthContainer';
 import { useRefreshQuery } from '../store/api/auth.api';
 import SaveRoute from './save-edit-route/SaveRoute';
+import useGetTheme from '../hooks/useGetTheme.hook';
 
 export type StackParamList = {
   Home: {
@@ -46,7 +47,6 @@ export type IError = {
 }
 
 function AppWrapper(): JSX.Element {
-  const theme = useAppSelector(state => state.themeReducer);
   const {
     isLoading: loadRefresh,
     error,
@@ -54,9 +54,12 @@ function AppWrapper(): JSX.Element {
     refetch: retryConnection,
   } = useRefreshQuery({}, {});
 
+  const { colors: theme } = useGetTheme();
+
+
   const { isAuth } = useAppSelector(state => state.userReducer);
   
-  if (isError && ('data' in error && error.status !== 401) && isAuth === null) {
+  if (isError && ("error" in error || 'data' in error && error.status !== 401) && isAuth === null) {
     console.log("App wrapper ", error);
     
     return (
@@ -92,12 +95,12 @@ function AppWrapper(): JSX.Element {
         options={{
           headerShown: false,
           headerStyle: {
-            backgroundColor: theme.colors.background,
+            backgroundColor: theme.background,
           },
           headerTitleStyle: {
-            color: theme.colors.text,
+            color: theme.text,
           },
-          headerTintColor: theme.colors.text,
+          headerTintColor: theme.text,
         }}
       />
       <RootStack.Screen
@@ -117,12 +120,12 @@ function AppWrapper(): JSX.Element {
           animation: 'fade_from_bottom',
           title: 'Save route',
           headerStyle: {
-            backgroundColor: theme.colors.background,
+            backgroundColor: theme.background,
           },
           headerTitleStyle: {
-            color: theme.colors.text,
+            color: theme.text,
           },
-          headerTintColor: theme.colors.text,
+          headerTintColor: theme.text,
         }}
       />
     </RootStack.Navigator>

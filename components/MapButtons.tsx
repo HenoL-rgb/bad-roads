@@ -41,7 +41,7 @@ export default function MapButtons({
       {mode === modes.IDLE && (
         <Animated.View
           style={styles.addButton}
-          entering={FadeInRight.duration(120)}
+          entering={FadeInRight.duration(150)}
           exiting={FadeOutRight.duration(120)}>
           <Pressable
             style={styles.pressable}
