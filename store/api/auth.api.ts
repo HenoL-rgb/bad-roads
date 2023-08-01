@@ -9,8 +9,9 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 import { IError } from '../../pages/AppWrapper';
 import { LoginResponse, Login, Register } from '../../types/LoginQuery';
+import { RegisterDevice } from '../../types/RegisterDevice';
 
-export const HOST_IP = '10.211.48.77:7000';
+export const HOST_IP = '192.168.100.8:7000';
 //export const HOST_IP = '192.168.100.9:7000';
 //const HOST_IP = '192.168.194.72:7000';
 
@@ -89,10 +90,11 @@ export const authApi = createApi({
         method: 'POST',
         body,
       }),
+
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-
+          
           await EncryptedStorage.setItem('token', data.accessToken);
           await EncryptedStorage.setItem('refresh', data.refreshToken);
 
@@ -156,6 +158,7 @@ export const authApi = createApi({
         try {
           await queryFulfilled;
           await EncryptedStorage.clear();
+          dispatch(setAuth(false));
           dispatch(clearUser());
         } catch (error) {
           console.log(error);
@@ -200,6 +203,23 @@ export const authApi = createApi({
         }
       },
     }),
+
+    registerDevice: build.mutation<void, RegisterDevice>({
+      query: (body) => ({
+        url: 'api/notifications',
+        method: 'POST',
+        body
+      })
+    }),
+
+    unregisterDevice: build.mutation<void, RegisterDevice>({
+      query: (body) => ({
+        url: '/unregister',
+        method: 'DELETE',
+        body
+      })
+    }),
+
   }),
 });
 
@@ -208,4 +228,6 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useRegisterMutation,
+  useRegisterDeviceMutation,
+  useUnregisterDeviceMutation
 } = authApi;

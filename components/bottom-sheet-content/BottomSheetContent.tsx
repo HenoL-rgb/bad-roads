@@ -95,9 +95,10 @@ function BottomSheetContent({
     if (!user || !data) return;
 
     try {
-      await approveRoute({ routeId: routeId, notificationToken: data.author.notificationToken });
+      
+      await approveRoute({ routeId: routeId, userId: data.author.id });
       await refetch();
-      dispatch(setApproveRoute({ routeId: routeId, notificationToken: data.author.notificationToken }));
+      dispatch(setApproveRoute({ routeId: routeId, userId: data.author.id }));
     } catch (error) {
       throw new Error('Error while approve route');
     }

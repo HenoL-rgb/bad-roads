@@ -1,6 +1,6 @@
 export type ApproveRoute = {
     routeId: number;
-    notificationToken: string;
+    userId: number;
 }
 
 export type ApproveRouteResponse = {

@@ -25,6 +25,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { setAuth } from '../store/slices/user.slice';
 import BackButton from '../components/BackButton';
 import messaging from '@react-native-firebase/messaging';
+import { useLogoutMutation } from '../store/api/auth.api';
 
 type Props = NativeStackScreenProps<StackParamList, 'Settings'>;
 
@@ -33,6 +34,7 @@ const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 export default function Settings({ navigation }: Props) {
   const dispatch = useAppDispatch();
   const { dark } = useAppSelector(state => state.themeReducer);
+  const [logout] = useLogoutMutation({});
 
   const progress = useDerivedValue(() => {
     return dark
