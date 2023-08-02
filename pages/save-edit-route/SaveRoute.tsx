@@ -32,6 +32,10 @@ type Info = {
 };
 
 export default function SaveRoute({ navigation, route }: SaveRouteProps) {
+  const theme = useAppSelector(state => state.themeReducer);
+  const userId = useAppSelector(state => state.userReducer.user?.id);
+  const dispatch = useAppDispatch();
+
   const [saveRoute, { isLoading: saveLoading }] = useSaveRouteMutation();
   const { data: obstaclesData, isLoading } = useGetObstaclesQuery();
 
@@ -40,11 +44,9 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
     description: null,
     images: [],
   });
-  const userId = useAppSelector(state => state.userReducer.user?.id);
-  const { points } = route.params;
-  const theme = useAppSelector(state => state.themeReducer);
-  const dispatch = useAppDispatch();
   const ref = useRef<ModalRefProps>(null);
+
+  const { points } = route.params;
 
   const setObstacle = (id: number) => {
     const obstacleFound = obstaclesData?.find(
@@ -81,7 +83,6 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
   async function handleSaveRoute(): Promise<void> {
     if (!userId || !info.obstacle) return;
     getUrl(points);
-    console.log('here');
 
     const response = await saveRoute({
       route: points,
@@ -125,6 +126,7 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
           <ImageSelector images={info.images} setImages={handleImages} />
         </View>
         <Description
+        theme={theme}
           description={info.description}
           setDescription={value => setInfo({ ...info, description: value })}
         />
@@ -139,6 +141,7 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
       />
       {obstaclesData && (
         <ObstaclesDropDown
+        theme={theme}
           data={obstaclesData}
           modalRef={ref}
           setObstacle={value => setObstacle(value)}

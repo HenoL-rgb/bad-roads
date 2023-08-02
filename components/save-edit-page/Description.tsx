@@ -1,22 +1,28 @@
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 import React from 'react';
 import { colors } from '../../utils/colors';
+import { Theme } from '@react-navigation/native';
 
 type DescriptionProps = {
+  theme: Theme;
   description: string | null;
   setDescription: (value: string) => void;
-}
+};
 
-export default function Description({description, setDescription}: DescriptionProps) {
+export default function Description({
+  theme,
+  description,
+  setDescription,
+}: DescriptionProps) {
   return (
     <View style={styles.section}>
-      <Text style={styles.text}>Description</Text>
+      <Text style={[styles.text, { color: theme.colors.text }]}>Description</Text>
       <TextInput
         style={styles.textarea}
         placeholder="Put some info here"
         multiline
-        value={description ? description : ''}  
-        onChangeText={(text) => setDescription(text)}
+        value={description ? description : ''}
+        onChangeText={text => setDescription(text)}
       />
     </View>
   );

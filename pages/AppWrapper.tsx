@@ -60,7 +60,6 @@ function AppWrapper(): JSX.Element {
   const { isAuth } = useAppSelector(state => state.userReducer);
   
   if (isError && ("error" in error || 'data' in error && error.status !== 401) && isAuth === null) {
-    console.log("App wrapper ", error);
     
     return (
       <View style={styles.container}>

@@ -3,12 +3,13 @@ import { Route } from './Route';
 export type Login = {
   email: string;
   password: string;
+  notificationsToken: string;
 };
 
 export type Register = {
   email: string;
   password: string;
-  notificationToken: string;
+  notificationsToken: string;
 }
 
 export type LoginResponse = {

@@ -10,6 +10,7 @@ import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 import { IError } from '../../pages/AppWrapper';
 import { LoginResponse, Login, Register } from '../../types/LoginQuery';
 import { RegisterDevice } from '../../types/RegisterDevice';
+import { Logout } from '../../types/Logout';
 
 export const HOST_IP = '10.211.48.77:7000';
 //export const HOST_IP = '192.168.100.9:7000';
@@ -148,7 +149,7 @@ export const authApi = createApi({
       },
     }),
 
-    logout: build.mutation<void, void>({
+    logout: build.mutation<void, Logout>({
       query: body => ({
         url: 'auth/logout',
         method: 'POST',
@@ -158,8 +159,8 @@ export const authApi = createApi({
         try {
           await queryFulfilled;
           await EncryptedStorage.clear();
-          dispatch(setAuth(false));
           dispatch(clearUser());
+          dispatch(setAuth(false));
         } catch (error) {
           console.log(error);
         }

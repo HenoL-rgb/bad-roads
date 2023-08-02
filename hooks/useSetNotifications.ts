@@ -26,14 +26,12 @@ const useSetNotifications = () => {
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
     if (enabled) {
-      console.log('Authorization status:', authStatus);
       return true;
     }
     return false;
   };
 
   async function onDisplayNotification(remoteMessage: FirebaseMessagingTypes.RemoteMessage) {
-    console.log(remoteMessage.notification);
     if(remoteMessage.notification === undefined) return;
     // Request permissions (required for iOS)
     await notifee.requestPermission();
@@ -55,7 +53,22 @@ const useSetNotifications = () => {
         pressAction: {
           id: 'default',
         },
+        actions: [
+          {
+            title: 'Got it!',
+            pressAction: {
+              id: 'gotIt'
+            }
+          },
+          {
+            title: 'Dismiss',
+            pressAction: {
+              id: 'dismiss'
+            }
+          }
+        ]
       },
+
     });
   }
 
@@ -64,9 +77,7 @@ const useSetNotifications = () => {
       if (permission) {
         messaging()
           .getToken()
-          .then(token => {
-            console.log(token);
-          });
+          
       } else {
         console.log('Failed token status');
       }

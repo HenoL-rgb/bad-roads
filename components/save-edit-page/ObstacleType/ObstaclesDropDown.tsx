@@ -3,8 +3,11 @@ import React from 'react';
 import Modal, { ModalRefProps } from '../../modals/Modal';
 import ObstaclesItem from './ObstaclesItem';
 import * as assets from '../../../pages/save-edit-route/assets';
+import { useAppSelector } from '../../../hooks/redux-hooks';
+import { Theme } from '@react-navigation/native';
 
 type ObstaclesDropDownProps = {
+  theme: Theme,
   modalRef: React.RefObject<ModalRefProps>;
   setObstacle: (value: number) => void;
   data: {
@@ -15,6 +18,7 @@ type ObstaclesDropDownProps = {
 };
 
 export default function ObstaclesDropDown({
+  theme,
   modalRef,
   setObstacle,
   data,
@@ -24,6 +28,7 @@ export default function ObstaclesDropDown({
       <ScrollView>
         {data?.map(item => (
           <ObstaclesItem
+            theme={theme}
             icon={item.icon}
             id={item.id}
             description={item.description}

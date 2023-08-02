@@ -1,11 +1,13 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import React from 'react';
 import { colors } from '../../../utils/colors';
-import * as assets from '../../../pages/save-edit-route/assets'
+import * as assets from '../../../pages/save-edit-route/assets';
+import { Theme } from '@react-navigation/native';
 
 type Key = keyof typeof assets;
 
 type ObstaclesItemProps = {
+  theme: Theme;
   icon: Key;
   id: number;
   description: string;
@@ -13,12 +15,13 @@ type ObstaclesItemProps = {
 };
 
 export default function ObstaclesItem({
+  theme,
   icon,
   description,
   handlePress,
   id,
 }: ObstaclesItemProps) {
-    const Icon = assets[icon]
+  const Icon = assets[icon];
   return (
     <Pressable
       onPress={() => handlePress(id)}
@@ -33,7 +36,9 @@ export default function ObstaclesItem({
       <View style={styles.iconWrapper}>
         <Icon />
       </View>
-      <Text style={styles.description}>{description}</Text>
+      <Text style={[styles.description, { color: theme.colors.text }]}>
+        {description}
+      </Text>
     </Pressable>
   );
 }

@@ -25,7 +25,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { setAuth } from '../store/slices/user.slice';
 import BackButton from '../components/BackButton';
 import messaging from '@react-native-firebase/messaging';
-import { useLogoutMutation } from '../store/api/auth.api';
+import { useLogoutMutation, useUnregisterDeviceMutation } from '../store/api/auth.api';
 
 type Props = NativeStackScreenProps<StackParamList, 'Settings'>;
 
@@ -35,6 +35,7 @@ export default function Settings({ navigation }: Props) {
   const dispatch = useAppDispatch();
   const { dark } = useAppSelector(state => state.themeReducer);
   const [logout] = useLogoutMutation({});
+  const user = useAppSelector(state => state.userReducer);
 
   const progress = useDerivedValue(() => {
     return dark
@@ -111,8 +112,12 @@ export default function Settings({ navigation }: Props) {
           size={20}
           {...props}
           onPress={async () => {
-            dispatch(setAuth(false));
-            await EncryptedStorage.clear();
+            if(!user.user) return;
+            const notificationsToken = await messaging().getToken()
+            logout({
+              userId: user.user.id,
+              notificationsToken
+            })
           }}
           style={[
             rTextStyle,

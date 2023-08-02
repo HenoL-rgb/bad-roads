@@ -85,8 +85,7 @@ export default function Map({ route }: Props) {
 
   const deleteRoute: (routeId: number) => Promise<void> = useCallback(
     async (routeId: number) => {
-      const response = await delRoute({ routeId });
-      console.log(response);
+      await delRoute({ routeId });
       dispatch(deleteRouteAction({ routeId }));
       dispatch(setInitialState());
       modalRef.current?.setActive(false);
@@ -99,7 +98,6 @@ export default function Map({ route }: Props) {
   function findRoute(): void {
     if (!currentRoute.start || !currentRoute.end) return;
     if (!map.current) {
-      console.log('no map');
       return;
     }
 

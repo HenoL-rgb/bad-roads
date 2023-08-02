@@ -25,10 +25,9 @@ export default function Register({ navigation }: Props) {
   const [error, setError] = useState<string>('Error');
 
   const onSubmit = async (data: { email: string; password: string }) => {
-    const notificationToken = await messaging().getToken();
-    console.log('token ', notificationToken);
+    const notificationsToken = await messaging().getToken();
     
-    register({...data, email: data.email.toLowerCase(), notificationToken}).unwrap().catch((error: IError) => {
+    register({...data, email: data.email.toLowerCase(), notificationsToken}).unwrap().catch((error: IError) => {
       setError(error.data.message);
       modalRef.current?.setActive(true);
     });

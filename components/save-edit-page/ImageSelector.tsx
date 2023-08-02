@@ -3,7 +3,6 @@ import {
   Pressable,
   StyleSheet,
   Dimensions,
-  View
 } from 'react-native';
 import React, { useRef, useState } from 'react';
 import ModalImage from './ModalImage';
@@ -88,7 +87,6 @@ export default function ImageSelector({images, setImages}: ImageSelectorProps) {
     }
   }
 
-  //console.log(aWidth.value);
 
   return (
     <Animated.View>

@@ -12,6 +12,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import { useAppSelector } from '../../hooks/redux-hooks';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -21,6 +22,8 @@ export type ModalRefProps = {
 
 const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
   ({ children }, ref) => {
+    const theme = useAppSelector(state => state.themeReducer);
+
     const translateY = useSharedValue(0);
     const height = useSharedValue(0);
 
@@ -53,6 +56,7 @@ const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
     const rModalStyle = useAnimatedStyle(() => {
       return {
         transform: [{ translateY: translateY.value }],
+        backgroundColor: theme.colors.card,
       };
     });
 
@@ -85,27 +89,14 @@ const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
           }}
           animatedProps={rBackdropProps}
           style={[
-            {
-              ...StyleSheet.absoluteFillObject,
-              backgroundColor: 'rgba(0,0,0,0.4)',
-            },
+            styles.backdrop,
             rBackdropStyle,
           ]}
           pointerEvents="none"></Animated.View>
         <Animated.View
           onLayout={(event) => height.value = event.nativeEvent.layout.height}
           style={[
-            {
-              minHeight: 350,
-              maxHeight: 600,
-              width: 340,
-              backgroundColor: 'white',
-              overflow: 'hidden',
-              position: 'absolute',
-              alignSelf: 'center',
-              top: SCREEN_HEIGHT,
-              borderRadius: 15,
-            },
+            styles.background,
             rModalStyle,
           ]}>
           {children}
@@ -118,3 +109,21 @@ const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
 Modal.displayName = 'Modal';
 
 export default Modal;
+
+const styles = StyleSheet.create({
+  background: {
+    minHeight: 350,
+    maxHeight: 600,
+    width: 340,
+    backgroundColor: 'white',
+    overflow: 'hidden',
+    position: 'absolute',
+    alignSelf: 'center',
+    top: SCREEN_HEIGHT,
+    borderRadius: 15,
+  },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  }
+})

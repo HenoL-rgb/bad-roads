@@ -65,5 +65,12 @@
   },
   "jest": {
     "preset": "react-native"
-  }
+  },
+  "reactNativePermissionsIOS": [
+    "Camera",
+    "MediaLibrary",
+    "Notifications",
+    "PhotoLibrary",
+    "PhotoLibraryAddOnly"
+  ]
 }
