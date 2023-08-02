@@ -12,6 +12,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { colors } from '../../utils/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useAppSelector } from '../../hooks/redux-hooks';
 
 type Props = {
   modalRef: React.RefObject<ModalRefProps>;
@@ -19,6 +20,8 @@ type Props = {
 };
 
 export default function ErrorModal({ modalRef, error }: Props) {
+  const theme = useAppSelector(state => state.themeReducer);
+
   const progress = useSharedValue(1);
   const rotation = useSharedValue(0);
 
@@ -61,7 +64,7 @@ export default function ErrorModal({ modalRef, error }: Props) {
         </View>
         <View style={styles.text}>
           <Text
-            style={{ color: colors.black, fontSize: 18, textAlign: 'center' }}>
+            style={{ color: theme.colors.text, fontSize: 18, textAlign: 'center' }}>
             Error: {error}
           </Text>
         </View>
@@ -74,7 +77,7 @@ export default function ErrorModal({ modalRef, error }: Props) {
 
             }
           ]}>
-          <Text style={{ color: colors.black }}>DISMISS</Text>
+          <Text style={{ color: theme.colors.text }}>DISMISS</Text>
         </Pressable>
       </View>
     </Modal>

@@ -3,7 +3,6 @@ import React from 'react';
 import Modal, { ModalRefProps } from '../../modals/Modal';
 import ObstaclesItem from './ObstaclesItem';
 import * as assets from '../../../pages/save-edit-route/assets';
-import { useAppSelector } from '../../../hooks/redux-hooks';
 import { Theme } from '@react-navigation/native';
 
 type ObstaclesDropDownProps = {

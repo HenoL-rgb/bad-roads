@@ -24,6 +24,7 @@ import ImageBox from '../ImageBox';
 import FastInfoType from './FastInfoType';
 import Controls from './Controls';
 import MarkButtons from './MarkButtons';
+import RouteNotFound from './RouteNotFound';
 
 type RoutePopUpProps = {
   deleteRoute: (id: number) => void;
@@ -50,11 +51,12 @@ function BottomSheetContent({
   const user = useAppSelector(state => state.userReducer.user);
   const theme = useAppSelector(state => state.themeReducer);
 
-  const { data, refetch } = useGetRouteByIdQuery(routeId, {
+  const { data, refetch, isFetching } = useGetRouteByIdQuery(routeId, {
     skip: routeId ? false : true,
     refetchOnMountOrArgChange: true,
   });
-
+  console.log(data, isFetching);
+  
   const likes = useAppSelector(state => state.userReducer.user?.likes);
   const dislikes = useAppSelector(state => state.userReducer.user?.dislikes);
 
@@ -102,6 +104,10 @@ function BottomSheetContent({
     } catch (error) {
       throw new Error('Error while approve route');
     }
+  }
+
+  if(!isFetching && !data) {
+    return <RouteNotFound theme={theme} />
   }
 
   return (

@@ -1,10 +1,5 @@
-import {
-  View,
-  Switch,
-  StyleSheet,
-  Linking,
-} from 'react-native';
-import React, { useState } from 'react';
+import { View, Switch, StyleSheet } from 'react-native';
+import React from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { setTheme } from '../store/slices/theme.slice';
 import {
@@ -22,10 +17,9 @@ import Animated, {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackParamList } from './AppWrapper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { setAuth } from '../store/slices/user.slice';
 import BackButton from '../components/BackButton';
 import messaging from '@react-native-firebase/messaging';
-import { useLogoutMutation, useUnregisterDeviceMutation } from '../store/api/auth.api';
+import { useLogoutMutation } from '../store/api/auth.api';
 
 type Props = NativeStackScreenProps<StackParamList, 'Settings'>;
 
@@ -46,11 +40,6 @@ export default function Settings({ navigation }: Props) {
   function toggleSwitch() {
     dispatch(setTheme(dark ? DefaultTheme : DarkTheme));
     EncryptedStorage.setItem('theme', dark ? 'light' : 'dark');
-  }
-
-  function manageNotifications() {
-    //Linking.openSettings();
-
   }
 
   const rWrapperStyle = useAnimatedStyle(() => {
@@ -103,25 +92,21 @@ export default function Settings({ navigation }: Props) {
           Settings
         </Animated.Text>
       ),
-      headerLeft: props => (
-        <BackButton props={props} style={rTextStyle} />
-      ),
+      headerLeft: props => <BackButton props={props} style={rTextStyle} />,
       headerRight: props => (
         <AnimatedIcon
           name="logout"
           size={20}
           {...props}
           onPress={async () => {
-            if(!user.user) return;
-            const notificationsToken = await messaging().getToken()
+            if (!user.user) return;
+            const notificationsToken = await messaging().getToken();
             logout({
               userId: user.user.id,
-              notificationsToken
-            })
+              notificationsToken,
+            });
           }}
-          style={[
-            rTextStyle,
-          ]}></AnimatedIcon>
+          style={[rTextStyle]}></AnimatedIcon>
       ),
     });
   });
@@ -141,6 +126,7 @@ export default function Settings({ navigation }: Props) {
           style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
         />
       </View>
+
     </Animated.View>
   );
 }

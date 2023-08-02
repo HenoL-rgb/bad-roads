@@ -11,6 +11,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { ActivityIndicator } from 'react-native';
 import { colors } from '../../utils/colors';
+import { useAppSelector } from '../../hooks/redux-hooks';
 
 type Props = {
   deleteRoute: () => void;
@@ -19,6 +20,8 @@ type Props = {
 };
 
 const DeleteModal = (props: Props) => {
+  const theme = useAppSelector(state => state.themeReducer);
+
   const progress = useSharedValue(1.15);
 
   const reanimatedStyle = useAnimatedStyle(() => {
@@ -41,7 +44,7 @@ const DeleteModal = (props: Props) => {
           </View>
           <View style={styles.text}>
             <Text
-              style={{ color: colors.black, fontSize: 18, textAlign: 'center' }}>
+              style={{ color: theme.colors.text, fontSize: 18, textAlign: 'center' }}>
               Are you sure you want do delete this route?
             </Text>
           </View>
@@ -49,7 +52,7 @@ const DeleteModal = (props: Props) => {
             <Pressable
               onPress={() => props.modalRef.current?.setActive(false)}
               style={styles.cancelBtn}>
-              <Text style={{ color: colors.black }}>CANCEL</Text>
+              <Text style={{ color: theme.colors.text }}>CANCEL</Text>
             </Pressable>
             <Pressable style={styles.deleteBtn} onPress={props.deleteRoute}>
               {props.deleteLoading ? (

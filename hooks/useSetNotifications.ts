@@ -1,13 +1,19 @@
 import { useEffect } from 'react';
 import { Platform, PermissionsAndroid } from 'react-native';
-import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
-import notifee from '@notifee/react-native';
+import messaging, {
+  FirebaseMessagingTypes,
+} from '@react-native-firebase/messaging';
+import notifee, { EventType, Notification } from '@notifee/react-native';
 import { checkNotifications } from 'react-native-permissions';
 
 const useSetNotifications = () => {
-  
+
   const requestUserPermission = async () => {
     const { status } = await checkNotifications();
+    if (status === 'blocked') {
+      return false;
+    }
+
     if (status === 'granted') {
       return true;
     }
@@ -28,14 +34,17 @@ const useSetNotifications = () => {
     if (enabled) {
       return true;
     }
+
     return false;
   };
 
-  async function onDisplayNotification(remoteMessage: FirebaseMessagingTypes.RemoteMessage) {
-    if(remoteMessage.notification === undefined) return;
+  async function onDisplayNotification(
+    notification: FirebaseMessagingTypes.Notification | Notification | undefined,
+  ) {
+    if (notification === undefined) return;
     // Request permissions (required for iOS)
     await notifee.requestPermission();
-
+    
     // Create a channel (required for Android)
     const channelId = await notifee.createChannel({
       id: 'default',
@@ -44,8 +53,8 @@ const useSetNotifications = () => {
 
     // Display a notification
     await notifee.displayNotification({
-      title: remoteMessage.notification.title,
-      body: remoteMessage.notification.body,
+      title: notification.title,
+      body: notification.body,
       android: {
         channelId,
         // smallIcon: 'name-of-a-small-icon', // optional, defaults to 'ic_launcher'.
@@ -57,27 +66,24 @@ const useSetNotifications = () => {
           {
             title: 'Got it!',
             pressAction: {
-              id: 'gotIt'
-            }
+              id: 'gotIt',
+            },
           },
           {
             title: 'Dismiss',
             pressAction: {
-              id: 'dismiss'
-            }
-          }
-        ]
+              id: 'dismiss',
+            },
+          },
+        ],
       },
-
     });
   }
 
   useEffect(() => {
     requestUserPermission().then(permission => {
       if (permission) {
-        messaging()
-          .getToken()
-          
+        messaging().getToken();
       } else {
         console.log('Failed token status');
       }
@@ -111,9 +117,23 @@ const useSetNotifications = () => {
       );
     });
 
+    notifee.onBackgroundEvent(async ({ type, detail }) => {
+      const { notification, pressAction } = detail;
+      
+      // Check if the user pressed the "Mark as read" action
+      if(type === EventType.ACTION_PRESS && pressAction?.id === 'dismiss'){
+        if(notification === undefined || notification.id === undefined) return;
+        console.log(notification.id);
+        await notifee.cancelNotification(notification.id)
+        
+      }
+      
+    });
+
+
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
-      onDisplayNotification(remoteMessage);
+      onDisplayNotification(remoteMessage.notification);
     });
 
     return unsubscribe;

@@ -6,7 +6,6 @@ import Account from '../pages/Account';
 import Map from '../pages/Map';
 import useGetTheme from '../hooks/useGetTheme.hook';
 import SettingsButton from '../components/account-page/SettingsButton';
-import useSetNotifications from '../hooks/useSetNotifications';
 
 export type TabNavParamList = {
   Map: {
@@ -36,6 +35,7 @@ function Home(): JSX.Element {
         color: theme.text,
       },
       headerTintColor: theme.text,
+      //tabBarShowLabel: false,
     }}>
       <Tab.Screen
         name="Map"

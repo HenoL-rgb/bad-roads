@@ -1,4 +1,4 @@
-import { View, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, ScrollView, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import React, { useRef, useState } from 'react';
 import ImageSelector from '../../components/save-edit-page/ImageSelector';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
@@ -44,6 +44,10 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
     description: null,
     images: [],
   });
+  const [errors, setErrors] = useState({
+    images: false,
+  })
+
   const ref = useRef<ModalRefProps>(null);
 
   const { points } = route.params;
@@ -77,11 +81,21 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
   }
 
   function handleImages(images: Image[]) {
+  
+    setErrors({...errors, images: false})
     setInfo({ ...info, images: images });
   }
   //update correct
+  console.log(errors);
+  
   async function handleSaveRoute(): Promise<void> {
     if (!userId || !info.obstacle) return;
+    if(!info.images.length) {
+      setErrors({...errors, images: true})
+      return;
+    }
+
+    if(Object.values(errors).some(value => value === true)) return;
     getUrl(points);
 
     const response = await saveRoute({
@@ -124,6 +138,7 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
         />
         <View style={styles.section}>
           <ImageSelector images={info.images} setImages={handleImages} />
+          {errors.images && <Text style={{color: theme.colors.text}}>No selected images</Text>}
         </View>
         <Description
         theme={theme}

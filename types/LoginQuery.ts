@@ -1,4 +1,3 @@
-import { Route } from './Route';
 
 export type Login = {
   email: string;
