@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Platform, PermissionsAndroid } from 'react-native';
-import messaging from '@react-native-firebase/messaging';
+import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 import notifee from '@notifee/react-native';
 import { checkNotifications } from 'react-native-permissions';
 
@@ -32,7 +32,9 @@ const useSetNotifications = () => {
     return false;
   };
 
-  async function onDisplayNotification() {
+  async function onDisplayNotification(remoteMessage: FirebaseMessagingTypes.RemoteMessage) {
+    console.log(remoteMessage.notification);
+    if(remoteMessage.notification === undefined) return;
     // Request permissions (required for iOS)
     await notifee.requestPermission();
 
@@ -44,11 +46,11 @@ const useSetNotifications = () => {
 
     // Display a notification
     await notifee.displayNotification({
-      title: 'Notification Title',
-      body: 'Main body content of the notification',
+      title: remoteMessage.notification.title,
+      body: remoteMessage.notification.body,
       android: {
         channelId,
-        smallIcon: 'name-of-a-small-icon', // optional, defaults to 'ic_launcher'.
+        // smallIcon: 'name-of-a-small-icon', // optional, defaults to 'ic_launcher'.
         // pressAction is needed if you want the notification to open the app when pressed
         pressAction: {
           id: 'default',
@@ -100,7 +102,7 @@ const useSetNotifications = () => {
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
-      onDisplayNotification();
+      onDisplayNotification(remoteMessage);
     });
 
     return unsubscribe;

@@ -11,7 +11,7 @@ import { IError } from '../../pages/AppWrapper';
 import { LoginResponse, Login, Register } from '../../types/LoginQuery';
 import { RegisterDevice } from '../../types/RegisterDevice';
 
-export const HOST_IP = '192.168.100.8:7000';
+export const HOST_IP = '10.211.48.77:7000';
 //export const HOST_IP = '192.168.100.9:7000';
 //const HOST_IP = '192.168.194.72:7000';
 
