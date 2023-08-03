@@ -3,7 +3,9 @@ import notifee, { Notification } from '@notifee/react-native';
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 
 export async function onDisplayNotification(
-    notification: any
+    notification: {
+        [key: string]: string
+    } | undefined
   ) {
     
     if (notification === undefined) return;

@@ -3,7 +3,6 @@ import { Platform, PermissionsAndroid } from 'react-native';
 import messaging, {
   
 } from '@react-native-firebase/messaging';
-import notifee, { AndroidImportance, EventType, Notification } from '@notifee/react-native';
 import { checkNotifications } from 'react-native-permissions';
 import { onDisplayNotification } from '../utils/onDisplayNotification';
 
