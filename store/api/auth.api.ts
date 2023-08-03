@@ -13,8 +13,6 @@ import { RegisterDevice } from '../../types/RegisterDevice';
 import { Logout } from '../../types/Logout';
 
 export const HOST_IP = '10.211.48.77:7000';
-//export const HOST_IP = '192.168.100.9:7000';
-//const HOST_IP = '192.168.194.72:7000';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `http://${HOST_IP}/`,
@@ -184,18 +182,10 @@ export const authApi = createApi({
               banned: data.user.banned,
               banReason: data.user.banReason,
               roles: data.user.roles,
-              //routes: Route[];
               createdAt: data.user.createdAt,
               likes: data.user.likes,
               dislikes: data.user.dislikes,
-              // routes: data.user.routes.map(
-              //   (routeData: {
-              //     id: number;
-              //     createdAt: Date;
-              //     isApproved: boolean;
-              //     route: string;
-              //   }) => ({ ...routeData, route: JSON.parse(routeData.route) }),
-              // ),
+              
             }),
           );
           dispatch(setAuth(true));

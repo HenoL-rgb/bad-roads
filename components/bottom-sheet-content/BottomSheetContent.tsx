@@ -55,7 +55,6 @@ function BottomSheetContent({
     skip: routeId ? false : true,
     refetchOnMountOrArgChange: true,
   });
-  console.log(data, isFetching);
   
   const likes = useAppSelector(state => state.userReducer.user?.likes);
   const dislikes = useAppSelector(state => state.userReducer.user?.dislikes);

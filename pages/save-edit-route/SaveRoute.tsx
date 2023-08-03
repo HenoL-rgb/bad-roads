@@ -86,7 +86,6 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
     setInfo({ ...info, images: images });
   }
   //update correct
-  console.log(errors);
   
   async function handleSaveRoute(): Promise<void> {
     if (!userId || !info.obstacle) return;
