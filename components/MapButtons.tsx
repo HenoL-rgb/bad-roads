@@ -3,12 +3,11 @@ import React from 'react';
 import { Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Animated, {
-  FadeInLeft,
   FadeInRight,
-  FadeOutLeft,
   FadeOutRight,
   ZoomIn,
   ZoomOut,
+
 } from 'react-native-reanimated';
 import { colors } from '../utils/colors';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
@@ -35,7 +34,8 @@ export default function MapButtons({
 }: MapButtonsProps) {
   const dispatch = useAppDispatch();
   const { mode, markersVisible } = useAppSelector(state => state.routesReducer);
-
+  
+ 
   return (
     <>
       {mode === modes.IDLE && (
@@ -62,8 +62,8 @@ export default function MapButtons({
             bottom: 80,
             backgroundColor: colors.darkRed,
           }}
-          entering={ZoomIn.duration(120)}
-          exiting={ZoomOut.duration(120)}>
+          entering={ZoomIn.duration(150)}
+          exiting={ZoomOut.duration(150)}>
           <Pressable onPress={() => dispatch(setInitialState())} style={styles.pressable}>
             <Icon name="close" size={20} color={colors.white} />
           </Pressable>
@@ -103,12 +103,9 @@ export default function MapButtons({
 
       {(mode === modes.CREATE || mode === modes.EDIT) && (
         <Animated.View
-          style={{
-            ...styles.addButton,
-            opacity: !(markersVisible.start && markersVisible.end) ? 0.5 : 1,
-          }}
-          entering={FadeInLeft.duration(120)}
-          exiting={FadeOutLeft.duration(120)}>
+          style={[styles.addButton, {opacity: markersVisible.end ? 1 : 0.5}]}
+          entering={ZoomIn.duration(150)}
+          exiting={ZoomOut.duration(150)}>
           <Pressable
             onPress={findRoute}
             style={styles.pressable}

@@ -137,6 +137,23 @@ export default function Map({ route }: Props) {
     }
   }
 
+  function handleSaveRoute() {
+    if(!currentRoute.id) {
+      navigation.navigate('SaveRoute', {
+        points: points,
+        currentRoute,
+      })
+      return;
+    }
+    
+    navigation.navigate('EditRoute', {
+      points: points,
+      currentRoute,
+    })
+    return;
+    
+  }  
+
   useFocusEffect(
     useCallback(() => {
       dispatch(setInitialState());
@@ -178,12 +195,7 @@ export default function Map({ route }: Props) {
       </YaMap>
 
       <MapButtons
-        handleSaveRoute={() =>
-          navigation.navigate('SaveRoute', {
-            points: points,
-            currentRoute,
-          })
-        }
+        handleSaveRoute={handleSaveRoute}
         findRoute={findRoute}
       />
       <BottomSheet hideSheet={hideSheet} ref={bottomSheetRef}>

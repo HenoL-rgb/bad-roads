@@ -87,7 +87,7 @@ export const routesApi = createApi({
       query: () => ({
         url: 'api/obstacles'
       })
-    })
+    }),
   }),
 });
 
@@ -101,6 +101,6 @@ export const {
   useLikeRouteMutation,
   useDislikeRouteMutation,
   useGetRouteByIdQuery,
-  useGetObstaclesQuery
+  useGetObstaclesQuery,
   //useGetLikedByUserIdQuery
 } = routesApi;

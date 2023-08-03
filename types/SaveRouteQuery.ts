@@ -7,7 +7,7 @@ export type SaveRoute = {
   userId: number;
   obstacleId: number;
   description: string;
-  images: string[];
+  images: (string | {path: string})[];
 };
 
 export type SaveRouteResponse = {

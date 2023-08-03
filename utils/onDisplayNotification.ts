@@ -1,6 +1,5 @@
 
-import notifee, { Notification } from '@notifee/react-native';
-import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
+import notifee from '@notifee/react-native';
 
 export async function onDisplayNotification(
     notification: {

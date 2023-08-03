@@ -21,6 +21,7 @@ import AuthContainer from '../navigation/AuthContainer';
 import { useRefreshQuery } from '../store/api/auth.api';
 import SaveRoute from './save-edit-route/SaveRoute';
 import useGetTheme from '../hooks/useGetTheme.hook';
+import EditRoute from './save-edit-route/EditRoute';
 
 export type StackParamList = {
   Home: {
@@ -35,6 +36,10 @@ export type StackParamList = {
     points: Point[];
     currentRoute: MapCurrentRoute;
   };
+  EditRoute: {
+    points: Point[],
+    currentRoute: MapCurrentRoute;
+  }
 };
 
 export const RootStack = createNativeStackNavigator<StackParamList>();
@@ -118,6 +123,21 @@ function AppWrapper(): JSX.Element {
         options={{
           animation: 'fade_from_bottom',
           title: 'Save route',
+          headerStyle: {
+            backgroundColor: theme.background,
+          },
+          headerTitleStyle: {
+            color: theme.text,
+          },
+          headerTintColor: theme.text,
+        }}
+      />
+      <RootStack.Screen
+        name="EditRoute"
+        component={EditRoute}
+        options={{
+          animation: 'fade_from_bottom',
+          title: 'Edit route',
           headerStyle: {
             backgroundColor: theme.background,
           },

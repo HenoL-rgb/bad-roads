@@ -9,9 +9,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../../utils/colors';
 
 type ModalImageProps = {
-  images: ImageOrVideo[];
+  images: ImageOrVideo[] | { path: string }[];
   clickedId: number;
-  image: ImageOrVideo;
+  image: ImageOrVideo | { path: string };
   deleteImage: (path: string) => void;
 };
 

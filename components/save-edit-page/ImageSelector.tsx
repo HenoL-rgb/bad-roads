@@ -1,9 +1,4 @@
-import {
-  Text,
-  Pressable,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import { Text, Pressable, StyleSheet, Dimensions } from 'react-native';
 import React, { useRef, useState } from 'react';
 import ModalImage from './ModalImage';
 import { colors } from '../../utils/colors';
@@ -21,17 +16,20 @@ import Animated, {
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 type ImageSelectorProps = {
-  images: Image[];
-  setImages: (images: Image[]) => void;
-}
+  images: Image[] | { path: string }[];
+  setImages: (images: (Image[] | { path: string }[])) => void;
+};
 
-export default function ImageSelector({images, setImages}: ImageSelectorProps) {
+export default function ImageSelector({
+  images,
+  setImages,
+}: ImageSelectorProps) {
   const [deletedIndex, setDeletedIndex] = useState<number | null>(null);
   const theme = useAppSelector(state => state.themeReducer);
   const aWidth = useDerivedValue(() => images.length * 110, [images.length]);
   const listRef = useRef<Animated.ScrollView>(null);
   const translationX = useSharedValue(0);
-  const aHeight = useDerivedValue(() => images.length ? 110 : 0);
+  const aHeight = useDerivedValue(() => (images.length ? 110 : 0));
 
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationX.value = event.contentOffset.x;
@@ -61,8 +59,8 @@ export default function ImageSelector({images, setImages}: ImageSelectorProps) {
             )
           : SCREEN_WIDTH,
       height: withTiming(aHeight.value, {
-        duration: 300
-      })
+        duration: 300,
+      }),
     };
   });
 
@@ -72,21 +70,18 @@ export default function ImageSelector({images, setImages}: ImageSelectorProps) {
     setImages(images.filter(item => item.path !== path));
   }
 
-  
   function listSizeChangeHandler() {
     if (
       deletedIndex !== null &&
       images.length >= 4 &&
       images.length - deletedIndex < 3 &&
-      (translationX.value > SCREEN_WIDTH / 2.85)
+      translationX.value > SCREEN_WIDTH / 2.85
     ) {
-      
       listRef.current?.scrollToEnd({ animated: true });
     } else if (images.length < 4) {
       listRef.current?.scrollTo({ x: 0, animated: true });
     }
   }
-
 
   return (
     <Animated.View>
@@ -116,7 +111,6 @@ export default function ImageSelector({images, setImages}: ImageSelectorProps) {
               />
             );
           })}
-       
         </Animated.View>
       </Animated.ScrollView>
 

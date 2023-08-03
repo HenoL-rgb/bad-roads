@@ -6,10 +6,9 @@ import { AppRegistry } from 'react-native';
 import App from './App';
 import { name as appName } from './app.json';
 import messaging, {
-  FirebaseMessagingTypes,
 } from '@react-native-firebase/messaging';
 import { onDisplayNotification } from './utils/onDisplayNotification';
-import notifee, { Notification, EventType } from '@notifee/react-native';
+import notifee, { EventType } from '@notifee/react-native';
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
    
@@ -23,7 +22,6 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
 
 notifee.onBackgroundEvent(async ({ type, detail }) => {
     const { notification, pressAction } = detail;
-    console.log('background');
     
     // Check if the user pressed the "Mark as read" action
     if(type === EventType.ACTION_PRESS && pressAction?.id === 'dismiss'){
