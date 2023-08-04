@@ -6,7 +6,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './Home';
 import Settings from './Settings';
 import Gallery from './Gallery';
-import { ImageOrVideo } from 'react-native-image-crop-picker';
 import {
   View,
   ActivityIndicator,
@@ -22,6 +21,7 @@ import { useRefreshQuery } from '../store/api/auth.api';
 import SaveRoute from './save-edit-route/SaveRoute';
 import useGetTheme from '../hooks/useGetTheme.hook';
 import EditRoute from './save-edit-route/EditRoute';
+import { ImageOrVideoType } from '../types/ImageType';
 
 export type StackParamList = {
   Home: {
@@ -29,7 +29,7 @@ export type StackParamList = {
   };
   Settings: undefined;
   Gallery: {
-    images: ImageOrVideo[] | {path: string}[];
+    images: ImageOrVideoType[];
     clickedId: number;
   };
   SaveRoute: {

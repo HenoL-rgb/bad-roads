@@ -18,19 +18,19 @@ import Controls from '../../components/save-edit-page/Controls';
 import TopIcon from '../../components/save-edit-page/TopIcon';
 import ObstaclesDropDown from '../../components/save-edit-page/ObstacleType/ObstaclesDropDown';
 import { ModalRefProps } from '../../components/modals/Modal';
-import { Image } from 'react-native-image-crop-picker';
 import * as assets from '../../pages/save-edit-route/assets';
 import { Obstacle } from '../../types/SaveRouteQuery';
 import { colors } from '../../utils/colors';
 import {
-  useSaveRouteMutation,
   useGetObstaclesQuery,
   useGetRouteByIdQuery,
+  useUpdateRouteMutation,
 } from '../../store/api/routes.api';
 import {
   saveRouteAction,
   setInitialState,
 } from '../../store/slices/routes.slice';
+import { ImageType } from '../../types/ImageType';
 
 type EditRouteProps = NativeStackScreenProps<StackParamList, 'EditRoute'>;
 
@@ -41,7 +41,7 @@ type Info = {
     description: string;
   } | null;
   description: string | null;
-  images: Image[] | {path: string}[];
+  images: ImageType[];
 };
 
 export default function EditRoute({ navigation, route }: EditRouteProps) {
@@ -53,7 +53,7 @@ export default function EditRoute({ navigation, route }: EditRouteProps) {
   const { data } = useGetRouteByIdQuery(currentRoute.id, {
     skip: currentRoute.id ? false : true,
   });
-  const [saveRoute, { isLoading: saveLoading }] = useSaveRouteMutation();
+  const [updateRoute, { isLoading: saveLoading }] = useUpdateRouteMutation();
   const { data: obstaclesData, isLoading } = useGetObstaclesQuery();
   
   const [info, setInfo] = useState<Info>({
@@ -106,13 +106,13 @@ export default function EditRoute({ navigation, route }: EditRouteProps) {
     ref.current.setActive(true);
   }
 
-  function handleImages(images: Image[] | {path:string}[]) {
+  function handleImages(images: ImageType[]) {
     setErrors({ ...errors, images: false });
     setInfo({ ...info, images: images });
   }
   //update correct
 
-  async function handleSaveRoute(): Promise<void> {
+  async function handleUpdateRoute(): Promise<void> {
     if (!userId || !info.obstacle) return;
     if (!info.images.length) {
       setErrors({ ...errors, images: true });
@@ -122,9 +122,10 @@ export default function EditRoute({ navigation, route }: EditRouteProps) {
     if (Object.values(errors).some(value => value === true)) return;
     getUrl(points);
 
-    const response = await saveRoute({
+    const response = await updateRoute({
       route: points,
       icon: getUrl(points),
+      routeId: currentRoute.id,
       userId: userId,
       obstacleId: info.obstacle.id,
       description: info.description ? info.description : '',
@@ -180,7 +181,7 @@ export default function EditRoute({ navigation, route }: EditRouteProps) {
 
       <Controls
         handleCancel={() => navigation.goBack()}
-        handleSaveRoute={handleSaveRoute}
+        handleSaveRoute={handleUpdateRoute}
         Loading={saveLoading}
         mode="save"
         theme={theme}

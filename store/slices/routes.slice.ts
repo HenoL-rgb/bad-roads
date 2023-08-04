@@ -83,6 +83,16 @@ export const routesSlice = createSlice({
     saveRouteAction(state, action: PayloadAction<Route>) {
       state.routes = [...state.routes, action.payload];
     },
+    editRouteAction(state, action: PayloadAction<Route>) {
+      state.routes = state.routes.map(route => {
+        if(route.id === action.payload.id) {
+          return {
+            ...action.payload
+          }
+        }
+        return route;
+      })
+    },
     setApproveRoute(state, action: PayloadAction<ApproveRoute>) {
       state.routes = [...state.routes].map(item => {
         if(item.id === action.payload.routeId) {

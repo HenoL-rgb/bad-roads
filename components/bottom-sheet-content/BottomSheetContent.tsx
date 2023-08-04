@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   StyleSheet,
   ActivityIndicator,
   ScrollView,
@@ -25,6 +24,7 @@ import FastInfoType from './FastInfoType';
 import Controls from './Controls';
 import MarkButtons from './MarkButtons';
 import RouteNotFound from './RouteNotFound';
+import BottomSheetDescription from './ BottomSheetDescription';
 
 type RoutePopUpProps = {
   deleteRoute: (id: number) => void;
@@ -163,21 +163,7 @@ function BottomSheetContent({
             </ScrollView>
             </View>
             
-            <View
-              style={[
-                styles.description,
-                { backgroundColor: theme.colors.card },
-              ]}>
-              <Text
-                style={[styles.descriptionTitle, { color: theme.colors.text }]}>
-                Description
-              </Text>
-              <ScrollView>
-                <Text style={[styles.modalText, { color: theme.colors.text }]}>
-                  {data.description}
-                </Text>
-              </ScrollView>
-            </View>
+            <BottomSheetDescription theme={theme} description={data.description} />
           </View>
         </View>
       ) : (
@@ -210,6 +196,9 @@ const styles = StyleSheet.create({
   header: {
     padding: 5,
     borderRadius: 5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 10,
   },
 
   images: {
@@ -233,16 +222,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.black,
   },
-  description: {
-    flex: 1,
-    padding: 5,
-    borderRadius: 5,
-    maxHeight: 250,
-    backgroundColor: colors.eyePress,
-    justifyContent: 'flex-start',
-  },
-  descriptionTitle: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
+  
+  
 });

@@ -35,8 +35,8 @@ export default function FastInfo({ data }: FastInfoType) {
         )}
       </View>
       <View style={styles.info}>
-        <Text style={textStyle}>Added by: {data.author.email}</Text>
-        <Text style={textStyle}>Date: {data.createdAt.split('T')[0]}</Text>
+        <Text style={textStyle} numberOfLines={1}>{data.author.email}</Text>
+        <Text style={[styles.dataText, {color: colors.gray}]}>{data.createdAt.split('T')[0]}</Text>
       </View>
     </View>
   );
@@ -67,7 +67,10 @@ const styles = StyleSheet.create({
   },
   modalText: {
     color: colors.black,
-    fontSize: 17,
+    fontSize: 16,
+  },
+  dataText: {
+    fontSize: 13,
   },
   sign: {
     width: 60,

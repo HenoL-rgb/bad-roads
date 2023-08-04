@@ -53,6 +53,8 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: colors.eyePress,
     justifyContent: 'center',
+    alignItems: 'center',
+    width: 80,
   },
   description: {
     flex: 1,

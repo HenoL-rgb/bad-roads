@@ -1,17 +1,17 @@
 import { Image, Pressable, StyleSheet } from 'react-native';
 import React from 'react';
-import { ImageOrVideo } from 'react-native-image-crop-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackParamList } from '../../pages/AppWrapper';
 import { useNavigation } from '@react-navigation/native';
 import Animated, { FadeOutLeft, Layout, ZoomIn } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../../utils/colors';
+import { ImageOrVideoType } from '../../types/ImageType';
 
 type ModalImageProps = {
-  images: ImageOrVideo[] | { path: string }[];
+  images: ImageOrVideoType[];
   clickedId: number;
-  image: ImageOrVideo | { path: string };
+  image: ImageOrVideoType;
   deleteImage: (path: string) => void;
 };
 

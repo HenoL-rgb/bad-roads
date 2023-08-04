@@ -2,7 +2,7 @@ import { Text, Pressable, StyleSheet, Dimensions } from 'react-native';
 import React, { useRef, useState } from 'react';
 import ModalImage from './ModalImage';
 import { colors } from '../../utils/colors';
-import ImagePicker, { Image } from 'react-native-image-crop-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import { useAppSelector } from '../../hooks/redux-hooks';
 import Animated, {
   useAnimatedScrollHandler,
@@ -12,12 +12,13 @@ import Animated, {
   withDelay,
   withTiming,
 } from 'react-native-reanimated';
+import { ImageType } from '../../types/ImageType';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 type ImageSelectorProps = {
-  images: Image[] | { path: string }[];
-  setImages: (images: (Image[] | { path: string }[])) => void;
+  images: ImageType[];
+  setImages: (images: ImageType[]) => void;
 };
 
 export default function ImageSelector({

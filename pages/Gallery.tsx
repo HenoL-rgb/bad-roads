@@ -17,10 +17,6 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 type GalleryProps = NativeStackScreenProps<StackParamList, 'Gallery'>;
 
-type RenderItem = {
-  item: ImageOrVideo | { path: string };
-};
-
 export default function Gallery({ navigation, route }: GalleryProps) {
   const { images, clickedId } = route.params;
   const [currentImage, setCurrentImage] = useState(clickedId);

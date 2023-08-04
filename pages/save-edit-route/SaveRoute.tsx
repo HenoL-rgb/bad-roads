@@ -1,4 +1,10 @@
-import { View, ScrollView, StyleSheet, ActivityIndicator, Text } from 'react-native';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  ActivityIndicator,
+  Text,
+} from 'react-native';
 import React, { useRef, useState } from 'react';
 import ImageSelector from '../../components/save-edit-page/ImageSelector';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
@@ -12,12 +18,18 @@ import Controls from '../../components/save-edit-page/Controls';
 import TopIcon from '../../components/save-edit-page/TopIcon';
 import ObstaclesDropDown from '../../components/save-edit-page/ObstacleType/ObstaclesDropDown';
 import { ModalRefProps } from '../../components/modals/Modal';
-import { Image } from 'react-native-image-crop-picker';
 import * as assets from '../../pages/save-edit-route/assets';
 import { Obstacle } from '../../types/SaveRouteQuery';
 import { colors } from '../../utils/colors';
-import { useSaveRouteMutation, useGetObstaclesQuery } from '../../store/api/routes.api';
-import { saveRouteAction, setInitialState } from '../../store/slices/routes.slice';
+import {
+  useSaveRouteMutation,
+  useGetObstaclesQuery,
+} from '../../store/api/routes.api';
+import {
+  saveRouteAction,
+  setInitialState,
+} from '../../store/slices/routes.slice';
+import { ImageType } from '../../types/ImageType';
 
 type SaveRouteProps = NativeStackScreenProps<StackParamList, 'SaveRoute'>;
 
@@ -28,7 +40,7 @@ type Info = {
     description: string;
   } | null;
   description: string | null;
-  images: Image[];
+  images: ImageType[];
 };
 
 export default function SaveRoute({ navigation, route }: SaveRouteProps) {
@@ -46,7 +58,7 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
   });
   const [errors, setErrors] = useState({
     images: false,
-  })
+  });
 
   const ref = useRef<ModalRefProps>(null);
 
@@ -80,21 +92,20 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
     ref.current.setActive(true);
   }
 
-  function handleImages(images: Image[]) {
-  
-    setErrors({...errors, images: false})
+  function handleImages(images: ImageType[]) {
+    setErrors({ ...errors, images: false });
     setInfo({ ...info, images: images });
   }
   //update correct
-  
+
   async function handleSaveRoute(): Promise<void> {
     if (!userId || !info.obstacle) return;
-    if(!info.images.length) {
-      setErrors({...errors, images: true})
+    if (!info.images.length) {
+      setErrors({ ...errors, images: true });
       return;
     }
 
-    if(Object.values(errors).some(value => value === true)) return;
+    if (Object.values(errors).some(value => value === true)) return;
     getUrl(points);
 
     const response = await saveRoute({
@@ -103,9 +114,14 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
       userId: userId,
       obstacleId: info.obstacle.id,
       description: info.description ? info.description : '',
-      images: info.images.map(image => `${image.data}`),
+      images: info.images.map(image => {
+        if('data' in image) {
+          return `${image.data}`
+        }
+        return image;
+      }),
     });
-    
+
     if ('data' in response) {
       dispatch(saveRouteAction(transformRoute(response.data)));
       dispatch(setInitialState());
@@ -137,10 +153,12 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
         />
         <View style={styles.section}>
           <ImageSelector images={info.images} setImages={handleImages} />
-          {errors.images && <Text style={{color: theme.colors.text}}>No selected images</Text>}
+          {errors.images && (
+            <Text style={{ color: theme.colors.text }}>No selected images</Text>
+          )}
         </View>
         <Description
-        theme={theme}
+          theme={theme}
           description={info.description}
           setDescription={value => setInfo({ ...info, description: value })}
         />
@@ -155,7 +173,7 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
       />
       {obstaclesData && (
         <ObstaclesDropDown
-        theme={theme}
+          theme={theme}
           data={obstaclesData}
           modalRef={ref}
           setObstacle={value => setObstacle(value)}

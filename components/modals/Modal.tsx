@@ -45,7 +45,7 @@ const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
           active.value = value;
           scrollTo(0);
         } else {
-          scrollTo(-SCREEN_HEIGHT / 2 - height.value / 1.5 );
+          scrollTo(-SCREEN_HEIGHT / 2 - height.value / 1.6 );
         }
       },
       [active, scrollTo, height.value],
@@ -113,7 +113,7 @@ export default Modal;
 const styles = StyleSheet.create({
   background: {
     minHeight: 350,
-    maxHeight: 600,
+    maxHeight: 500,
     width: 340,
     backgroundColor: 'white',
     overflow: 'hidden',
