@@ -1,12 +1,8 @@
-import { View, Switch, StyleSheet, Pressable } from 'react-native';
+import { View, Switch, StyleSheet, Pressable, Text } from 'react-native';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
 import { setTheme } from '../../store/slices/theme.slice';
-import {
-  DarkTheme,
-  DefaultTheme,
-  useFocusEffect,
-} from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Animated, {
   interpolateColor,
@@ -19,11 +15,12 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import BackButton from '../../components/BackButton';
 import messaging from '@react-native-firebase/messaging';
 import { useLogoutMutation } from '../../store/api/auth.api';
-import { colors } from '../../utils/colors';
+import { LightTheme, DarkTheme, colors } from '../../utils/colors';
 import { useTranslation } from 'react-i18next';
 import { SettingsStackParamList, screens } from './SettingsWrapper';
 import i18next from 'i18next';
 import languagesList from '../../utils/translations/languagesList';
+import Section from '../../components/Section';
 
 type Props = NativeStackScreenProps<SettingsStackParamList, screens.Settings>;
 
@@ -43,7 +40,7 @@ export default function Settings({ navigation }: Props) {
   }, [dark]);
 
   function toggleSwitch() {
-    dispatch(setTheme(dark ? DefaultTheme : DarkTheme));
+    dispatch(setTheme(dark ? LightTheme : DarkTheme));
     EncryptedStorage.setItem('theme', dark ? 'light' : 'dark');
   }
 
@@ -51,7 +48,7 @@ export default function Settings({ navigation }: Props) {
     const backgroundColor = interpolateColor(
       progress.value,
       [0, 1],
-      [DefaultTheme.colors.card, DarkTheme.colors.card],
+      [LightTheme.colors.card, DarkTheme.colors.card],
     );
 
     return {
@@ -63,7 +60,7 @@ export default function Settings({ navigation }: Props) {
     const backgroundColor = interpolateColor(
       progress.value,
       [0, 1],
-      [DefaultTheme.colors.background, DarkTheme.colors.background],
+      [LightTheme.colors.background, DarkTheme.colors.background],
     );
 
     return {
@@ -75,7 +72,7 @@ export default function Settings({ navigation }: Props) {
     const color = interpolateColor(
       progress.value,
       [0, 1],
-      [DefaultTheme.colors.text, DarkTheme.colors.text],
+      [LightTheme.colors.text, DarkTheme.colors.text],
     );
 
     return {
@@ -93,7 +90,7 @@ export default function Settings({ navigation }: Props) {
           ]}></Animated.View>
       ),
       headerTitle: () => (
-        <Animated.Text style={[styles.text, rTextStyle, { fontWeight: '500' }]}>
+        <Animated.Text style={[styles.header, rTextStyle]}>
           {t('Settings')}
         </Animated.Text>
       ),
@@ -117,39 +114,42 @@ export default function Settings({ navigation }: Props) {
   });
 
   return (
-    <Animated.View style={[styles.wrapper, rWrapperStyle]}>
-      <View style={styles.item}>
-        <Animated.Text style={[styles.text, rTextStyle]}>
-          {t('darkMode')}
-        </Animated.Text>
-        <Switch
-          trackColor={{ false: '#8a8a8a', true: '#c0c0c0' }}
-          thumbColor={dark ? '#e9e9e9' : '#a7a7a7'}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={toggleSwitch}
-          value={dark}
-          style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
-        />
-      </View>
-      <Pressable
-        style={styles.item}
-        onPress={() => navigation.navigate(screens.Languages)}>
-        <Animated.Text style={[styles.text, rTextStyle]}>
-          {t('language')}
-        </Animated.Text>
-        <View style={styles.subItem}>
-          <Animated.Text style={[styles.subText]}>
-            {languagesList[i18next.language].nativeName}
+    <Animated.ScrollView style={[styles.wrapper, rWrapperStyle]}>
+      <Section header="App">
+        <View style={styles.item}>
+          <Animated.Text style={[styles.text, rTextStyle]}>
+            {t('darkMode')}
           </Animated.Text>
-          <AnimatedIcon name="chevron-right" size={25} style={[rTextStyle]} />
+          <Switch
+            trackColor={{ false: '#8a8a8a', true: '#c0c0c0' }}
+            thumbColor={dark ? '#e9e9e9' : '#a7a7a7'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={dark}
+            style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
+          />
         </View>
-      </Pressable>
-      <View style={styles.item}>
-        <Animated.Text style={[styles.text, rTextStyle]}>
-          {t('PushNotifications')}
-        </Animated.Text>
-      </View>
-    </Animated.View>
+        <Pressable
+          style={styles.item}
+          onPress={() => navigation.navigate(screens.Languages)}>
+          <Animated.Text style={[styles.text, rTextStyle]}>
+            {t('language')}
+          </Animated.Text>
+          <View style={styles.subItem}>
+            <Animated.Text style={[styles.subText]}>
+              {languagesList[i18next.language].nativeName}
+            </Animated.Text>
+            <AnimatedIcon name="chevron-right" size={25} style={[rTextStyle]} />
+          </View>
+        </Pressable>
+        <View style={styles.item}>
+          <Animated.Text style={[styles.text, rTextStyle]}>
+            {t('PushNotifications')}
+          </Animated.Text>
+        </View>
+      </Section>
+      <Section header="map"></Section>
+    </Animated.ScrollView>
   );
 }
 
@@ -161,7 +161,11 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   text: {
+    fontSize: 16,
+  },
+  header: {
     fontSize: 18,
+    fontWeight: '500',
   },
   subText: {
     fontSize: 15,
@@ -178,4 +182,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
   },
+  section: {},
+  sectionHeader: {},
+  sectionContent: {},
 });

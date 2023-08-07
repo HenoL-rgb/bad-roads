@@ -19,16 +19,25 @@ import { colors } from 'react-native-elements';
 import { MutationTrigger } from '@reduxjs/toolkit/dist/query/react/buildHooks';
 import { GetRoutesResponse } from '../types/GetAllRoutesQuery';
 import { QueryActionCreatorResult } from '@reduxjs/toolkit/dist/query/core/buildInitiate';
+import { useAppSelector } from '../hooks/redux-hooks';
 
-type RefetchType = () => QueryActionCreatorResult<QueryDefinition<number, BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>, never, GetRoutesResponse[], "routesApi">>;
+type RefetchType = () => QueryActionCreatorResult<
+  QueryDefinition<
+    number,
+    BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,
+    never,
+    GetRoutesResponse[],
+    'routesApi'
+  >
+>;
 export type RefetchMutationType = MutationTrigger<
-MutationDefinition<
-  object,
-  BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,
-  never,
-  GetRoutesResponse[],
-  'routesApi'
->
+  MutationDefinition<
+    object,
+    BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,
+    never,
+    GetRoutesResponse[],
+    'routesApi'
+  >
 >;
 
 type RouteListProps = {
@@ -44,9 +53,10 @@ export default function RouteList({
   navigate,
   loading,
   refetch,
-  refetchMut
+  refetchMut,
 }: RouteListProps) {
-  
+  const { colors: theme } = useAppSelector(state => state.themeReducer);
+
   const renderItem = useCallback(
     ({ item }: { item: Route }) => (
       <RouteListItem route={item} navigate={navigate} />
@@ -55,9 +65,9 @@ export default function RouteList({
   );
 
   function refetchOnType() {
-    if(refetch) {
+    if (refetch) {
       return refetch;
-    } else if(refetchMut) {
+    } else if (refetchMut) {
       return () => refetchMut({});
     }
   }
@@ -76,7 +86,7 @@ export default function RouteList({
           keyExtractor={keyExtractor}
           ItemSeparatorComponent={() => <View style={{ height: 5 }} />}
           ListEmptyComponent={
-            <ActivityIndicator size={'small'} color={colors.black} />
+            <ActivityIndicator size={'small'} color={theme.activity} />
           }
         />
       ) : null}

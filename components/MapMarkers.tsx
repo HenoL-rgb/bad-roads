@@ -1,7 +1,7 @@
 import { View, StyleSheet } from 'react-native';
 import React from 'react';
 import { Marker } from 'react-native-yamap';
-import Animated, { ZoomInDown, ZoomOutDown } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { setCurrentMarker } from '../store/slices/routes.slice';
 
@@ -10,25 +10,28 @@ enum CurrentMarker {
   END,
 }
 
-export default function MapMarkers() {
+const AnimatedMarker = Animated.createAnimatedComponent(Marker);
 
-  const {markersVisible, currentRoute, currentMarker} = useAppSelector(state => state.routesReducer);
+export default function MapMarkers() {
+  const { markersVisible, currentRoute, currentMarker } = useAppSelector(
+    state => state.routesReducer,
+  );
   const dispatch = useAppDispatch();
 
   return (
     <>
       {markersVisible.end && currentRoute.end && (
-        <Marker
+        <AnimatedMarker
           point={currentRoute.end}
           scale={currentMarker === CurrentMarker.END ? 1.2 : 1}
           onPress={() => {
             dispatch(setCurrentMarker(CurrentMarker.END));
           }}>
-          <Animated.View entering={ZoomInDown.springify().mass(0.1).damping(10)} exiting={ZoomOutDown} style={styles.marker}>
-            <View style={styles.markerTop}></View>
-            <View style={styles.markerBottom}></View>
+          <Animated.View style={styles.marker}>
+            <Animated.View style={styles.markerTop}></Animated.View>
+            <Animated.View style={styles.markerBottom}></Animated.View>
           </Animated.View>
-        </Marker>
+        </AnimatedMarker>
       )}
 
       {markersVisible.start && currentRoute.start && (
@@ -40,7 +43,7 @@ export default function MapMarkers() {
               dispatch(setCurrentMarker(CurrentMarker.START));
             }
           }}>
-          <Animated.View entering={ZoomInDown.springify().mass(0.1).damping(10)} exiting={ZoomOutDown} style={styles.marker}>
+          <Animated.View style={styles.marker}>
             <View
               style={{
                 ...styles.markerTop,

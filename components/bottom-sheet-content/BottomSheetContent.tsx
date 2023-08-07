@@ -169,8 +169,8 @@ function BottomSheetContent({
         <View style={styles.centeredView}>
           <ActivityIndicator
             size="large"
-            color={colors.blue}
-            style={{ marginTop: 20 }}
+            color={theme.colors.activity}
+            style={{ marginTop: 50 }}
           />
         </View>
       )}

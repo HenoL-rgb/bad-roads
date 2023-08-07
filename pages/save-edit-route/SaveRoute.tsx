@@ -114,8 +114,8 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
       obstacleId: info.obstacle.id,
       description: info.description ? info.description : '',
       images: info.images.map(image => {
-        if('data' in image) {
-          return `${image.data}`
+        if ('data' in image) {
+          return `${image.data}`;
         }
         return image;
       }),
@@ -132,8 +132,12 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
 
   if (isLoading) {
     return (
-      <View style={[styles.wrapper, { backgroundColor: theme.colors.card }]}>
-        <ActivityIndicator size="large" color={colors.blue} />
+      <View
+        style={[
+          styles.loadingWrapper,
+          { backgroundColor: theme.colors.card },
+        ]}>
+        <ActivityIndicator size="large" color={theme.colors.activity} />
       </View>
     );
   }
@@ -188,6 +192,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     paddingBottom: 40,
+  },
+  loadingWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   section: {
     borderRadius: 5,

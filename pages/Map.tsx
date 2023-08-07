@@ -171,7 +171,7 @@ export default function Map({ route }: Props) {
           justifyContent: 'center',
           backgroundColor: theme.colors.background,
         }}>
-        <ActivityIndicator size="large" color={colors.blue} />
+        <ActivityIndicator size="large" color={theme.colors.activity} />
       </View>
     );
   }

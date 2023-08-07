@@ -124,7 +124,7 @@ export default function Form({ onSubmit, isLoading, mode }: FormProps) {
           { ...styles.submitBtn, opacity: pressed ? 0.8 : 1 },
         ]}>
         {isLoading ? (
-          <ActivityIndicator size="small" color={colors.white} />
+          <ActivityIndicator size="small" color={theme.colors.activity} />
         ) : (
           <Text style={styles.btnText}>Submit</Text>
         )}

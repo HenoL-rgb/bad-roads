@@ -81,7 +81,7 @@ function AppWrapper(): JSX.Element {
   if (loadRefresh || isAuth === null) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color={colors.blue} />
+        <ActivityIndicator size="large" color={theme.activity} />
       </View>
     );
   }

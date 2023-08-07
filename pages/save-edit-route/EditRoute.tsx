@@ -55,7 +55,7 @@ export default function EditRoute({ navigation, route }: EditRouteProps) {
   });
   const [updateRoute, { isLoading: saveLoading }] = useUpdateRouteMutation();
   const { data: obstaclesData, isLoading } = useGetObstaclesQuery();
-  
+
   const [info, setInfo] = useState<Info>({
     obstacle: null,
     description: null,
@@ -66,15 +66,13 @@ export default function EditRoute({ navigation, route }: EditRouteProps) {
   });
 
   useEffect(() => {
-    if(!data) return;
+    if (!data) return;
     setInfo({
       obstacle: data.obstacle,
       description: data.description,
       images: data.images,
-    })
-
-  
-  }, [data])
+    });
+  }, [data]);
 
   const ref = useRef<ModalRefProps>(null);
 
@@ -110,7 +108,6 @@ export default function EditRoute({ navigation, route }: EditRouteProps) {
     setErrors({ ...errors, images: false });
     setInfo({ ...info, images: images });
   }
-  //update correct
 
   async function handleUpdateRoute(): Promise<void> {
     if (!userId || !info.obstacle) return;
@@ -130,8 +127,8 @@ export default function EditRoute({ navigation, route }: EditRouteProps) {
       obstacleId: info.obstacle.id,
       description: info.description ? info.description : '',
       images: info.images.map(image => {
-        if('data' in image) {
-         return `${image.data}`
+        if ('data' in image) {
+          return `${image.data}`;
         }
         return image;
       }),
@@ -148,8 +145,9 @@ export default function EditRoute({ navigation, route }: EditRouteProps) {
 
   if (isLoading) {
     return (
-      <View style={[styles.wrapper, { backgroundColor: theme.colors.card }]}>
-        <ActivityIndicator size="large" color={colors.blue} />
+      <View
+        style={[styles.loadingWrapper, { backgroundColor: theme.colors.card }]}>
+        <ActivityIndicator size="large" color={theme.colors.activity} />
       </View>
     );
   }
@@ -204,6 +202,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     paddingBottom: 40,
+  },
+  loadingWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   section: {
     borderRadius: 5,

@@ -6,12 +6,12 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import React from 'react';
-import { Theme } from '@react-navigation/native';
 import { colors } from '../../utils/colors';
+import { Themes } from '../../types/Themes';
 
 type ControlsProps = {
   handleCancel: () => void;
-  theme: Theme;
+  theme: Themes;
   handleSaveRoute: () => void;
   Loading: boolean;
   mode: 'save' | 'update';
@@ -41,7 +41,7 @@ export default function Controls({
         disabled={saveDisabled}
         >
         {Loading ? (
-          <ActivityIndicator size={'small'} color={colors.white} />
+          <ActivityIndicator size={'small'} color={theme.colors.activity} />
         ) : (
           <Text style={[{ color: theme.colors.card }]}>
             {mode.toUpperCase()}

@@ -1,13 +1,14 @@
-import { DefaultTheme, Theme } from '@react-navigation/native';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { Themes } from '../../types/Themes';
+import { LightTheme } from '../../utils/colors';
 
-const initialState = DefaultTheme;
+const initialState = LightTheme;
 
 export const themeSlice = createSlice({
   initialState,
   name: 'theme',
   reducers: {
-    setTheme(state, action: PayloadAction<Theme>) {
+    setTheme(state, action: PayloadAction<Themes>) {
       state.dark = action.payload.dark;
       state.colors = action.payload.colors;
     },
