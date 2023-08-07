@@ -7,7 +7,7 @@ import { RouteSection } from '../types/Route';
 import MapButtons from '../components/MapButtons';
 import MapMarkers from '../components/MapMarkers';
 import MapRoutes from '../components/MapRoutes';
-import { TabNavParamList } from '../pages/Home';
+import { HomeScreens, TabNavParamList } from '../pages/Home';
 import {
   NativeStackNavigationProp,
   NativeStackScreenProps,
@@ -45,7 +45,7 @@ enum CurrentMarker {
   START,
   END,
 }
-type Props = NativeStackScreenProps<TabNavParamList, 'Map'>;
+type Props = NativeStackScreenProps<TabNavParamList, HomeScreens.Map>;
 type RootNavigation = NativeStackNavigationProp<StackParamList>;
 
 export default function Map({ route }: Props) {
@@ -62,7 +62,7 @@ export default function Map({ route }: Props) {
   const [delRoute, { isLoading: deleteLoading }] = useDeleteRouteMutation();
   const navigation = useNavigation<RootNavigation>();
   const theme = useAppSelector(state => state.themeReducer);
-
+  
   const openSheet: () => void = useCallback(() => {
     bottomSheetRef.current?.scrollTo(-350);
   }, []);

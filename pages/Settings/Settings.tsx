@@ -1,7 +1,7 @@
-import { View, Switch, StyleSheet } from 'react-native';
+import { View, Switch, StyleSheet, Pressable } from 'react-native';
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
-import { setTheme } from '../store/slices/theme.slice';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
+import { setTheme } from '../../store/slices/theme.slice';
 import {
   DarkTheme,
   DefaultTheme,
@@ -15,17 +15,22 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { StackParamList } from './AppWrapper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import BackButton from '../components/BackButton';
+import BackButton from '../../components/BackButton';
 import messaging from '@react-native-firebase/messaging';
-import { useLogoutMutation } from '../store/api/auth.api';
+import { useLogoutMutation } from '../../store/api/auth.api';
+import { colors } from '../../utils/colors';
+import { useTranslation } from 'react-i18next';
+import { SettingsStackParamList, screens } from './SettingsWrapper';
+import i18next from 'i18next';
+import languagesList from '../../utils/translations/languagesList';
 
-type Props = NativeStackScreenProps<StackParamList, 'Settings'>;
+type Props = NativeStackScreenProps<SettingsStackParamList, screens.Settings>;
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 
 export default function Settings({ navigation }: Props) {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { dark } = useAppSelector(state => state.themeReducer);
   const [logout] = useLogoutMutation({});
@@ -88,8 +93,8 @@ export default function Settings({ navigation }: Props) {
           ]}></Animated.View>
       ),
       headerTitle: () => (
-        <Animated.Text style={[styles.text, rTextStyle]}>
-          Settings
+        <Animated.Text style={[styles.text, rTextStyle, { fontWeight: '500' }]}>
+          {t('Settings')}
         </Animated.Text>
       ),
       headerLeft: props => <BackButton props={props} style={rTextStyle} />,
@@ -115,7 +120,7 @@ export default function Settings({ navigation }: Props) {
     <Animated.View style={[styles.wrapper, rWrapperStyle]}>
       <View style={styles.item}>
         <Animated.Text style={[styles.text, rTextStyle]}>
-          Dark mode
+          {t('darkMode')}
         </Animated.Text>
         <Switch
           trackColor={{ false: '#8a8a8a', true: '#c0c0c0' }}
@@ -126,7 +131,24 @@ export default function Settings({ navigation }: Props) {
           style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
         />
       </View>
-
+      <Pressable
+        style={styles.item}
+        onPress={() => navigation.navigate(screens.Languages)}>
+        <Animated.Text style={[styles.text, rTextStyle]}>
+          {t('language')}
+        </Animated.Text>
+        <View style={styles.subItem}>
+          <Animated.Text style={[styles.subText]}>
+            {languagesList[i18next.language].nativeName}
+          </Animated.Text>
+          <AnimatedIcon name="chevron-right" size={25} style={[rTextStyle]} />
+        </View>
+      </Pressable>
+      <View style={styles.item}>
+        <Animated.Text style={[styles.text, rTextStyle]}>
+          {t('PushNotifications')}
+        </Animated.Text>
+      </View>
     </Animated.View>
   );
 }
@@ -141,10 +163,19 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 18,
   },
+  subText: {
+    fontSize: 15,
+    color: colors.gray,
+  },
   item: {
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
     height: 50,
+  },
+  subItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
   },
 });

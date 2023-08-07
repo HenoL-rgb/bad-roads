@@ -15,6 +15,7 @@ type ControlsProps = {
   handleSaveRoute: () => void;
   Loading: boolean;
   mode: 'save' | 'update';
+  saveDisabled: boolean;
 };
 
 export default function Controls({
@@ -23,6 +24,7 @@ export default function Controls({
   handleSaveRoute,
   Loading,
   mode,
+  saveDisabled
 }: ControlsProps) {
   return (
     <View style={styles.buttons}>
@@ -33,9 +35,11 @@ export default function Controls({
         style={({ pressed }) => [
           styles.cancelBtn,
           styles.saveBtn,
-          { backgroundColor: theme.colors.text, opacity: pressed ? 0.8 : 1 },
+          { backgroundColor: theme.colors.text, opacity: saveDisabled ? 0.4 : pressed ? 0.8 : 1 },
         ]}
-        onPress={handleSaveRoute}>
+        onPress={handleSaveRoute}
+        disabled={saveDisabled}
+        >
         {Loading ? (
           <ActivityIndicator size={'small'} color={colors.white} />
         ) : (

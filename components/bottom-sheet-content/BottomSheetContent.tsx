@@ -56,25 +56,23 @@ function BottomSheetContent({
     refetchOnMountOrArgChange: true,
   });
   
-  const likes = useAppSelector(state => state.userReducer.user?.likes);
-  const dislikes = useAppSelector(state => state.userReducer.user?.dislikes);
-
   const [mark, setMark] = useState<Marks>(Marks.NO_MARK);
 
   useEffect(() => {
-    const liked = likes?.some((item: { id: number }) => item.id === routeId);
-    const disliked = dislikes?.some(item => item.id === routeId);
+    const liked = user?.likes?.some((item: { id: number }) => item.id === routeId);
+    const disliked = user?.dislikes?.some(item => item.id === routeId);
     setMark(liked ? Marks.LIKE : disliked ? Marks.DISLIKE : Marks.NO_MARK);
-  }, [dislikes, likes, routeId]);
+  }, [routeId, user?.dislikes, user?.likes]);
 
   async function handleLike() {
     if (!user) return;
 
     try {
-      await likeRoute({ userId: user.id, routeId: routeId });
 
       dispatch(setUserLike({ id: routeId }));
       dispatch(setLike({ routeId: routeId, user: { id: user.id } }));
+      await likeRoute({ userId: user.id, routeId: routeId });
+
     } catch (error) {
       throw new Error('Error while like route');
     }
@@ -84,9 +82,10 @@ function BottomSheetContent({
     if (!user) return;
 
     try {
-      await dislikeRoute({ userId: user.id, routeId: routeId });
       dispatch(setUserDislike({ id: routeId }));
       dispatch(setDislike({ routeId: routeId, user: { id: user.id } }));
+      await dislikeRoute({ userId: user.id, routeId: routeId });
+
     } catch (error) {
       throw new Error('Error while dislike route');
     }

@@ -1,0 +1,20 @@
+{
+    "Map": "Map",
+    "Account": "Account",
+    "language": "Language",
+    "Languages": "Languages",
+    "memberSince": "Member since",
+    "status": "Status",
+    "approved": "Approved",
+    "notApproved": "Not approved",
+    "approve": "Approve",
+    "routes": "Routes",
+    "danger": "Danger",
+    "myRoutes": "My Routes",
+    "lat": "lat",
+    "lon": "lon",
+    "Settings": "Settings",
+    "darkMode": "Dark mode",
+    "PushNotifications": "Push notifications"
+
+}

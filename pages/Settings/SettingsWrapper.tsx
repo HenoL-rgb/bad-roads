@@ -1,0 +1,76 @@
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Settings from './Settings';
+import Languages from './Languages';
+import PushNotifications from './PushNotifications';
+import { useAppSelector } from '../../hooks/redux-hooks';
+import BackButton from '../../components/BackButton';
+import { StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+
+export enum screens {
+  Settings = 'Settings',
+  Languages = 'Languages',
+  PushNotifications = 'PushNotifications',
+}
+
+export type SettingsStackParamList = {
+  [screens.Settings]: undefined;
+  [screens.Languages]: undefined;
+  [screens.PushNotifications]: undefined;
+};
+
+const Stack = createNativeStackNavigator<SettingsStackParamList>();
+
+export default function SettingsWrapper() {
+  const { colors: theme } = useAppSelector(state => state.themeReducer);
+  const { t } = useTranslation();
+
+  return (
+    <Stack.Navigator
+      initialRouteName={screens.Settings}
+      screenOptions={{
+        headerBackVisible: false,
+        animation: 'slide_from_right',
+
+        headerBackground: () => (
+          <View style={[{ ...StyleSheet.absoluteFillObject }]}></View>
+        ),
+        headerTitleStyle: {
+          color: theme.text,
+          fontSize: 18,
+          fontWeight: 'normal',
+        },
+        headerTintColor: theme.text,
+        headerLeft: props => (
+          <BackButton props={props} style={{ color: theme.text }} />
+        ),
+      }}>
+      <Stack.Screen
+        name={screens.Settings}
+        options={{ headerTitle: t(screens.Settings) }}
+        component={Settings}
+      />
+      <Stack.Screen
+        name={screens.Languages}
+        options={{
+          headerTitle: t(screens.Languages),
+          headerStyle: {
+            backgroundColor: theme.background,
+          },
+        }}
+        component={Languages}
+      />
+      <Stack.Screen
+        name={screens.PushNotifications}
+        options={{
+          headerTitle: t(screens.PushNotifications),
+          headerStyle: {
+            backgroundColor: theme.background,
+          },
+        }}
+        component={PushNotifications}
+      />
+    </Stack.Navigator>
+  );
+}

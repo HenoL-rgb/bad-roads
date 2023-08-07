@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
 import { Theme } from '@react-navigation/native';
 import { colors } from '../../../utils/colors';
-
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { SvgProps } from 'react-native-svg';
 import * as assets from '../../../pages/save-edit-route/assets';
 
@@ -19,24 +19,27 @@ export default function ObstacleType({
   setModalActive,
   Obstacle,
 }: ObstacleTypeProps) {
-  const Icon = assets[Obstacle ? Obstacle : 'Other'] as React.FC<SvgProps>;
+  const ObstacleIcon = assets[Obstacle ?? 'Other'] as React.FC<SvgProps>;
   return (
     <>
       <View style={styles.section}>
         <View style={styles.obstacleType}>
           <Text style={[styles.text, { color: theme.colors.text }]}>Type:</Text>
-            <View
-              onTouchEnd={setModalActive}
-              style={{
-                height: 50,
-                width: 50,
-                borderRadius: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Icon />
-            </View>
-          
+          <View
+            onTouchEnd={setModalActive}
+            style={{
+              height: 60,
+              width: 60,
+              borderRadius: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            {Obstacle ? (
+              <ObstacleIcon />
+            ) : (
+              <Icon name="add" size={25} color={colors.gray} style={{right: 15, top: 2}} />
+            )}
+          </View>
         </View>
       </View>
     </>

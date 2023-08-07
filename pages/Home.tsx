@@ -6,43 +6,51 @@ import Account from '../pages/Account';
 import Map from '../pages/Map';
 import useGetTheme from '../hooks/useGetTheme.hook';
 import SettingsButton from '../components/account-page/SettingsButton';
+import { useTranslation } from 'react-i18next';
+
+export enum HomeScreens {
+  Map = "Map",
+  Account = "Account"
+}
 
 export type TabNavParamList = {
-  Map: {
+  [HomeScreens.Map]: {
     lat: number;
     lon: number;
   };
-  Account: undefined;
+  [HomeScreens.Account]: undefined;
 };
 
 export const Tab = createBottomTabNavigator<TabNavParamList>();
 
-
-
 function Home(): JSX.Element {
   const { colors: theme } = useGetTheme();
-  
+  const { t } = useTranslation();
+
   return (
-    <Tab.Navigator initialRouteName="Map" screenOptions={{
-      tabBarStyle: {
-        backgroundColor: theme.background,
-      },
-      tabBarActiveTintColor: theme.text,
-      headerStyle: {
-        backgroundColor: theme.background,
-      },
-      headerTitleStyle: {
-        color: theme.text,
-      },
-      headerTintColor: theme.text,
-      //tabBarShowLabel: false,
-    }}>
+    <Tab.Navigator
+      initialRouteName={HomeScreens.Map}
+      screenOptions={{
+        tabBarStyle: {
+          backgroundColor: theme.background,
+        },
+        tabBarActiveTintColor: theme.text,
+        headerStyle: {
+          backgroundColor: theme.background,
+        },
+        headerTitleStyle: {
+          color: theme.text,
+        },
+        headerTintColor: theme.text,
+        //tabBarShowLabel: false,
+      }}>
       <Tab.Screen
-        name="Map"
+        name={HomeScreens.Map}
         component={Map}
         options={{
           unmountOnBlur: true,
           headerShown: false,
+          tabBarLabel: t(HomeScreens.Map),
           tabBarIcon: (props: {
             focused: boolean;
             color: string;
@@ -53,12 +61,13 @@ function Home(): JSX.Element {
           lat: 55.17,
           lon: 30.2153,
         }}
-
       />
       <Tab.Screen
-        name="Account"
+        name={HomeScreens.Account}
         component={Account}
         options={{
+          headerTitle: t(HomeScreens.Account),
+          tabBarLabel: t(HomeScreens.Account),
           tabBarIcon: (props: {
             focused: boolean;
             color: string;

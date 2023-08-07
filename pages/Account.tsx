@@ -2,23 +2,23 @@ import { View, Text } from 'react-native';
 import React, { useCallback } from 'react';
 import { useAppSelector } from '../hooks/redux-hooks';
 import { UserData } from '../store/slices/user.slice';
-import {
-  useGetRoutesByUserIdQuery,
-} from '../store/api/routes.api';
+import { useGetRoutesByUserIdQuery } from '../store/api/routes.api';
 import { StyleSheet } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import AccountRoutesList from '../navigation/AccountRoutesList';
+import { useTranslation } from 'react-i18next';
 
 export default function Account() {
   const userData: UserData = useAppSelector(state => state.userReducer);
   const theme = useAppSelector(state => state.themeReducer);
-  
-  const {
-    data: routesData,
-    refetch,
-  } = useGetRoutesByUserIdQuery(userData.user?.id ?? 0, {
-    skip: userData.user ? false : true,
-  });  
+  const { t } = useTranslation();
+
+  const { data: routesData, refetch } = useGetRoutesByUserIdQuery(
+    userData.user?.id ?? 0,
+    {
+      skip: userData.user ? false : true,
+    },
+  );
 
   const date = userData.user?.createdAt
     ? userData.user.createdAt.toString().split('T')[0]
@@ -30,20 +30,28 @@ export default function Account() {
         refetch();
       }
     }, [routesData, refetch]),
-  ); 
+  );
 
   return (
-    <View style={[styles.wrapper, {backgroundColor: theme.colors.card}]}>
+    <View style={[styles.wrapper, { backgroundColor: theme.colors.card }]}>
       <View style={styles.header}>
         <View style={styles.headerEmail}>
-          <Text style={[{ ...styles.headerText, fontSize: 20 }, {color: theme.colors.text}]}>
+          <Text
+            style={[
+              { ...styles.headerText, fontSize: 20 },
+              { color: theme.colors.text },
+            ]}>
             {userData.user?.email}
           </Text>
         </View>
         <View style={styles.divider}></View>
         <View style={styles.info}>
-          <Text style={[styles.headerText, {color: theme.colors.text}]}>Id: {userData.user?.id}</Text>
-          <Text style={[styles.headerText, {color: theme.colors.text}]}>Member since: {date}</Text>
+          <Text style={[styles.headerText, { color: theme.colors.text }]}>
+            Id: {userData.user?.id}
+          </Text>
+          <Text style={[styles.headerText, { color: theme.colors.text }]}>
+            {t('memberSince')}: {date}
+          </Text>
         </View>
       </View>
       <AccountRoutesList theme={theme} />

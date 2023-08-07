@@ -4,6 +4,7 @@ import { Route } from '../../types/Route';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useAppSelector } from '../../hooks/redux-hooks';
 import { colors } from '../../utils/colors';
+import { useTranslation } from 'react-i18next';
 
 type RouteListItem = {
   route: Route;
@@ -12,6 +13,7 @@ type RouteListItem = {
 
 function RouteListItem({ route, navigate }: RouteListItem) {
   const theme = useAppSelector(state => state.themeReducer);
+  const {t} = useTranslation();
 
   return (
     <View style={styles.wrapper}>
@@ -28,13 +30,13 @@ function RouteListItem({ route, navigate }: RouteListItem) {
         style={[styles.infoWrapper, { backgroundColor: theme.colors.card }]}>
         <View style={styles.geoInfo}>
           <Text style={[styles.infoText, { color: theme.colors.text }]}>
-            lat: {route.route[0].lat.toFixed(5)}
+            {t('lat')}: {route.route[0].lat.toFixed(5)}
           </Text>
           <Text style={[styles.infoText, { color: theme.colors.text }]}>
-            lon: {route.route[0].lon.toFixed(5)}
+            {t('lon')}: {route.route[0].lon.toFixed(5)}
           </Text>
           <Text style={[styles.infoText, { color: theme.colors.text }]}>
-            Status: {route.isApproved ? 'Approved' : 'Not approved'}
+            {t('status')}: {route.isApproved ? t('approved') : t('notApproved')}
           </Text>
         </View>
         <Pressable

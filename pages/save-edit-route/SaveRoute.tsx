@@ -33,7 +33,7 @@ import { ImageType } from '../../types/ImageType';
 
 type SaveRouteProps = NativeStackScreenProps<StackParamList, 'SaveRoute'>;
 
-type Info = {
+export type Info = {
   obstacle: {
     icon: keyof typeof assets;
     id: number;
@@ -96,7 +96,6 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
     setErrors({ ...errors, images: false });
     setInfo({ ...info, images: images });
   }
-  //update correct
 
   async function handleSaveRoute(): Promise<void> {
     if (!userId || !info.obstacle) return;
@@ -170,6 +169,7 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
         Loading={saveLoading}
         mode="save"
         theme={theme}
+        saveDisabled={!info.images.length || !info.obstacle}
       />
       {obstaclesData && (
         <ObstaclesDropDown

@@ -183,8 +183,9 @@ export default function EditRoute({ navigation, route }: EditRouteProps) {
         handleCancel={() => navigation.goBack()}
         handleSaveRoute={handleUpdateRoute}
         Loading={saveLoading}
-        mode="save"
+        mode="update"
         theme={theme}
+        saveDisabled={!info.images.length || !info.obstacle}
       />
       {obstaclesData && (
         <ObstaclesDropDown

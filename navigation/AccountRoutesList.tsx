@@ -7,6 +7,7 @@ import DangerRoutes from '../components/DangerRoutes';
 import { useAppSelector } from '../hooks/redux-hooks';
 import AllRoutes from '../components/AllRoutes';
 import { Theme } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 export type RoutesTabNavParamList = {
   MyRoutes: {
@@ -24,6 +25,7 @@ const Tab = createMaterialTopTabNavigator<RoutesTabNavParamList>();
 const AdminTab = createMaterialTopTabNavigator<AdminRoutesTabNavParamList>();
 
 function AdminNavigator({ theme }: { theme: Theme }) {
+  const { t } = useTranslation();
   return (
     <AdminTab.Navigator
       initialRouteName="Routes"
@@ -37,21 +39,21 @@ function AdminNavigator({ theme }: { theme: Theme }) {
         name="Routes"
         component={AllRoutes}
         options={{
-          title: 'Routes',
+          title: t('routes'),
         }}
       />
       <AdminTab.Screen
         name="RoutesToApprove"
         component={RoutesToApprove}
         options={{
-          title: 'Approve',
+          title: t('approve'),
         }}
       />
       <AdminTab.Screen
         name="DangerRoutes"
         component={DangerRoutes}
         options={{
-          title: 'Danger',
+          title: t('danger'),
         }}
       />
     </AdminTab.Navigator>
@@ -59,6 +61,7 @@ function AdminNavigator({ theme }: { theme: Theme }) {
 }
 
 function UserNavigator({ userId, theme }: { userId: number; theme: Theme }) {
+  const { t } = useTranslation();
   return (
     <Tab.Navigator
       initialRouteName="MyRoutes"
@@ -72,7 +75,7 @@ function UserNavigator({ userId, theme }: { userId: number; theme: Theme }) {
         name="MyRoutes"
         component={MyRoutes}
         options={{
-          title: 'My Routes',
+          title: t('myRoutes'),
         }}
         initialParams={{
           userId: userId,

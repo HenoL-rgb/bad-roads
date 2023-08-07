@@ -1,0 +1,19 @@
+{
+    "Map": "Карта",
+    "Account": "Аккаунт",
+    "language": "Язык",
+    "Languages": "Языки",
+    "memberSince": "Дата регистрации",
+    "status": "Статус",
+    "approved": "Подтверждён",
+    "notApproved": "Не подтверждён",
+    "approve": "Проверить",
+    "routes": "Участки",
+    "myRoutes": "Мои участки",
+    "danger": "Опасно",
+    "lat": "шир",
+    "lon": "длг",
+    "Settings": "Настройки",
+    "darkMode": "Тёмная тема",
+    "PushNotifications": "Push уведомления" 
+}

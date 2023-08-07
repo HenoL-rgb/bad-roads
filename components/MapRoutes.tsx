@@ -43,7 +43,7 @@ export default function MapRoutes({
       return colors.verified;
     }
 
-    if (route.likedUsers.length / route.dislikedUsers.length < 0.5) {
+    if (route.likedUsers.length / route.dislikedUsers.length < 0.4) {
       return colors.badRoute;
     }
 

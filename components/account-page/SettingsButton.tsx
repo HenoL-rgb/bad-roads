@@ -17,9 +17,8 @@ export default function SettingsButton(props: {
   return (
     
     <Pressable
-      onPress={() => navigation.navigate('Settings')}
+      onPress={() => navigation.navigate('SettingsWrapper')}
       style={({pressed}) => [{
-        
         marginRight: 15,
         padding: 8,
         borderRadius: 30,

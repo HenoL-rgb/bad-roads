@@ -4,7 +4,6 @@ import { useAppSelector } from '../hooks/redux-hooks';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './Home';
-import Settings from './Settings';
 import Gallery from './Gallery';
 import {
   View,
@@ -22,12 +21,13 @@ import SaveRoute from './save-edit-route/SaveRoute';
 import useGetTheme from '../hooks/useGetTheme.hook';
 import EditRoute from './save-edit-route/EditRoute';
 import { ImageOrVideoType } from '../types/ImageType';
+import SettingsWrapper from './Settings/SettingsWrapper';
 
 export type StackParamList = {
   Home: {
     screen: 'Map' | 'Account'
   };
-  Settings: undefined;
+  SettingsWrapper: undefined;
   Gallery: {
     images: ImageOrVideoType[];
     clickedId: number;
@@ -41,6 +41,8 @@ export type StackParamList = {
     currentRoute: MapCurrentRoute;
   }
 };
+
+
 
 export const RootStack = createNativeStackNavigator<StackParamList>();
 
@@ -108,9 +110,9 @@ function AppWrapper(): JSX.Element {
         }}
       />
       <RootStack.Screen
-        name="Settings"
-        component={Settings}
-        options={{ headerBackVisible: false, animation: 'slide_from_right' }}
+        name="SettingsWrapper"
+        component={SettingsWrapper}
+        options={{ headerBackVisible: false, animation: 'slide_from_right', headerShown: false }}
       />
       <RootStack.Screen
         name="Gallery"
