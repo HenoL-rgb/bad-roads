@@ -1,5 +1,5 @@
 import { View, NativeSyntheticEvent, ActivityIndicator } from 'react-native';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import YaMap from 'react-native-yamap';
 import { useDeleteRouteMutation } from '../store/api/routes.api';
 import { Point } from '../types/Point';
@@ -62,6 +62,7 @@ export default function Map({ route }: Props) {
   const [delRoute, { isLoading: deleteLoading }] = useDeleteRouteMutation();
   const navigation = useNavigation<RootNavigation>();
   const theme = useAppSelector(state => state.themeReducer);
+  const [findLoading, setFindLoading] = useState<boolean>(false);
   
   const openSheet: () => void = useCallback(() => {
     bottomSheetRef.current?.scrollTo(-350);
@@ -100,7 +101,7 @@ export default function Map({ route }: Props) {
     if (!map.current) {
       return;
     }
-
+    setFindLoading(true);
     map.current.findDrivingRoutes(
       [currentRoute.start, currentRoute.end],
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -113,6 +114,7 @@ export default function Map({ route }: Props) {
 
         dispatch(setPoints(points));
         dispatch(setMode(modes.ROUTE_ADDED));
+        setFindLoading(false);
       },
     );
   }
@@ -197,6 +199,7 @@ export default function Map({ route }: Props) {
       <MapButtons
         handleSaveRoute={handleSaveRoute}
         findRoute={findRoute}
+        findLoading={findLoading}
       />
       <BottomSheet hideSheet={hideSheet} ref={bottomSheetRef}>
         <BottomSheetContent

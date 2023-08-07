@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import React from 'react';
 import { Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -7,11 +7,14 @@ import Animated, {
   FadeOutRight,
   ZoomIn,
   ZoomOut,
-
 } from 'react-native-reanimated';
 import { colors } from '../utils/colors';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
-import { setInitialState, setMode, setPoints } from '../store/slices/routes.slice';
+import {
+  setInitialState,
+  setMode,
+  setPoints,
+} from '../store/slices/routes.slice';
 
 enum modes {
   IDLE,
@@ -25,17 +28,17 @@ enum modes {
 type MapButtonsProps = {
   handleSaveRoute: () => void;
   findRoute: () => void;
-  
+  findLoading: boolean;
 };
 
 export default function MapButtons({
   handleSaveRoute,
   findRoute,
+  findLoading
 }: MapButtonsProps) {
   const dispatch = useAppDispatch();
   const { mode, markersVisible } = useAppSelector(state => state.routesReducer);
-  
- 
+
   return (
     <>
       {mode === modes.IDLE && (
@@ -64,7 +67,11 @@ export default function MapButtons({
           }}
           entering={ZoomIn.duration(150)}
           exiting={ZoomOut.duration(150)}>
-          <Pressable onPress={() => dispatch(setInitialState())} style={styles.pressable}>
+          <Pressable
+            onPress={() => {
+              dispatch(setInitialState());
+            }}
+            style={styles.pressable}>
             <Icon name="close" size={20} color={colors.white} />
           </Pressable>
         </Animated.View>
@@ -103,14 +110,18 @@ export default function MapButtons({
 
       {(mode === modes.CREATE || mode === modes.EDIT) && (
         <Animated.View
-          style={[styles.addButton, {opacity: markersVisible.end ? 1 : 0.5}]}
+          style={[styles.addButton, { opacity: markersVisible.end ? 1 : 0.5 }]}
           entering={ZoomIn.duration(150)}
           exiting={ZoomOut.duration(150)}>
           <Pressable
             onPress={findRoute}
             style={styles.pressable}
             disabled={!(markersVisible.start && markersVisible.end)}>
-            <Icon name="done" size={20} color={colors.white} />
+            {findLoading ? (
+              <ActivityIndicator size={'small'} color={colors.white} />
+            ) : (
+              <Icon name="done" size={20} color={colors.white} />
+            )}
           </Pressable>
         </Animated.View>
       )}
