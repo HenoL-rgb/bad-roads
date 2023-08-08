@@ -1,4 +1,4 @@
-import { View, Switch, StyleSheet, Pressable, Text } from 'react-native';
+import { View, StyleSheet, Pressable, Appearance, Switch } from 'react-native';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
 import { setTheme } from '../../store/slices/theme.slice';
@@ -21,6 +21,8 @@ import { SettingsStackParamList, screens } from './SettingsWrapper';
 import i18next from 'i18next';
 import languagesList from '../../utils/translations/languagesList';
 import Section from '../../components/Section';
+import SwitchSelector from 'react-native-switch-selector';
+import { themeOptions } from '../../constants/themeOptions';
 
 type Props = NativeStackScreenProps<SettingsStackParamList, screens.Settings>;
 
@@ -29,19 +31,27 @@ const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 export default function Settings({ navigation }: Props) {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { dark } = useAppSelector(state => state.themeReducer);
+  const theme = useAppSelector(state => state.themeReducer);
   const [logout] = useLogoutMutation({});
   const user = useAppSelector(state => state.userReducer);
 
   const progress = useDerivedValue(() => {
-    return dark
-      ? withTiming(1, { duration: 200 })
-      : withTiming(0, { duration: 300 });
-  }, [dark]);
+    return theme.dark
+      ? withTiming(1, { duration: 310 })
+      : withTiming(0, { duration: 310 });
+  }, [theme.dark]);
 
-  function toggleSwitch() {
-    dispatch(setTheme(dark ? LightTheme : DarkTheme));
-    EncryptedStorage.setItem('theme', dark ? 'light' : 'dark');
+  function toggleSwitch(value: string) {
+    if (value === 'system') {
+      Appearance.addChangeListener(({ colorScheme }) => {
+        dispatch(setTheme(colorScheme === 'dark' ? DarkTheme : LightTheme));
+      });
+      const systemTheme = Appearance.getColorScheme();
+      dispatch(setTheme(systemTheme === 'dark' ? DarkTheme : LightTheme));
+    } else {
+      dispatch(setTheme(value === 'dark' ? DarkTheme : LightTheme));
+    }
+    EncryptedStorage.setItem('theme', value);
   }
 
   const rWrapperStyle = useAnimatedStyle(() => {
@@ -116,19 +126,27 @@ export default function Settings({ navigation }: Props) {
   return (
     <Animated.ScrollView style={[styles.wrapper, rWrapperStyle]}>
       <Section header="App">
-        <View style={styles.item}>
+        <View style={styles.themes}>
           <Animated.Text style={[styles.text, rTextStyle]}>
-            {t('darkMode')}
+            {t('Theme')}
           </Animated.Text>
-          <Switch
-            trackColor={{ false: '#8a8a8a', true: '#c0c0c0' }}
-            thumbColor={dark ? '#e9e9e9' : '#a7a7a7'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch}
-            value={dark}
-            style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
+          <SwitchSelector
+            options={themeOptions}
+            initial={themeOptions.findIndex(item => item.value === theme.name)}
+            onPress={toggleSwitch}
+            textColor={theme.colors.text}
+            hasPadding
+            valuePadding={1}
+            borderRadius={10}
+            buttonColor={theme.colors.card}
+            backgroundColor={theme.colors.background}
+            selectedColor={theme.colors.text}
+            borderColor={theme.colors.border}
+            animationDuration={250}
+            buttonMargin={1}
           />
         </View>
+
         <Pressable
           style={styles.item}
           onPress={() => navigation.navigate(screens.Languages)}>
@@ -148,7 +166,46 @@ export default function Settings({ navigation }: Props) {
           </Animated.Text>
         </View>
       </Section>
-      <Section header="map"></Section>
+      <Section header="map">
+        <Pressable
+          style={styles.item}
+          onPress={() => navigation.navigate(screens.Languages)}>
+          <Animated.Text style={[styles.text, rTextStyle]}>
+            {t('language')}
+          </Animated.Text>
+          <View style={styles.subItem}>
+            <Animated.Text style={[styles.subText]}>
+              {languagesList[i18next.language].nativeName}
+            </Animated.Text>
+            <AnimatedIcon name="chevron-right" size={25} style={[rTextStyle]} />
+          </View>
+        </Pressable>
+        <View style={styles.item}>
+          <Animated.Text style={[styles.text, rTextStyle]}>
+            {t('nightMode')}
+          </Animated.Text>
+          <Switch
+            trackColor={{ false: '#8a8a8a', true: '#c0c0c0' }}
+            thumbColor={theme.dark ? '#e9e9e9' : '#a7a7a7'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={console.log}
+            value={theme.dark}
+            style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
+          />
+        </View>
+      </Section>
+      <Section header="account">
+        <View style={styles.item}>
+          <Animated.Text style={[styles.text, rTextStyle]}>
+            {t('Change password')}
+          </Animated.Text>
+        </View>
+        <View style={styles.item}>
+          <Animated.Text style={[styles.text, rTextStyle]}>
+            {t('Delete account')}
+          </Animated.Text>
+        </View>
+      </Section>
     </Animated.ScrollView>
   );
 }
@@ -160,6 +217,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingTop: 10,
   },
+
   text: {
     fontSize: 16,
   },
@@ -176,6 +234,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     height: 50,
+  },
+  themes: {
+    rowGap: 10,
   },
   subItem: {
     alignItems: 'center',

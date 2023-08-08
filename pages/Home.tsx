@@ -2,10 +2,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import Account from '../pages/Account';
-import Map from '../pages/Map';
+import Account from './Account/Account';
+import Map from './Map/Map';
 import useGetTheme from '../hooks/useGetTheme.hook';
-import SettingsButton from '../components/account-page/SettingsButton';
+import SettingsButton from './Account/components/SettingsButton';
 import { useTranslation } from 'react-i18next';
 
 export enum HomeScreens {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useAppSelector } from '../hooks/redux-hooks';
 
@@ -11,10 +11,13 @@ import {
   Text,
   Pressable,
   StyleSheet,
+  SafeAreaView,
+  StatusBar,
+  Animated,
 } from 'react-native';
 import { Point } from 'react-native-yamap';
 import { MapCurrentRoute } from '../types/Route';
-import { colors } from '../utils/colors';
+import { DarkTheme, LightTheme, colors } from '../utils/colors';
 import AuthContainer from '../navigation/AuthContainer';
 import { useRefreshQuery } from '../store/api/auth.api';
 import SaveRoute from './save-edit-route/SaveRoute';
@@ -25,7 +28,7 @@ import SettingsWrapper from './Settings/SettingsWrapper';
 
 export type StackParamList = {
   Home: {
-    screen: 'Map' | 'Account'
+    screen: 'Map' | 'Account';
   };
   SettingsWrapper: undefined;
   Gallery: {
@@ -37,21 +40,21 @@ export type StackParamList = {
     currentRoute: MapCurrentRoute;
   };
   EditRoute: {
-    points: Point[],
+    points: Point[];
     currentRoute: MapCurrentRoute;
-  }
+  };
 };
-
-
 
 export const RootStack = createNativeStackNavigator<StackParamList>();
 
 export type IError = {
   data: {
     message: string;
-  },
+  };
   status: number;
-}
+};
+
+const AnimatedStatusBar = Animated.createAnimatedComponent(StatusBar);
 
 function AppWrapper(): JSX.Element {
   const {
@@ -61,28 +64,38 @@ function AppWrapper(): JSX.Element {
     refetch: retryConnection,
   } = useRefreshQuery({}, {});
 
-  const { colors: theme } = useGetTheme();
-
+  const { colors: theme, dark } = useGetTheme();
 
   const { isAuth } = useAppSelector(state => state.userReducer);
-  
-  if (isError && ("error" in error || 'data' in error && error.status !== 401) && isAuth === null) {
-    
+
+  if (
+    isError &&
+    ('error' in error || ('data' in error && error.status !== 401)) &&
+    isAuth === null
+  ) {
     return (
-      <View style={styles.container}>
-        <Text>Server error :(</Text>
-        <Pressable style={styles.retryBtn} onPress={retryConnection}>
-          <Text>Retry</Text>
+      <SafeAreaView
+        style={[
+          styles.loadingContainer,
+          { backgroundColor: theme.background },
+        ]}>
+        <Text style={{ color: theme.text }}>Server error :(</Text>
+        <Pressable style={[styles.retryBtn, {backgroundColor: theme.border}]} onPress={retryConnection}>
+          <Text style={{ color: theme.text }}>Retry</Text>
         </Pressable>
-      </View>
+      </SafeAreaView>
     );
   }
 
   if (loadRefresh || isAuth === null) {
     return (
-      <View style={styles.container}>
+      <SafeAreaView
+        style={[
+          styles.loadingContainer,
+          { backgroundColor: theme.background },
+        ]}>
         <ActivityIndicator size="large" color={theme.activity} />
-      </View>
+      </SafeAreaView>
     );
   }
 
@@ -91,65 +104,76 @@ function AppWrapper(): JSX.Element {
   }
 
   return (
-    <RootStack.Navigator
-      screenOptions={{
-        animationDuration: 100, // not working
-      }}>
-      <RootStack.Screen
-        name="Home"
-        component={Home}
-        options={{
-          headerShown: false,
-          headerStyle: {
-            backgroundColor: theme.background,
-          },
-          headerTitleStyle: {
-            color: theme.text,
-          },
-          headerTintColor: theme.text,
-        }}
+    <SafeAreaView style={styles.container}>
+      <AnimatedStatusBar
+        barStyle={dark ? 'light-content' : 'dark-content'}
+        backgroundColor={theme.background}
+        animated={true}
       />
-      <RootStack.Screen
-        name="SettingsWrapper"
-        component={SettingsWrapper}
-        options={{ headerBackVisible: false, animation: 'slide_from_right', headerShown: false }}
-      />
-      <RootStack.Screen
-        name="Gallery"
-        component={Gallery}
-        options={{ animation: 'fade_from_bottom' }}
-      />
-      <RootStack.Screen
-        name="SaveRoute"
-        component={SaveRoute}
-        options={{
-          animation: 'fade_from_bottom',
-          title: 'Save route',
-          headerStyle: {
-            backgroundColor: theme.background,
-          },
-          headerTitleStyle: {
-            color: theme.text,
-          },
-          headerTintColor: theme.text,
-        }}
-      />
-      <RootStack.Screen
-        name="EditRoute"
-        component={EditRoute}
-        options={{
-          animation: 'fade_from_bottom',
-          title: 'Edit route',
-          headerStyle: {
-            backgroundColor: theme.background,
-          },
-          headerTitleStyle: {
-            color: theme.text,
-          },
-          headerTintColor: theme.text,
-        }}
-      />
-    </RootStack.Navigator>
+      <RootStack.Navigator
+        screenOptions={{
+          animationDuration: 100, // not working
+        }}>
+        <RootStack.Screen
+          name="Home"
+          component={Home}
+          options={{
+            headerShown: false,
+            headerStyle: {
+              backgroundColor: theme.background,
+            },
+            headerTitleStyle: {
+              color: theme.text,
+            },
+            headerTintColor: theme.text,
+          }}
+        />
+        <RootStack.Screen
+          name="SettingsWrapper"
+          component={SettingsWrapper}
+          options={{
+            headerBackVisible: false,
+            animation: 'slide_from_right',
+            headerShown: false,
+          }}
+        />
+        <RootStack.Screen
+          name="Gallery"
+          component={Gallery}
+          options={{ animation: 'fade_from_bottom' }}
+        />
+        <RootStack.Screen
+          name="SaveRoute"
+          component={SaveRoute}
+          options={{
+            animation: 'fade_from_bottom',
+            title: 'Save route',
+            headerStyle: {
+              backgroundColor: theme.background,
+            },
+            headerTitleStyle: {
+              color: theme.text,
+            },
+            headerTintColor: theme.text,
+          }}
+        />
+        <RootStack.Screen
+          name="EditRoute"
+          component={EditRoute}
+          options={{
+            animation: 'fade_from_bottom',
+            title: 'Edit route',
+            headerStyle: {
+              backgroundColor: theme.background,
+            },
+            headerTitleStyle: {
+              color: theme.text,
+            },
+            headerTintColor: theme.text,
+          }}
+        />
+      </RootStack.Navigator>
+    </SafeAreaView>
   );
 }
 
@@ -157,6 +181,9 @@ export default AppWrapper;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',

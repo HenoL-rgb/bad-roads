@@ -6,21 +6,20 @@ import {
   Text,
 } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
-import ImageSelector from '../../components/save-edit-page/ImageSelector';
+import ImageSelector from './components/ImageSelector';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
 import { getUrl } from '../../utils/getUrl';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackParamList } from '../AppWrapper';
 import { transformRoute } from '../../utils/transformRoute';
-import Description from '../../components/save-edit-page/Description';
-import ObstacleType from '../../components/save-edit-page/ObstacleType/ObstacleType';
-import Controls from '../../components/save-edit-page/Controls';
-import TopIcon from '../../components/save-edit-page/TopIcon';
-import ObstaclesDropDown from '../../components/save-edit-page/ObstacleType/ObstaclesDropDown';
+import Description from './components/Description';
+import ObstacleType from './components/ObstacleType/ObstacleType';
+import Controls from './components/Controls';
+import TopIcon from './components/TopIcon';
+import ObstaclesDropDown from './components/ObstacleType/ObstaclesDropDown';
 import { ModalRefProps } from '../../components/modals/Modal';
 import * as assets from '../../pages/save-edit-route/assets';
 import { Obstacle } from '../../types/SaveRouteQuery';
-import { colors } from '../../utils/colors';
 import {
   useGetObstaclesQuery,
   useGetRouteByIdQuery,

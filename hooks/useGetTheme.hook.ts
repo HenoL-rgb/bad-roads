@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
+import { Appearance, useColorScheme } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { setTheme } from '../store/slices/theme.slice';
 import { useAppDispatch, useAppSelector } from './redux-hooks';
 import { DarkTheme, LightTheme } from '../utils/colors';
-import { Themes } from '../types/Themes';
+import { ThemesType } from '../types/Themes';
 
-export default function useGetTheme(): Themes {
+export default function useGetTheme(): ThemesType {
   const deviceTheme = useColorScheme();
   const dispatch = useAppDispatch();
   const theme = useAppSelector(state => state.themeReducer);
@@ -14,12 +14,18 @@ export default function useGetTheme(): Themes {
   useEffect(() => {
     async function getThemeFromStorage() {
       const theme: string | null = await EncryptedStorage.getItem('theme');
-      console.log('Dark theme ', DarkTheme.colors);
-      console.log('Light theme ', LightTheme.colors);
-
+      
       if (theme) {
+        if (theme === 'system') {          
+          Appearance.addChangeListener(({ colorScheme }) => {
+            dispatch(setTheme(colorScheme === 'dark' ? DarkTheme : LightTheme));
+          });
+          const systemTheme = Appearance.getColorScheme();
+          return systemTheme === 'dark' ? DarkTheme : LightTheme;
+        }
+
         return theme === 'light' ? LightTheme : DarkTheme;
-      }      
+      }
 
       return deviceTheme
         ? deviceTheme === 'dark'
@@ -28,8 +34,8 @@ export default function useGetTheme(): Themes {
         : LightTheme;
     }
 
-    getThemeFromStorage().then((value: Themes) => {
-        dispatch(setTheme(value))
+    getThemeFromStorage().then((value: ThemesType) => {
+      dispatch(setTheme(value));
     });
   }, [deviceTheme, dispatch]);
 

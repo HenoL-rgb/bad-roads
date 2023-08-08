@@ -10,7 +10,6 @@ export async function onDisplayNotification(
     if (notification === undefined) return;
     // Request permissions (required for iOS)
     await notifee.requestPermission();
-    console.log('background display');
 
     // Create a channel (required for Android)
     const channelId = await notifee.createChannel({

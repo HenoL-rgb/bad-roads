@@ -1,5 +1,6 @@
 
-export type Themes = {
+export type ThemesType = {
+  name: 'light' | 'dark';
   dark: boolean;
   colors: {
     background: string;

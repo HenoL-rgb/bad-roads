@@ -1,4 +1,4 @@
-import { Themes } from "../types/Themes";
+import { ThemesType } from '../types/Themes';
 
 export const colors = {
   blue: '#2196F3',
@@ -17,8 +17,9 @@ export const colors = {
   midRoute: '#fad507',
 };
 
-export const DarkTheme: Themes = {
-  dark: false,
+export const DarkTheme: ThemesType = {
+  name: 'dark',
+  dark: true,
   colors: {
     background: 'rgb(1, 1, 1)',
     border: 'rgb(39, 39, 41)',
@@ -30,7 +31,8 @@ export const DarkTheme: Themes = {
   },
 };
 
-export const LightTheme: Themes = {
+export const LightTheme: ThemesType = {
+  name: 'light',
   dark: false,
   colors: {
     background: 'rgb(242, 242, 242)',
