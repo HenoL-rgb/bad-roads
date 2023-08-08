@@ -8,10 +8,10 @@ import ErrorModal from '../components/modals/ErrorModal';
 import { ModalRefProps } from '../components/modals/Modal';
 import { useAppSelector } from '../hooks/redux-hooks';
 import { IError } from '../navigation/AppWrapper';
-import { AuthStack } from '../navigation/AuthContainer';
+import { AuthStack, authScreens } from '../navigation/AuthContainer';
 import { useLoginMutation } from '../store/api/auth.api';
 
-type Props = NativeStackScreenProps<AuthStack, 'Login'>;
+type Props = NativeStackScreenProps<AuthStack, authScreens.Login>;
 
 export default function Login({ navigation }: Props) {
   const theme = useAppSelector(state => state.themeReducer);
@@ -45,7 +45,7 @@ export default function Login({ navigation }: Props) {
       <Form onSubmit={onSubmit} isLoading={isLoading} mode="login" />
       <View style={styles.linkWrapper}>
         <Text style={textStyle}>Dont have an account?</Text>
-        <Pressable onPress={() => navigation.goBack()}>
+        <Pressable onPress={() => navigation.navigate(authScreens.Register)}>
           <Text style={[styles.link, textStyle]}>Register</Text>
         </Pressable>
       </View>

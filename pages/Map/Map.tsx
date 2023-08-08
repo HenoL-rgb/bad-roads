@@ -21,6 +21,7 @@ import DeleteModal from '../../components/modals/DeleteModal';
 import { ModalRefProps } from '../../components/modals/Modal';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
 import useGetAllRoutes from '../../hooks/useGetAllRoutes';
+import { StackParamList, rootScreens } from '../../navigation/AppWrapper';
 import { useDeleteRouteMutation } from '../../store/api/routes.api';
 import {
   setMode,
@@ -34,7 +35,6 @@ import {
 import { Point } from '../../types/Point';
 import { RouteSection } from '../../types/Route';
 import { RouteEvent } from '../../types/RouteEvent';
-import { StackParamList } from '../../navigation/AppWrapper';
 import { HomeScreens, TabNavParamList } from '../Home';
 
 import MapButtons from './components/MapButtons';
@@ -150,14 +150,14 @@ export default function Map({ route }: Props) {
 
   function handleSaveRoute() {
     if (!currentRoute.id) {
-      navigation.navigate('SaveRoute', {
+      navigation.navigate(rootScreens.SaveRoute, {
         points: points,
         currentRoute,
       });
       return;
     }
 
-    navigation.navigate('EditRoute', {
+    navigation.navigate(rootScreens.EditRoute, {
       points: points,
       currentRoute,
     });

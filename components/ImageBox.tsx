@@ -3,7 +3,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
 import { Image, Pressable, StyleSheet } from 'react-native';
 
-import { StackParamList } from '../navigation/AppWrapper';
+import { StackParamList, rootScreens } from '../navigation/AppWrapper';
 
 type ImageBoxProps = {
   path: string;
@@ -18,7 +18,7 @@ export default function ImageBox({ path, images, clickedId }: ImageBoxProps) {
   return (
     <Pressable
       onPress={() =>
-        navigation.navigate('Gallery', {
+        navigation.navigate(rootScreens.Gallery, {
           images: images,
           clickedId: clickedId,
         })

@@ -4,7 +4,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import i18next from 'i18next';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, StyleSheet, Appearance } from 'react-native';
+import { View, StyleSheet, Appearance, Text } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Animated, {
   interpolateColor,
@@ -151,6 +151,7 @@ export default function Settings({ navigation }: Props) {
         />
       </Section>
       <Section header="map">
+        <Text style={styles.tip}>Changes require restart</Text>
         <LinkOption
           title={t('language')}
           subTitle={languagesList[i18next.language].nativeName}
@@ -214,6 +215,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+  },
+  tip: {
+    fontSize: 14,
+    color: colors.gray,
   },
   section: {},
   sectionHeader: {},
