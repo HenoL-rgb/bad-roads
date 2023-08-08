@@ -8,28 +8,12 @@ import AllRoutes from '../pages/Account/components/AllRoutes';
 import DangerRoutes from '../pages/Account/components/DangerRoutes';
 import MyRoutes from '../pages/Account/components/MyRoutes';
 import RoutesToApprove from '../pages/Account/components/RoutesToApprove';
-
-export enum tabNavScreens {
-  MyRoutes = 'MyRoutes',
-}
-
-export enum adminRoutesScreens {
-  Routes = 'Routes',
-  RoutesToApprove = 'RoutesToApprove',
-  DangerRoutes = 'DangerRoutes',
-}
-
-export type RoutesTabNavParamList = {
-  [tabNavScreens.MyRoutes]: {
-    userId: number;
-  };
-};
-
-export type AdminRoutesTabNavParamList = {
-  [adminRoutesScreens.Routes]: undefined;
-  [adminRoutesScreens.RoutesToApprove]: undefined;
-  [adminRoutesScreens.DangerRoutes]: undefined;
-};
+import {
+  RoutesTabNavParamList,
+  AdminRoutesTabNavParamList,
+  adminRoutesScreens,
+  tabNavScreens,
+} from '../types/routesTypes/AccountRoutesListTypes';
 
 const Tab = createMaterialTopTabNavigator<RoutesTabNavParamList>();
 const AdminTab = createMaterialTopTabNavigator<AdminRoutesTabNavParamList>();

@@ -9,6 +9,7 @@ type SwitchOptionType = {
   theme: ThemesType;
   onValueChange: (value: boolean) => void;
   title: string;
+  value: boolean;
 };
 
 export default function SwitchOption({
@@ -16,6 +17,7 @@ export default function SwitchOption({
   theme,
   onValueChange,
   title,
+  value,
 }: SwitchOptionType) {
   return (
     <View style={styles.item}>
@@ -25,7 +27,7 @@ export default function SwitchOption({
         thumbColor={theme.dark ? '#e9e9e9' : '#a7a7a7'}
         ios_backgroundColor="#3e3e3e"
         onValueChange={onValueChange}
-        value={theme.dark}
+        value={value}
         style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
       />
     </View>

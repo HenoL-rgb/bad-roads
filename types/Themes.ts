@@ -1,5 +1,5 @@
 export type ThemesType = {
-  name: 'light' | 'dark';
+  name: themes;
   dark: boolean;
   colors: {
     background: string;
@@ -11,3 +11,9 @@ export type ThemesType = {
     activity: string;
   };
 };
+
+export enum themes {
+  Light = 'light',
+  Dark = 'dark',
+  System = 'system',
+}

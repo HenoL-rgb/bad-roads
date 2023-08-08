@@ -8,18 +8,10 @@ import { useAppSelector } from '../hooks/redux-hooks';
 import Languages from '../pages/Settings/Languages';
 import PushNotifications from '../pages/Settings/PushNotifications';
 import Settings from '../pages/Settings/Settings';
-
-export enum screens {
-  Settings = 'Settings',
-  Languages = 'Languages',
-  PushNotifications = 'PushNotifications',
-}
-
-export type SettingsStackParamList = {
-  [screens.Settings]: undefined;
-  [screens.Languages]: undefined;
-  [screens.PushNotifications]: undefined;
-};
+import {
+  SettingsStackParamList,
+  screens,
+} from '../types/routesTypes/SettingsWrapperTypes';
 
 const Stack = createNativeStackNavigator<SettingsStackParamList>();
 

@@ -1,13 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {
-  ActivityIndicator,
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
-  Animated,
-} from 'react-native';
-import { Point } from 'react-native-yamap';
+import { StyleSheet, SafeAreaView, StatusBar, Animated } from 'react-native';
 
+import LoadingPage from '../components/LoadingPage';
 import { useAppSelector } from '../hooks/redux-hooks';
 import useGetTheme from '../hooks/useGetTheme.hook';
 import ServerError from '../pages/Account/components/ServerError';
@@ -16,38 +10,13 @@ import Home from '../pages/Home';
 import EditRoute from '../pages/save-edit-route/EditRoute';
 import SaveRoute from '../pages/save-edit-route/SaveRoute';
 import { useRefreshQuery } from '../store/api/auth.api';
-import { ImageOrVideoType } from '../types/ImageType';
-import { MapCurrentRoute } from '../types/Route';
+import {
+  StackParamList,
+  rootScreens,
+} from '../types/routesTypes/AppWrapperTypes';
 
 import AuthContainer from './AuthContainer';
 import SettingsWrapper from './SettingsWrapper';
-
-export enum rootScreens {
-  Home = 'Home',
-  SettingsWrapper = 'SettingsWrapper',
-  Gallery = 'Gallery',
-  SaveRoute = 'SaveRoute',
-  EditRoute = 'EditRoute',
-}
-
-export type StackParamList = {
-  [rootScreens.Home]: {
-    screen: 'Map' | 'Account';
-  };
-  [rootScreens.SettingsWrapper]: undefined;
-  [rootScreens.Gallery]: {
-    images: ImageOrVideoType[];
-    clickedId: number;
-  };
-  [rootScreens.SaveRoute]: {
-    points: Point[];
-    currentRoute: MapCurrentRoute;
-  };
-  [rootScreens.EditRoute]: {
-    points: Point[];
-    currentRoute: MapCurrentRoute;
-  };
-};
 
 export const RootStack = createNativeStackNavigator<StackParamList>();
 
@@ -81,15 +50,7 @@ function AppWrapper(): JSX.Element {
   }
 
   if (loadRefresh || isAuth === null) {
-    return (
-      <SafeAreaView
-        style={[
-          styles.loadingContainer,
-          { backgroundColor: theme.colors.background },
-        ]}>
-        <ActivityIndicator size="large" color={theme.colors.activity} />
-      </SafeAreaView>
-    );
+    return <LoadingPage />;
   }
 
   if (!isAuth) {

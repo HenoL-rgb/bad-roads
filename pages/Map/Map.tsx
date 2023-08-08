@@ -62,7 +62,7 @@ export default function Map({ route }: Props) {
 
   const { mode, currentMarker, currentRoute, markersVisible, points } =
     useAppSelector(state => state.routesReducer);
-
+  const { nightMode, mapType } = useAppSelector(state => state.mapReducer);
   const dispatch = useAppDispatch();
   const { routes, isLoading } = useGetAllRoutes();
   const map = useRef<YaMap>(null);
@@ -188,8 +188,8 @@ export default function Map({ route }: Props) {
         showUserPosition={false}
         onMapPress={handleMapPress}
         style={styles.wrapper}
-        nightMode={true}
-        mapType={'vector'}
+        nightMode={nightMode}
+        mapType={mapType}
         ref={map}
         initialRegion={{
           lat: initialParams.lat,

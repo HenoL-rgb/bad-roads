@@ -3,16 +3,11 @@ import React from 'react';
 
 import Login from '../pages/Login';
 import Register from '../pages/Register';
+import {
+  AuthStack,
+  authScreens,
+} from '../types/routesTypes/AuthContainerTypes';
 
-export enum authScreens {
-  Login = 'Login',
-  Register = 'Register',
-}
-
-export type AuthStack = {
-  [authScreens.Login]: undefined;
-  [authScreens.Register]: undefined;
-};
 const Stack = createNativeStackNavigator<AuthStack>();
 
 export default function AuthContainer() {

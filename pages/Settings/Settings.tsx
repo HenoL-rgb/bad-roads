@@ -5,7 +5,6 @@ import i18next from 'i18next';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, Appearance, Text } from 'react-native';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import Animated, {
   interpolateColor,
   useAnimatedStyle,
@@ -23,12 +22,14 @@ import {
 } from '../../navigation/SettingsWrapper';
 import { useLogoutMutation } from '../../store/api/auth.api';
 import { setTheme } from '../../store/slices/theme.slice';
+import { themes } from '../../types/Themes';
 import { LightTheme, DarkTheme, colors } from '../../utils/colors';
 import languagesList from '../../utils/translations/languagesList';
 
 import LinkOption from './components/LinkOption';
 import SwitchOption from './components/SwitchOption';
 import ThemeSwitch from './components/ThemeSwitch';
+import { setNightMode } from '../../store/slices/map.slice';
 
 type Props = NativeStackScreenProps<SettingsStackParamList, screens.Settings>;
 
@@ -38,6 +39,7 @@ export default function Settings({ navigation }: Props) {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const theme = useAppSelector(state => state.themeReducer);
+  const map = useAppSelector(state => state.mapReducer);
   const [logout] = useLogoutMutation({});
   const user = useAppSelector(state => state.userReducer);
 
@@ -53,11 +55,20 @@ export default function Settings({ navigation }: Props) {
         dispatch(setTheme(colorScheme === 'dark' ? DarkTheme : LightTheme));
       });
       const systemTheme = Appearance.getColorScheme();
-      dispatch(setTheme(systemTheme === 'dark' ? DarkTheme : LightTheme));
+      dispatch(
+        setTheme(
+          systemTheme === 'dark'
+            ? { ...DarkTheme, name: themes.System }
+            : { ...LightTheme, name: themes.System },
+        ),
+      );
     } else {
       dispatch(setTheme(value === 'dark' ? DarkTheme : LightTheme));
     }
-    EncryptedStorage.setItem('theme', value);
+  }
+
+  function changeMapMode(value: boolean) {
+    dispatch(setNightMode(value));
   }
 
   const rWrapperStyle = useAnimatedStyle(() => {
@@ -161,10 +172,9 @@ export default function Settings({ navigation }: Props) {
         <SwitchOption
           title={t('nightMode')}
           rTextStyle={rTextStyle}
-          onValueChange={(value: boolean) =>
-            toggleSwitch(value ? 'dark' : 'light')
-          }
+          onValueChange={changeMapMode}
           theme={theme}
+          value={map.nightMode}
         />
       </Section>
       <Section header="account">

@@ -10,7 +10,7 @@ import { RegisterDevice } from '../../types/RegisterDevice';
 import { clearUser, setAuth, setUser } from '../slices/user.slice';
 import { RootState } from '../store';
 
-export const HOST_IP = '10.211.48.77:7000';
+export const HOST_IP = '192.168.100:7000';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `http://${HOST_IP}/`,
