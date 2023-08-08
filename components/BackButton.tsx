@@ -1,12 +1,13 @@
-import { Pressable } from 'react-native';
-import React from 'react';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import { StackParamList } from '../pages/AppWrapper';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { colors } from '../utils/colors';
-import Animated from 'react-native-reanimated';
 import { HeaderButtonProps } from '@react-navigation/native-stack/lib/typescript/src/types';
+import React from 'react';
+import { Pressable } from 'react-native';
+import Animated from 'react-native-reanimated';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
+import { StackParamList } from '../pages/AppWrapper';
+import { colors } from '../utils/colors';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 

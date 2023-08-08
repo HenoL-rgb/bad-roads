@@ -1,13 +1,14 @@
-import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import MyRoutes from './MyRoutes';
-import RoutesToApprove from './RoutesToApprove';
-import DangerRoutes from './DangerRoutes';
+import { Theme } from '@react-navigation/native';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAppSelector } from '../../../hooks/redux-hooks';
+
 import AllRoutes from './AllRoutes';
-import { Theme } from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
+import DangerRoutes from './DangerRoutes';
+import MyRoutes from './MyRoutes';
+import RoutesToApprove from './RoutesToApprove';
 
 export type RoutesTabNavParamList = {
   MyRoutes: {

@@ -1,11 +1,12 @@
-import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
-import { colors } from '../../../utils/colors';
-import { GetRouteByIdResponse } from '../../../types/GetAllRoutesQuery';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import * as assets from '../../../pages/save-edit-route/assets'
+import { View, Text, StyleSheet } from 'react-native';
 import { SvgProps } from 'react-native-svg';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
 import { useAppSelector } from '../../../hooks/redux-hooks';
+import * as assets from '../../../pages/save-edit-route/assets';
+import { GetRouteByIdResponse } from '../../../types/GetAllRoutesQuery';
+import { colors } from '../../../utils/colors';
 
 type FastInfoType = {
   data: GetRouteByIdResponse;
@@ -14,12 +15,12 @@ export default function FastInfo({ data }: FastInfoType) {
   const theme = useAppSelector(state => state.themeReducer);
   const Obstacle = assets[data.obstacle.icon] as React.FC<SvgProps>;
 
-  const textStyle = {...styles.modalText, color: theme.colors.text}
+  const textStyle = { ...styles.modalText, color: theme.colors.text };
 
   return (
     <View style={styles.header}>
       <View style={styles.sign}>
-      <Obstacle />
+        <Obstacle />
         {data.isApproved ? (
           <>
             <View style={styles.fillBg}></View>
@@ -35,8 +36,12 @@ export default function FastInfo({ data }: FastInfoType) {
         )}
       </View>
       <View style={styles.info}>
-        <Text style={textStyle} numberOfLines={1}>{data.author.email}</Text>
-        <Text style={[styles.dataText, {color: colors.gray}]}>{data.createdAt.split('T')[0]}</Text>
+        <Text style={textStyle} numberOfLines={1}>
+          {data.author.email}
+        </Text>
+        <Text style={[styles.dataText, { color: colors.gray }]}>
+          {data.createdAt.split('T')[0]}
+        </Text>
       </View>
     </View>
   );
@@ -78,7 +83,6 @@ const styles = StyleSheet.create({
     position: 'relative',
     justifyContent: 'center',
     alignItems: 'center',
-    
   },
   fillBg: {
     height: 10,

@@ -1,12 +1,14 @@
-import { ScrollView } from 'react-native';
 import React from 'react';
+import { ScrollView } from 'react-native';
+
 import Modal, { ModalRefProps } from '../../../../components/modals/Modal';
-import ObstaclesItem from './ObstaclesItem';
-import * as assets from '../../assets';
 import { ThemesType } from '../../../../types/Themes';
+import * as assets from '../../assets';
+
+import ObstaclesItem from './ObstaclesItem';
 
 type ObstaclesDropDownProps = {
-  theme: ThemesType,
+  theme: ThemesType;
   modalRef: React.RefObject<ModalRefProps>;
   setObstacle: (value: number) => void;
   data: {
@@ -22,7 +24,6 @@ export default function ObstaclesDropDown({
   setObstacle,
   data,
 }: ObstaclesDropDownProps) {
-  
   return (
     <Modal ref={modalRef}>
       <ScrollView>

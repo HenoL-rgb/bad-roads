@@ -1,20 +1,20 @@
-import { Image, Dimensions } from 'react-native';
 import React from 'react';
+import { Image, Dimensions } from 'react-native';
+import {
+  PinchGestureHandler,
+  PinchGestureHandlerGestureEvent,
+} from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {
-  PinchGestureHandler,
-  PinchGestureHandlerGestureEvent,
-} from 'react-native-gesture-handler';
 
 const AnimatedImage = Animated.createAnimatedComponent(Image);
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-export default function GalleryImage({ image }: { image: {path: string} }) {
+export default function GalleryImage({ image }: { image: { path: string } }) {
   const scale = useSharedValue(1);
   const focalX = useSharedValue(0);
   const focalY = useSharedValue(0);

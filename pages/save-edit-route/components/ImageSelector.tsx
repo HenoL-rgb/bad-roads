@@ -1,9 +1,6 @@
-import { Text, Pressable, StyleSheet, Dimensions } from 'react-native';
 import React, { useRef, useState } from 'react';
-import ModalImage from './ModalImage';
-import { colors } from '../../../utils/colors';
+import { Text, Pressable, StyleSheet, Dimensions } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
-import { useAppSelector } from '../../../hooks/redux-hooks';
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -12,7 +9,12 @@ import Animated, {
   withDelay,
   withTiming,
 } from 'react-native-reanimated';
+
+import { useAppSelector } from '../../../hooks/redux-hooks';
 import { ImageType } from '../../../types/ImageType';
+import { colors } from '../../../utils/colors';
+
+import ModalImage from './ModalImage';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -45,7 +47,9 @@ export default function ImageSelector({
       .then(images => {
         setImages([...images]);
       })
-      .catch(console.log);
+      .catch(err => {
+        throw Error(err);
+      });
   }
 
   const rProps = useAnimatedStyle(() => {

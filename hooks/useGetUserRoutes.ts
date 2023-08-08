@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
+
 import { useGetRoutesByUserIdQuery } from '../store/api/routes.api';
-import { useAppSelector } from './redux-hooks';
-import {
-  GetRoutesResponse,
-} from '../types/GetAllRoutesQuery';
-import { transformRoute } from '../utils/transformRoute';
+import { GetRoutesResponse } from '../types/GetAllRoutesQuery';
 import { Route } from '../types/Route';
+import { transformRoute } from '../utils/transformRoute';
+
+import { useAppSelector } from './redux-hooks';
 
 const useGetUserRoutes = () => {
   const [routes, setRoutes] = useState<Route[]>([]);

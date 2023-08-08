@@ -1,10 +1,45 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React from 'react';
+import { View, StyleSheet, Switch } from 'react-native';
+import Animated from 'react-native-reanimated';
 
-export default function SwitchOption() {
+import { ThemesType } from '../../../types/Themes';
+
+type SwitchOptionType = {
+  rTextStyle: { color: string };
+  theme: ThemesType;
+  onValueChange: (value: boolean) => void;
+  title: string;
+};
+
+export default function SwitchOption({
+  rTextStyle,
+  theme,
+  onValueChange,
+  title,
+}: SwitchOptionType) {
   return (
-    <View>
-      <Text>SwitchOption</Text>
+    <View style={styles.item}>
+      <Animated.Text style={[styles.text, rTextStyle]}>{title}</Animated.Text>
+      <Switch
+        trackColor={{ false: '#8a8a8a', true: '#c0c0c0' }}
+        thumbColor={theme.dark ? '#e9e9e9' : '#a7a7a7'}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={onValueChange}
+        value={theme.dark}
+        style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
+      />
     </View>
-  )
+  );
 }
+
+const styles = StyleSheet.create({
+  item: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: 50,
+  },
+  text: {
+    fontSize: 16,
+  },
+});

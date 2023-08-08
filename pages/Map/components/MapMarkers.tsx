@@ -1,7 +1,8 @@
-import { View, StyleSheet } from 'react-native';
 import React from 'react';
-import { Marker } from 'react-native-yamap';
+import { View, StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
+import { Marker } from 'react-native-yamap';
+
 import { useAppSelector, useAppDispatch } from '../../../hooks/redux-hooks';
 import { setCurrentMarker } from '../../../store/slices/routes.slice';
 
@@ -45,15 +46,19 @@ export default function MapMarkers() {
           }}>
           <Animated.View style={styles.marker}>
             <View
-              style={{
-                ...styles.markerTop,
-                backgroundColor: 'green',
-              }}></View>
+              style={[
+                styles.markerTop,
+                {
+                  backgroundColor: 'green',
+                },
+              ]}></View>
             <View
-              style={{
-                ...styles.markerBottom,
-                backgroundColor: 'green',
-              }}></View>
+              style={[
+                styles.markerBottom,
+                {
+                  backgroundColor: 'green',
+                },
+              ]}></View>
           </Animated.View>
         </Marker>
       )}

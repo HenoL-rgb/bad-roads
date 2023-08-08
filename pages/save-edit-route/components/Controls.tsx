@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   View,
   Text,
@@ -5,9 +6,9 @@ import {
   Pressable,
   ActivityIndicator,
 } from 'react-native';
-import React from 'react';
-import { colors } from '../../../utils/colors';
+
 import { ThemesType } from '../../../types/Themes';
+import { colors } from '../../../utils/colors';
 
 type ControlsProps = {
   handleCancel: () => void;
@@ -24,7 +25,7 @@ export default function Controls({
   handleSaveRoute,
   Loading,
   mode,
-  saveDisabled
+  saveDisabled,
 }: ControlsProps) {
   return (
     <View style={styles.buttons}>
@@ -35,11 +36,13 @@ export default function Controls({
         style={({ pressed }) => [
           styles.cancelBtn,
           styles.saveBtn,
-          { backgroundColor: theme.colors.text, opacity: saveDisabled ? 0.4 : pressed ? 0.8 : 1 },
+          {
+            backgroundColor: theme.colors.text,
+            opacity: saveDisabled ? 0.4 : pressed ? 0.8 : 1,
+          },
         ]}
         onPress={handleSaveRoute}
-        disabled={saveDisabled}
-        >
+        disabled={saveDisabled}>
         {Loading ? (
           <ActivityIndicator size={'small'} color={theme.colors.activity} />
         ) : (

@@ -1,13 +1,11 @@
-import { View } from 'react-native';
 import React, {
   forwardRef,
   PropsWithChildren,
   useCallback,
   useImperativeHandle,
 } from 'react';
-import { StyleSheet } from 'react-native';
-import { Dimensions } from 'react-native';
-import { GestureDetector } from 'react-native-gesture-handler';
+import { View, StyleSheet, Dimensions } from 'react-native';
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, {
   Extrapolate,
   interpolate,
@@ -18,7 +16,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { Gesture } from 'react-native-gesture-handler';
+
 import { useAppSelector } from '../../hooks/redux-hooks';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');

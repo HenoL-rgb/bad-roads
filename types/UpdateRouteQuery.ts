@@ -1,5 +1,6 @@
+import * as assets from '../pages/save-edit-route/assets';
+
 import { Point } from './Point';
-import * as assets from '../pages/save-edit-route/assets'
 
 export type UpdateRoute = {
   route: Point[];
@@ -8,7 +9,7 @@ export type UpdateRoute = {
   userId: number;
   obstacleId: number;
   description: string;
-  images: (string | {path: string})[];
+  images: (string | { path: string })[];
 };
 
 export type UpdateRouteResponse = {
@@ -36,4 +37,4 @@ export type Obstacle = {
   icon: keyof typeof assets;
   id: number;
   description: string;
-}
+};

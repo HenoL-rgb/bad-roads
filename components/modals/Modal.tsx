@@ -1,10 +1,10 @@
-import { Dimensions, StyleSheet } from 'react-native';
 import React, {
   forwardRef,
   PropsWithChildren,
   useCallback,
   useImperativeHandle,
 } from 'react';
+import { Dimensions, StyleSheet } from 'react-native';
 import Animated, {
   useAnimatedProps,
   useAnimatedStyle,
@@ -12,6 +12,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
+
 import { useAppSelector } from '../../hooks/redux-hooks';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -45,11 +46,11 @@ const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
           active.value = value;
           scrollTo(0);
         } else {
-          scrollTo(-SCREEN_HEIGHT / 2 - height.value / 1.6 );
+          scrollTo(-SCREEN_HEIGHT / 2 - height.value / 1.6);
         }
       },
       [active, scrollTo, height.value],
-    );    
+    );
 
     useImperativeHandle(ref, () => ({ setActive }), [setActive]);
 
@@ -88,17 +89,11 @@ const Modal = forwardRef<ModalRefProps, PropsWithChildren>(
             scrollTo(0);
           }}
           animatedProps={rBackdropProps}
-          style={[
-            styles.backdrop,
-            rBackdropStyle,
-          ]}
+          style={[styles.backdrop, rBackdropStyle]}
           pointerEvents="none"></Animated.View>
         <Animated.View
-          onLayout={(event) => height.value = event.nativeEvent.layout.height}
-          style={[
-            styles.background,
-            rModalStyle,
-          ]}>
+          onLayout={event => (height.value = event.nativeEvent.layout.height)}
+          style={[styles.background, rModalStyle]}>
           {children}
         </Animated.View>
       </>
@@ -125,5 +120,5 @@ const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.4)',
-  }
-})
+  },
+});

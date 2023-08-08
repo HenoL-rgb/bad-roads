@@ -1,12 +1,13 @@
-import { View, StyleSheet } from 'react-native';
 import React, { useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { Icon } from 'react-native-elements';
 import Animated, {
   withTiming,
   withRepeat,
   useSharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import { Icon } from 'react-native-elements';
+
 import { colors } from '../../../utils/colors';
 
 type IconProps = {

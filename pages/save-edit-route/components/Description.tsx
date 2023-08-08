@@ -1,7 +1,8 @@
-import { View, Text, StyleSheet, TextInput } from 'react-native';
 import React from 'react';
-import { colors } from '../../../utils/colors';
+import { View, Text, StyleSheet, TextInput } from 'react-native';
+
 import { ThemesType } from '../../../types/Themes';
+import { colors } from '../../../utils/colors';
 
 type DescriptionProps = {
   theme: ThemesType;
@@ -16,7 +17,9 @@ export default function Description({
 }: DescriptionProps) {
   return (
     <View style={styles.section}>
-      <Text style={[styles.text, { color: theme.colors.text }]}>Description</Text>
+      <Text style={[styles.text, { color: theme.colors.text }]}>
+        Description
+      </Text>
       <TextInput
         style={styles.textarea}
         placeholder="Put some info here"

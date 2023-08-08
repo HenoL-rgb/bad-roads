@@ -1,7 +1,8 @@
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import React from 'react';
-import { colors } from '../../../utils/colors';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
+
 import { ThemesType } from '../../../types/Themes';
+import { colors } from '../../../utils/colors';
 
 type Props = {
   theme: ThemesType;

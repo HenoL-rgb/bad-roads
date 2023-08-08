@@ -1,4 +1,4 @@
 export type Logout = {
-    userId: number;
-    notificationsToken: string;
-}
+  userId: number;
+  notificationsToken: string;
+};

@@ -1,25 +1,27 @@
-import { View, NativeSyntheticEvent, ActivityIndicator } from 'react-native';
-import React, { useCallback, useRef, useState } from 'react';
-import YaMap from 'react-native-yamap';
-import { useDeleteRouteMutation } from '../../store/api/routes.api';
-import { Point } from '../../types/Point';
-import { RouteSection } from '../../types/Route';
-import MapButtons from './components/MapButtons';
-import MapMarkers from './components/MapMarkers';
-import MapRoutes from './components/MapRoutes';
-import { HomeScreens, TabNavParamList } from '../Home';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import {
   NativeStackNavigationProp,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
+import React, { useCallback, useRef, useState } from 'react';
+import {
+  View,
+  NativeSyntheticEvent,
+  ActivityIndicator,
+  StyleSheet,
+} from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import BottomSheet, { BottomSheetRefProps } from '../../components/BottomSheet/BottomSheet';
+import YaMap from 'react-native-yamap';
+
 import BottomSheetContent from '../../components/BottomSheet/bottom-sheet-content/BottomSheetContent';
-import { ModalRefProps } from '../../components/modals/Modal';
+import BottomSheet, {
+  BottomSheetRefProps,
+} from '../../components/BottomSheet/BottomSheet';
 import DeleteModal from '../../components/modals/DeleteModal';
-import { StackParamList } from '../AppWrapper';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { ModalRefProps } from '../../components/modals/Modal';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
+import useGetAllRoutes from '../../hooks/useGetAllRoutes';
+import { useDeleteRouteMutation } from '../../store/api/routes.api';
 import {
   setMode,
   setMarkersVisible,
@@ -29,7 +31,15 @@ import {
   setPoints,
   deleteRouteAction,
 } from '../../store/slices/routes.slice';
-import useGetAllRoutes from '../../hooks/useGetAllRoutes';
+import { Point } from '../../types/Point';
+import { RouteSection } from '../../types/Route';
+import { RouteEvent } from '../../types/RouteEvent';
+import { StackParamList } from '../AppWrapper';
+import { HomeScreens, TabNavParamList } from '../Home';
+
+import MapButtons from './components/MapButtons';
+import MapMarkers from './components/MapMarkers';
+import MapRoutes from './components/MapRoutes';
 
 enum modes {
   IDLE,
@@ -62,7 +72,7 @@ export default function Map({ route }: Props) {
   const navigation = useNavigation<RootNavigation>();
   const theme = useAppSelector(state => state.themeReducer);
   const [findLoading, setFindLoading] = useState<boolean>(false);
-  
+
   const openSheet: () => void = useCallback(() => {
     bottomSheetRef.current?.scrollTo(-350);
   }, []);
@@ -139,21 +149,20 @@ export default function Map({ route }: Props) {
   }
 
   function handleSaveRoute() {
-    if(!currentRoute.id) {
+    if (!currentRoute.id) {
       navigation.navigate('SaveRoute', {
         points: points,
         currentRoute,
-      })
+      });
       return;
     }
-    
+
     navigation.navigate('EditRoute', {
       points: points,
       currentRoute,
-    })
+    });
     return;
-    
-  }  
+  }
 
   useFocusEffect(
     useCallback(() => {
@@ -164,23 +173,21 @@ export default function Map({ route }: Props) {
   if (isLoading) {
     return (
       <View
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: theme.colors.background,
-        }}>
+        style={[
+          styles.loadingWrapper,
+          { backgroundColor: theme.colors.background },
+        ]}>
         <ActivityIndicator size="large" color={theme.colors.activity} />
       </View>
     );
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.wrapper}>
       <YaMap
         showUserPosition={false}
         onMapPress={handleMapPress}
-        style={{ flex: 1 }}
+        style={styles.wrapper}
         nightMode={true}
         mapType={'vector'}
         ref={map}
@@ -215,3 +222,14 @@ export default function Map({ route }: Props) {
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  wrapper: {
+    flex: 1,
+  },
+});

@@ -1,3 +1,5 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useRef, useState } from 'react';
 import {
   View,
   ScrollView,
@@ -5,21 +7,9 @@ import {
   ActivityIndicator,
   Text,
 } from 'react-native';
-import React, { useRef, useState } from 'react';
-import ImageSelector from './components/ImageSelector';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
-import { getUrl } from '../../utils/getUrl';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { StackParamList } from '../AppWrapper';
-import { transformRoute } from '../../utils/transformRoute';
-import Description from './components/Description';
-import ObstacleType from './components/ObstacleType/ObstacleType';
-import Controls from './components/Controls';
-import TopIcon from './components/TopIcon';
-import ObstaclesDropDown from './components/ObstacleType/ObstaclesDropDown';
+
 import { ModalRefProps } from '../../components/modals/Modal';
-import * as assets from '../../pages/save-edit-route/assets';
-import { Obstacle } from '../../types/SaveRouteQuery';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
 import {
   useSaveRouteMutation,
   useGetObstaclesQuery,
@@ -29,6 +19,18 @@ import {
   setInitialState,
 } from '../../store/slices/routes.slice';
 import { ImageType } from '../../types/ImageType';
+import { Obstacle } from '../../types/SaveRouteQuery';
+import { getUrl } from '../../utils/getUrl';
+import { transformRoute } from '../../utils/transformRoute';
+import { StackParamList } from '../AppWrapper';
+
+import * as assets from './assets';
+import Controls from './components/Controls';
+import Description from './components/Description';
+import ImageSelector from './components/ImageSelector';
+import ObstaclesDropDown from './components/ObstacleType/ObstaclesDropDown';
+import ObstacleType from './components/ObstacleType/ObstacleType';
+import TopIcon from './components/TopIcon';
 
 type SaveRouteProps = NativeStackScreenProps<StackParamList, 'SaveRoute'>;
 
@@ -132,10 +134,7 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
   if (isLoading) {
     return (
       <View
-        style={[
-          styles.loadingWrapper,
-          { backgroundColor: theme.colors.card },
-        ]}>
+        style={[styles.loadingWrapper, { backgroundColor: theme.colors.card }]}>
         <ActivityIndicator size="large" color={theme.colors.activity} />
       </View>
     );

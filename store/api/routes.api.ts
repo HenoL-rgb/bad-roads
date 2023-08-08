@@ -1,10 +1,24 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { Obstacle, SaveRoute, SaveRouteResponse } from '../../types/SaveRouteQuery';
-import { DeleteRoute, DeleteRouteResponse, GetRouteByIdResponse, GetRoutesResponse } from '../../types/GetAllRoutesQuery';
-import { baseQueryWithReauth } from './auth.api';
-import { UpdateRoute, UpdateRouteResponse } from '../../types/UpdateRouteQuery';
-import { ApproveRoute, ApproveRouteResponse } from '../../types/ApproveRouteQuery';
+
+import {
+  ApproveRoute,
+  ApproveRouteResponse,
+} from '../../types/ApproveRouteQuery';
+import {
+  DeleteRoute,
+  DeleteRouteResponse,
+  GetRouteByIdResponse,
+  GetRoutesResponse,
+} from '../../types/GetAllRoutesQuery';
 import { MarkRoute, MarkRouteResponse } from '../../types/MarksQuery';
+import {
+  Obstacle,
+  SaveRoute,
+  SaveRouteResponse,
+} from '../../types/SaveRouteQuery';
+import { UpdateRoute, UpdateRouteResponse } from '../../types/UpdateRouteQuery';
+
+import { baseQueryWithReauth } from './auth.api';
 
 export const routesApi = createApi({
   reducerPath: 'routesApi',
@@ -27,11 +41,11 @@ export const routesApi = createApi({
 
     getRouteById: build.query<GetRouteByIdResponse, number>({
       query: (id: number) => ({
-        url: `api/routes/${id}`
-      })
+        url: `api/routes/${id}`,
+      }),
     }),
 
-    getRoutesByUserId: build.query<GetRoutesResponse[],number>({
+    getRoutesByUserId: build.query<GetRoutesResponse[], number>({
       query: (id: number) => ({
         url: `api/routes/user/${id}`,
       }),
@@ -62,11 +76,11 @@ export const routesApi = createApi({
     }),
 
     likeRoute: build.mutation<MarkRouteResponse, MarkRoute>({
-      query: (body) => ({
-        url: `api/routes/likes`,
-        method: "POST",
-        body
-      })
+      query: body => ({
+        url: 'api/routes/likes',
+        method: 'POST',
+        body,
+      }),
     }),
 
     // getLikedByUserId: build.query({
@@ -76,17 +90,17 @@ export const routesApi = createApi({
     // }),
 
     dislikeRoute: build.mutation<MarkRouteResponse, MarkRoute>({
-      query: (body) => ({
-        url: `api/routes/dislikes`,
-        method: "POST",
-        body
-      })
+      query: body => ({
+        url: 'api/routes/dislikes',
+        method: 'POST',
+        body,
+      }),
     }),
 
     getObstacles: build.query<Obstacle[], void>({
       query: () => ({
-        url: 'api/obstacles'
-      })
+        url: 'api/obstacles',
+      }),
     }),
   }),
 });

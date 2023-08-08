@@ -1,5 +1,6 @@
-import { View, Text, StyleSheet } from 'react-native';
 import React, { PropsWithChildren } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
 import { useAppSelector } from '../hooks/redux-hooks';
 
 type SectionProps = {
@@ -10,12 +11,13 @@ export default function Section({
   header,
   children,
 }: PropsWithChildren<SectionProps>) {
-
   const theme = useAppSelector(state => state.themeReducer);
 
   return (
     <View style={styles.wrapper}>
-      <Text style={[styles.header, {color: theme.colors.text}]}>{header}</Text>
+      <Text style={[styles.header, { color: theme.colors.text }]}>
+        {header}
+      </Text>
       <View style={styles.content}>{children}</View>
     </View>
   );

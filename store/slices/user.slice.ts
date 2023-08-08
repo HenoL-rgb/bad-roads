@@ -44,33 +44,37 @@ export const userSlice = createSlice({
       return { ...initialState };
     },
 
-    setUserLike(state, action) {      
+    setUserLike(state, action) {
       if (state.user?.likes.some(item => item.id === action.payload.id)) {
         state.user.likes = state.user.likes.filter(
           item => item.id !== action.payload.id,
         );
       } else {
-        if(state.user?.dislikes)
-          state.user.dislikes = state.user?.dislikes.filter(item => item.id !== action.payload.id)
+        if (state.user?.dislikes)
+          state.user.dislikes = state.user?.dislikes.filter(
+            item => item.id !== action.payload.id,
+          );
         state.user?.likes.push(action.payload);
       }
     },
 
-    setUserDislike(state, action) {      
+    setUserDislike(state, action) {
       if (state.user?.dislikes.some(item => item.id === action.payload.id)) {
         state.user.dislikes = state.user.dislikes.filter(
           item => item.id !== action.payload.id,
         );
       } else {
-        if(state.user?.likes)
-          state.user.likes = state.user?.likes.filter(item => item.id !== action.payload.id)
+        if (state.user?.likes)
+          state.user.likes = state.user?.likes.filter(
+            item => item.id !== action.payload.id,
+          );
         state.user?.dislikes.push(action.payload);
       }
     },
-
   },
 });
 
-export const { setUser, setAuth, clearUser, setUserLike, setUserDislike } = userSlice.actions;
+export const { setUser, setAuth, clearUser, setUserLike, setUserDislike } =
+  userSlice.actions;
 
 export default userSlice.reducer;

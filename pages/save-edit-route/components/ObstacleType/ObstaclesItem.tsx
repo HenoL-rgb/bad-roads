@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
 import React from 'react';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
+
+import { ThemesType } from '../../../../types/Themes';
 import { colors } from '../../../../utils/colors';
 import * as assets from '../../assets';
-import { ThemesType } from '../../../../types/Themes';
 
 type Key = keyof typeof assets;
 

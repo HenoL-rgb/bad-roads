@@ -1,7 +1,8 @@
-import { Image, Pressable } from 'react-native';
-import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React from 'react';
+import { Image, Pressable, StyleSheet } from 'react-native';
+
 import { StackParamList } from '../pages/AppWrapper';
 
 type ImageBoxProps = {
@@ -26,12 +27,16 @@ export default function ImageBox({ path, images, clickedId }: ImageBoxProps) {
         source={{
           uri: path,
         }}
-        style={{
-          borderRadius: 5,
-          width: 150,
-          height: 150,
-        }}
+        style={styles.image}
       />
     </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  image: {
+    borderRadius: 5,
+    width: 150,
+    height: 150,
+  },
+});

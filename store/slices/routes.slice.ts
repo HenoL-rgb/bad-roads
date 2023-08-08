@@ -1,8 +1,9 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Point } from '../../types/Point';
-import { MapCurrentRoute, Route } from '../../types/Route';
+
 import { ApproveRoute } from '../../types/ApproveRouteQuery';
 import { DeleteRoute } from '../../types/GetAllRoutesQuery';
+import { Point } from '../../types/Point';
+import { MapCurrentRoute, Route } from '../../types/Route';
 
 enum modes {
   IDLE,
@@ -36,7 +37,7 @@ interface Like {
   routeId: number;
   user: {
     id: number;
-  }
+  };
 }
 
 const initialState: RoutesData = {
@@ -78,69 +79,86 @@ export const routesSlice = createSlice({
       state.routes = action.payload;
     },
     deleteRouteAction(state, action: PayloadAction<DeleteRoute>) {
-      state.routes = state.routes.filter(route => route.id !== action.payload.routeId)
+      state.routes = state.routes.filter(
+        route => route.id !== action.payload.routeId,
+      );
     },
     saveRouteAction(state, action: PayloadAction<Route>) {
       state.routes = [...state.routes, action.payload];
     },
     editRouteAction(state, action: PayloadAction<Route>) {
       state.routes = state.routes.map(route => {
-        if(route.id === action.payload.id) {
+        if (route.id === action.payload.id) {
           return {
-            ...action.payload
-          }
+            ...action.payload,
+          };
         }
         return route;
-      })
+      });
     },
     setApproveRoute(state, action: PayloadAction<ApproveRoute>) {
       state.routes = [...state.routes].map(item => {
-        if(item.id === action.payload.routeId) {
+        if (item.id === action.payload.routeId) {
           return {
             ...item,
-            isApproved: true
-          }
+            isApproved: true,
+          };
         }
-        return item
-      })
+        return item;
+      });
     },
     setLike(state, action: PayloadAction<Like>) {
       state.routes = [...state.routes].map(item => {
-
         //Remove if like exist
-        if(item.id === action.payload.routeId) {
-          if(item.likedUsers.findIndex(user => user.id === action.payload.user.id) !== -1) {
+        if (item.id === action.payload.routeId) {
+          if (
+            item.likedUsers.findIndex(
+              user => user.id === action.payload.user.id,
+            ) !== -1
+          ) {
             return {
               ...item,
-              likedUsers: item.likedUsers.filter(user => user.id !== action.payload.user.id),
-            }
+              likedUsers: item.likedUsers.filter(
+                user => user.id !== action.payload.user.id,
+              ),
+            };
           }
           return {
             ...item,
             likedUsers: [...item.likedUsers, action.payload.user],
-            dislikedUsers: item.dislikedUsers.filter(user => user.id !== action.payload.user.id)
-          }
+            dislikedUsers: item.dislikedUsers.filter(
+              user => user.id !== action.payload.user.id,
+            ),
+          };
         }
         return item;
-      })
+      });
     },
     setDislike(state, action: PayloadAction<Like>) {
       state.routes = [...state.routes].map(item => {
-        if(item.id === action.payload.routeId) {
-          if(item.dislikedUsers.findIndex(user => user.id === action.payload.user.id) !== -1) {
+        if (item.id === action.payload.routeId) {
+          if (
+            item.dislikedUsers.findIndex(
+              user => user.id === action.payload.user.id,
+            ) !== -1
+          ) {
             return {
               ...item,
-              dislikedUsers: item.dislikedUsers.filter(user => user.id !== action.payload.user.id)
-            }
+              dislikedUsers: item.dislikedUsers.filter(
+                user => user.id !== action.payload.user.id,
+              ),
+            };
           }
           return {
             ...item,
             dislikedUsers: [...item.dislikedUsers, action.payload.user],
-            likedUsers: item.likedUsers.filter(user => user.id !== action.payload.user.id)
-          }
+            likedUsers: item.likedUsers.filter(
+              user => user.id !== action.payload.user.id,
+            ),
+          };
         }
         return item;
-      })
+      });
     },
     setInitialState(state) {
       return { ...initialState, routes: state.routes };
@@ -160,6 +178,6 @@ export const {
   setDislike,
   setApproveRoute,
   deleteRouteAction,
-  saveRouteAction
+  saveRouteAction,
 } = routesSlice.actions;
 export default routesSlice.reducer;

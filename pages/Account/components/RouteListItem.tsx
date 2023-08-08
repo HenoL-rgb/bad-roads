@@ -1,27 +1,28 @@
-import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
 import React from 'react';
-import { Route } from '../../../types/Route';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useAppSelector } from '../../../hooks/redux-hooks';
-import { colors } from '../../../utils/colors';
 import { useTranslation } from 'react-i18next';
+import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-type RouteListItem = {
+import { useAppSelector } from '../../../hooks/redux-hooks';
+import { Route } from '../../../types/Route';
+import { colors } from '../../../utils/colors';
+
+type RouteListItemProps = {
   route: Route;
   navigate: (lat: number, lon: number) => void;
 };
 
-function RouteListItem({ route, navigate }: RouteListItem) {
+function RouteListItem({ route, navigate }: RouteListItemProps) {
   const theme = useAppSelector(state => state.themeReducer);
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <View style={styles.wrapper}>
-      <View style={{ width: 80, height: 80, backgroundColor: '#132331' }}>
+      <View style={styles.imageWrapper}>
         <Image
-          style={{ width: 80, height: 80 }}
+          style={styles.image}
           source={{
-            uri: route.icon
+            uri: route.icon,
           }}
         />
       </View>
@@ -72,5 +73,14 @@ const styles = StyleSheet.create({
 
   infoText: {
     color: colors.black,
+  },
+  imageWrapper: {
+    width: 80,
+    height: 80,
+    backgroundColor: '#132331',
+  },
+  image: {
+    width: 80,
+    height: 80,
   },
 });

@@ -1,17 +1,16 @@
-import { View, Text, StyleSheet } from 'react-native';
-import React, { useRef, useState } from 'react';
-import Form from '../components/Form';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AuthStack } from '../navigation/AuthContainer';
-import { Pressable } from 'react-native';
-import {
-  useLoginMutation,
-} from '../store/api/auth.api';
-import { useAppSelector } from '../hooks/redux-hooks';
-import { ModalRefProps } from '../components/modals/Modal';
-import ErrorModal from '../components/modals/ErrorModal';
-import { IError } from './AppWrapper';
 import messaging from '@react-native-firebase/messaging';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useRef, useState } from 'react';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
+
+import Form from '../components/Form';
+import ErrorModal from '../components/modals/ErrorModal';
+import { ModalRefProps } from '../components/modals/Modal';
+import { useAppSelector } from '../hooks/redux-hooks';
+import { AuthStack } from '../navigation/AuthContainer';
+import { useLoginMutation } from '../store/api/auth.api';
+
+import { IError } from './AppWrapper';
 
 type Props = NativeStackScreenProps<AuthStack, 'Login'>;
 

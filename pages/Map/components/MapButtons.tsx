@@ -1,20 +1,20 @@
-import { ActivityIndicator, StyleSheet } from 'react-native';
 import React from 'react';
-import { Pressable } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { ActivityIndicator, StyleSheet, Pressable } from 'react-native';
 import Animated, {
   FadeInRight,
   FadeOutRight,
   ZoomIn,
   ZoomOut,
 } from 'react-native-reanimated';
-import { colors } from '../../../utils/colors';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hooks';
 import {
   setInitialState,
   setMode,
   setPoints,
 } from '../../../store/slices/routes.slice';
+import { colors } from '../../../utils/colors';
 
 enum modes {
   IDLE,
@@ -34,7 +34,7 @@ type MapButtonsProps = {
 export default function MapButtons({
   handleSaveRoute,
   findRoute,
-  findLoading
+  findLoading,
 }: MapButtonsProps) {
   const dispatch = useAppDispatch();
   const { mode, markersVisible } = useAppSelector(state => state.routesReducer);
@@ -60,11 +60,13 @@ export default function MapButtons({
         mode === modes.ROUTE_ADDED ||
         mode === modes.EDIT) && (
         <Animated.View
-          style={{
-            ...styles.addButton,
-            bottom: 80,
-            backgroundColor: colors.darkRed,
-          }}
+          style={[
+            styles.addButton,
+            {
+              bottom: 80,
+              backgroundColor: colors.darkRed,
+            },
+          ]}
           entering={ZoomIn.duration(150)}
           exiting={ZoomOut.duration(150)}>
           <Pressable
@@ -90,11 +92,13 @@ export default function MapButtons({
 
       {mode === modes.ROUTE_ADDED && (
         <Animated.View
-          style={{
-            ...styles.addButton,
-            backgroundColor: colors.undo,
-            bottom: 200,
-          }}
+          style={[
+            styles.addButton,
+            {
+              bottom: 200,
+              backgroundColor: colors.undo,
+            },
+          ]}
           entering={ZoomIn.duration(120)}
           exiting={ZoomOut.duration(120)}>
           <Pressable

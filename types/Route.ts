@@ -1,4 +1,4 @@
-import { Point } from "./Point";
+import { Point } from './Point';
 
 export type Route = {
   route: Point[];
@@ -6,26 +6,26 @@ export type Route = {
   userId: number;
   isApproved: boolean;
   icon: string;
-  images: string[];
+  images: string[] | { path: string }[];
   dislikedUsers: {
     id: number;
-  }[],
+  }[];
   likedUsers: {
-    id: number,
-  }[]
+    id: number;
+  }[];
 };
 
 export type DataRoute = {
-    route: string;
-    id: number;
-    userId: number;
-}
+  route: string;
+  id: number;
+  userId: number;
+};
 
 export type MapCurrentRoute = {
-    start: Point | null,
-    end: Point | null,
-    id: number,
-}
+  start: Point | null;
+  end: Point | null;
+  id: number;
+};
 
 export type RouteSection = {
   points: Point[];

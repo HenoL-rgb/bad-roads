@@ -1,24 +1,26 @@
 import {
-  View,
-  StyleSheet,
-  RefreshControl,
-  ActivityIndicator,
-} from 'react-native';
-import React, { useCallback } from 'react';
-import { Route } from '../../../types/Route';
-import RouteListItem from './RouteListItem';
-import { FlashList } from '@shopify/flash-list';
-import {
   BaseQueryFn,
   FetchArgs,
   FetchBaseQueryError,
   MutationDefinition,
   QueryDefinition,
 } from '@reduxjs/toolkit/dist/query';
-import { MutationTrigger } from '@reduxjs/toolkit/dist/query/react/buildHooks';
-import { GetRoutesResponse } from '../../../types/GetAllRoutesQuery';
 import { QueryActionCreatorResult } from '@reduxjs/toolkit/dist/query/core/buildInitiate';
+import { MutationTrigger } from '@reduxjs/toolkit/dist/query/react/buildHooks';
+import { FlashList } from '@shopify/flash-list';
+import React, { useCallback } from 'react';
+import {
+  View,
+  StyleSheet,
+  RefreshControl,
+  ActivityIndicator,
+} from 'react-native';
+
 import { useAppSelector } from '../../../hooks/redux-hooks';
+import { GetRoutesResponse } from '../../../types/GetAllRoutesQuery';
+import { Route } from '../../../types/Route';
+
+import RouteListItem from './RouteListItem';
 
 type RefetchType = () => QueryActionCreatorResult<
   QueryDefinition<
@@ -83,7 +85,7 @@ export default function RouteList({
           renderItem={renderItem}
           estimatedItemSize={80}
           keyExtractor={keyExtractor}
-          ItemSeparatorComponent={() => <View style={{ height: 5 }} />}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
           ListEmptyComponent={
             <ActivityIndicator size={'small'} color={theme.activity} />
           }
@@ -96,5 +98,9 @@ export default function RouteList({
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
+  },
+
+  separator: {
+    height: 5,
   },
 });

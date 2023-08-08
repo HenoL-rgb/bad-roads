@@ -1,16 +1,14 @@
-import { RootState } from '../store';
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { clearUser, setAuth, setUser } from '../slices/user.slice';
-import type {
-  BaseQueryFn,
-  FetchArgs,
-} from '@reduxjs/toolkit/query';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
+import type { BaseQueryFn, FetchArgs } from '@reduxjs/toolkit/query';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import EncryptedStorage from 'react-native-encrypted-storage';
+
 import { IError } from '../../pages/AppWrapper';
 import { LoginResponse, Login, Register } from '../../types/LoginQuery';
-import { RegisterDevice } from '../../types/RegisterDevice';
 import { Logout } from '../../types/Logout';
+import { RegisterDevice } from '../../types/RegisterDevice';
+import { clearUser, setAuth, setUser } from '../slices/user.slice';
+import { RootState } from '../store';
 
 export const HOST_IP = '10.211.48.77:7000';
 
@@ -31,11 +29,7 @@ const baseQuery = fetchBaseQuery({
     return headers;
   },
   credentials: 'include',
-}) as BaseQueryFn<
-string | FetchArgs,
-unknown,
-IError
->;
+}) as BaseQueryFn<string | FetchArgs, unknown, IError>;
 
 export const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
@@ -45,17 +39,13 @@ export const baseQueryWithReauth: BaseQueryFn<
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error && result.error.status === 401) {
-    const refreshResult: QueryReturnValue<
-      unknown,
-      IError
-    > = await baseQuery(
+    const refreshResult: QueryReturnValue<unknown, IError> = await baseQuery(
       { url: 'auth/refresh' },
       { ...api, endpoint: 'refresh' },
       extraOptions,
     );
     // store the new token
     if (refreshResult.error) {
-    
       if (refreshResult.error.status === 401) {
         await EncryptedStorage.clear();
         api.dispatch(setAuth(false));
@@ -93,7 +83,7 @@ export const authApi = createApi({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          
+
           await EncryptedStorage.setItem('token', data.accessToken);
           await EncryptedStorage.setItem('refresh', data.refreshToken);
 
@@ -142,7 +132,6 @@ export const authApi = createApi({
           dispatch(setAuth(true));
         } catch (error) {
           dispatch(setAuth(false));
-          console.log(error);
         }
       },
     }),
@@ -160,7 +149,7 @@ export const authApi = createApi({
           dispatch(clearUser());
           dispatch(setAuth(false));
         } catch (error) {
-          console.log(error);
+          throw Error(`${error}`);
         }
       },
     }),
@@ -185,32 +174,30 @@ export const authApi = createApi({
               createdAt: data.user.createdAt,
               likes: data.user.likes,
               dislikes: data.user.dislikes,
-              
             }),
           );
           dispatch(setAuth(true));
         } catch (error) {
-          console.log(error);
+          throw Error(`${error}`);
         }
       },
     }),
 
     registerDevice: build.mutation<void, RegisterDevice>({
-      query: (body) => ({
+      query: body => ({
         url: 'api/notifications',
         method: 'POST',
-        body
-      })
+        body,
+      }),
     }),
 
     unregisterDevice: build.mutation<void, RegisterDevice>({
-      query: (body) => ({
+      query: body => ({
         url: '/unregister',
         method: 'DELETE',
-        body
-      })
+        body,
+      }),
     }),
-
   }),
 });
 
@@ -220,5 +207,5 @@ export const {
   useLogoutMutation,
   useRegisterMutation,
   useRegisterDeviceMutation,
-  useUnregisterDeviceMutation
+  useUnregisterDeviceMutation,
 } = authApi;

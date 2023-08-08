@@ -1,4 +1,3 @@
-
 export type ThemesType = {
   name: 'light' | 'dark';
   dark: boolean;

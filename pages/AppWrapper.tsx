@@ -1,12 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-
-import { useAppSelector } from '../hooks/redux-hooks';
-
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Home from './Home';
-import Gallery from './Gallery';
 import {
-  View,
   ActivityIndicator,
   Text,
   Pressable,
@@ -16,14 +9,19 @@ import {
   Animated,
 } from 'react-native';
 import { Point } from 'react-native-yamap';
-import { MapCurrentRoute } from '../types/Route';
-import { DarkTheme, LightTheme, colors } from '../utils/colors';
+
+import { useAppSelector } from '../hooks/redux-hooks';
+import useGetTheme from '../hooks/useGetTheme.hook';
 import AuthContainer from '../navigation/AuthContainer';
 import { useRefreshQuery } from '../store/api/auth.api';
-import SaveRoute from './save-edit-route/SaveRoute';
-import useGetTheme from '../hooks/useGetTheme.hook';
-import EditRoute from './save-edit-route/EditRoute';
 import { ImageOrVideoType } from '../types/ImageType';
+import { MapCurrentRoute } from '../types/Route';
+import { colors } from '../utils/colors';
+
+import Gallery from './Gallery';
+import Home from './Home';
+import EditRoute from './save-edit-route/EditRoute';
+import SaveRoute from './save-edit-route/SaveRoute';
 import SettingsWrapper from './Settings/SettingsWrapper';
 
 export type StackParamList = {
@@ -80,7 +78,9 @@ function AppWrapper(): JSX.Element {
           { backgroundColor: theme.background },
         ]}>
         <Text style={{ color: theme.text }}>Server error :(</Text>
-        <Pressable style={[styles.retryBtn, {backgroundColor: theme.border}]} onPress={retryConnection}>
+        <Pressable
+          style={[styles.retryBtn, { backgroundColor: theme.border }]}
+          onPress={retryConnection}>
           <Text style={{ color: theme.text }}>Retry</Text>
         </Pressable>
       </SafeAreaView>

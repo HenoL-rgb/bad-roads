@@ -1,16 +1,22 @@
-import { StyleSheet, FlatList, Dimensions, ViewToken } from 'react-native';
-import React, { useLayoutEffect, useState, useRef, useCallback } from 'react';
-
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { StackParamList } from './AppWrapper';
 import { DarkTheme } from '@react-navigation/native';
-import { colors } from '../utils/colors';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import Animated from 'react-native-reanimated';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useLayoutEffect, useState, useRef, useCallback } from 'react';
+import {
+  StyleSheet,
+  FlatList,
+  Dimensions,
+  ViewToken,
+  ListRenderItem,
+} from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import GalleryImage from '../components/GalleryImage';
 import { ImageOrVideo } from 'react-native-image-crop-picker';
-import { ListRenderItem } from 'react-native';
+import Animated from 'react-native-reanimated';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
+import GalleryImage from '../components/GalleryImage';
+import { colors } from '../utils/colors';
+
+import { StackParamList } from './AppWrapper';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const { width: SCREEN_WIDTH } = Dimensions.get('window');

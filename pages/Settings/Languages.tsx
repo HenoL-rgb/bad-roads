@@ -1,3 +1,5 @@
+import i18next from 'i18next';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,12 +8,11 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import React, { useState } from 'react';
-import languagesList from '../../utils/translations/languagesList';
-import { useAppSelector } from '../../hooks/redux-hooks';
-import i18next from 'i18next';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
+import { useAppSelector } from '../../hooks/redux-hooks';
+import languagesList from '../../utils/translations/languagesList';
 
 export default function Languages() {
   const { colors: theme } = useAppSelector(state => state.themeReducer);
@@ -39,7 +40,7 @@ export default function Languages() {
             )}
           </TouchableOpacity>
         )}
-        ItemSeparatorComponent={() => <View style={{ height: 1 }} />}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
     </SafeAreaView>
   );
@@ -57,5 +58,8 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 17,
+  },
+  separator: {
+    height: 1,
   },
 });

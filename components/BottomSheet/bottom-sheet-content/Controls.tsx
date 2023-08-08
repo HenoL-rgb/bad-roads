@@ -1,13 +1,9 @@
-import {
-  View,
-  Pressable,
-  ActivityIndicator,
-  StyleSheet,
-} from 'react-native';
 import React from 'react';
+import { View, Pressable, ActivityIndicator, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { GetRouteByIdResponse } from '../../../types/GetAllRoutesQuery';
+
 import { User } from '../../../store/slices/user.slice';
+import { GetRouteByIdResponse } from '../../../types/GetAllRoutesQuery';
 import { colors } from '../../../utils/colors';
 
 type ControlsType = {
@@ -27,7 +23,6 @@ export default function Controls({
   user,
   approveLoading,
 }: ControlsType) {
-    
   const isAdmin = user
     ? user.roles.some(
         (role: { value: string; description: string }) =>

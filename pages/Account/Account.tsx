@@ -1,12 +1,13 @@
-import { View, Text } from 'react-native';
-import React, { useCallback } from 'react';
-import { useAppSelector } from '../../hooks/redux-hooks';
-import { UserData } from '../../store/slices/user.slice';
-import { useGetRoutesByUserIdQuery } from '../../store/api/routes.api';
-import { StyleSheet } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import AccountRoutesList from './components/AccountRoutesList';
+import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { View, Text, StyleSheet } from 'react-native';
+
+import { useAppSelector } from '../../hooks/redux-hooks';
+import { useGetRoutesByUserIdQuery } from '../../store/api/routes.api';
+import { UserData } from '../../store/slices/user.slice';
+
+import AccountRoutesList from './components/AccountRoutesList';
 
 export default function Account() {
   const userData: UserData = useAppSelector(state => state.userReducer);

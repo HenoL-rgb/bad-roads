@@ -47,9 +47,9 @@ export type GetRouteByIdResponse = {
 };
 
 export type DeleteRoute = {
-    routeId: number;
-}
+  routeId: number;
+};
 
 export type DeleteRouteResponse = {
-    data: number;
-}
+  data: number;
+};

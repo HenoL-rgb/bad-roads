@@ -1,12 +1,13 @@
-import { Image, Pressable, StyleSheet } from 'react-native';
-import React from 'react';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { StackParamList } from '../../AppWrapper';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React from 'react';
+import { Image, Pressable, StyleSheet } from 'react-native';
 import Animated, { FadeOutLeft, Layout, ZoomIn } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { colors } from '../../../utils/colors';
+
 import { ImageOrVideoType } from '../../../types/ImageType';
+import { colors } from '../../../utils/colors';
+import { StackParamList } from '../../AppWrapper';
 
 type ModalImageProps = {
   images: ImageOrVideoType[];

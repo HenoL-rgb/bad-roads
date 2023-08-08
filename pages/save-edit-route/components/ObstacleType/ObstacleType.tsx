@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
-import { colors } from '../../../../utils/colors';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { View, Text, StyleSheet } from 'react-native';
 import { SvgProps } from 'react-native-svg';
-import * as assets from '../../assets';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
 import { ThemesType } from '../../../../types/Themes';
+import { colors } from '../../../../utils/colors';
+import * as assets from '../../assets';
 
 type Key = keyof typeof assets;
 
@@ -25,19 +26,16 @@ export default function ObstacleType({
       <View style={styles.section}>
         <View style={styles.obstacleType}>
           <Text style={[styles.text, { color: theme.colors.text }]}>Type:</Text>
-          <View
-            onTouchEnd={setModalActive}
-            style={{
-              height: 60,
-              width: 60,
-              borderRadius: 10,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
+          <View onTouchEnd={setModalActive} style={styles.iconWrapper}>
             {Obstacle ? (
               <ObstacleIcon />
             ) : (
-              <Icon name="add" size={25} color={colors.gray} style={{right: 15, top: 2}} />
+              <Icon
+                name="add"
+                size={25}
+                color={colors.gray}
+                style={styles.icon}
+              />
             )}
           </View>
         </View>
@@ -73,4 +71,12 @@ const styles = StyleSheet.create({
     marginTop: 3,
     width: 100,
   },
+  iconWrapper: {
+    height: 60,
+    width: 60,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  icon: { right: 15, top: 2 },
 });

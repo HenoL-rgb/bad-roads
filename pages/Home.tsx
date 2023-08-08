@@ -1,16 +1,17 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import Account from './Account/Account';
-import Map from './Map/Map';
 import useGetTheme from '../hooks/useGetTheme.hook';
+
+import Account from './Account/Account';
 import SettingsButton from './Account/components/SettingsButton';
-import { useTranslation } from 'react-i18next';
+import Map from './Map/Map';
 
 export enum HomeScreens {
-  Map = "Map",
-  Account = "Account"
+  Map = 'Map',
+  Account = 'Account',
 }
 
 export type TabNavParamList = {

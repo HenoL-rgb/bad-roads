@@ -1,17 +1,23 @@
-import { View, StyleSheet, Text } from 'react-native';
 import React, { useEffect } from 'react';
-import Modal, { ModalRefProps } from './Modal';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Pressable } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Pressable,
+  ActivityIndicator,
+} from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import { ActivityIndicator } from 'react-native';
-import { colors } from '../../utils/colors';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
 import { useAppSelector } from '../../hooks/redux-hooks';
+import { colors } from '../../utils/colors';
+
+import Modal, { ModalRefProps } from './Modal';
 
 type Props = {
   deleteRoute: () => void;
@@ -42,9 +48,14 @@ const DeleteModal = (props: Props) => {
               <Icon name="delete" size={50} color={colors.darkRed} />
             </Animated.View>
           </View>
-          <View style={styles.text}>
+          <View style={styles.textWrapper}>
             <Text
-              style={{ color: theme.colors.text, fontSize: 18, textAlign: 'center' }}>
+              style={[
+                styles.text,
+                {
+                  color: theme.colors.text,
+                },
+              ]}>
               Are you sure you want do delete this route?
             </Text>
           </View>
@@ -85,10 +96,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 50,
   },
-  text: {
+  textWrapper: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  text: {
+    fontSize: 18,
+    textAlign: 'center',
   },
   buttons: {
     flexDirection: 'row',
@@ -112,7 +127,6 @@ const styles = StyleSheet.create({
     width: 90,
     height: 45,
     justifyContent: 'center',
-    alignItems: 'center'
-
+    alignItems: 'center',
   },
 });

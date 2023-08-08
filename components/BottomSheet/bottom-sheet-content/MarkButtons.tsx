@@ -1,8 +1,9 @@
-import { View, Pressable, StyleSheet } from 'react-native';
 import React from 'react';
+import { View, Pressable, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { colors } from '../../../utils/colors';
+
 import { GetRouteByIdResponse } from '../../../types/GetAllRoutesQuery';
+import { colors } from '../../../utils/colors';
 
 enum Marks {
   LIKE,

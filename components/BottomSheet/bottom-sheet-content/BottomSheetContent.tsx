@@ -1,30 +1,27 @@
-import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  ScrollView,
-} from 'react-native';
 import React, { memo, useEffect, useState } from 'react';
+import { View, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hooks';
 import {
   useLikeRouteMutation,
   useDislikeRouteMutation,
   useGetRouteByIdQuery,
   useApproveRouteMutation,
 } from '../../../store/api/routes.api';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hooks';
 import {
   setApproveRoute,
   setDislike,
   setLike,
 } from '../../../store/slices/routes.slice';
-import { colors } from '../../../utils/colors';
 import { setUserDislike, setUserLike } from '../../../store/slices/user.slice';
+import { colors } from '../../../utils/colors';
 import ImageBox from '../../ImageBox';
-import FastInfoType from './FastInfoType';
+
+import BottomSheetDescription from './ BottomSheetDescription';
 import Controls from './Controls';
+import FastInfoType from './FastInfoType';
 import MarkButtons from './MarkButtons';
 import RouteNotFound from './RouteNotFound';
-import BottomSheetDescription from './ BottomSheetDescription';
 
 type RoutePopUpProps = {
   deleteRoute: (id: number) => void;
@@ -55,11 +52,13 @@ function BottomSheetContent({
     skip: routeId ? false : true,
     refetchOnMountOrArgChange: true,
   });
-  
+
   const [mark, setMark] = useState<Marks>(Marks.NO_MARK);
 
   useEffect(() => {
-    const liked = user?.likes?.some((item: { id: number }) => item.id === routeId);
+    const liked = user?.likes?.some(
+      (item: { id: number }) => item.id === routeId,
+    );
     const disliked = user?.dislikes?.some(item => item.id === routeId);
     setMark(liked ? Marks.LIKE : disliked ? Marks.DISLIKE : Marks.NO_MARK);
   }, [routeId, user?.dislikes, user?.likes]);
@@ -68,11 +67,9 @@ function BottomSheetContent({
     if (!user) return;
 
     try {
-
       dispatch(setUserLike({ id: routeId }));
       dispatch(setLike({ routeId: routeId, user: { id: user.id } }));
       await likeRoute({ userId: user.id, routeId: routeId });
-
     } catch (error) {
       throw new Error('Error while like route');
     }
@@ -85,7 +82,6 @@ function BottomSheetContent({
       dispatch(setUserDislike({ id: routeId }));
       dispatch(setDislike({ routeId: routeId, user: { id: user.id } }));
       await dislikeRoute({ userId: user.id, routeId: routeId });
-
     } catch (error) {
       throw new Error('Error while dislike route');
     }
@@ -95,7 +91,6 @@ function BottomSheetContent({
     if (!user || !data) return;
 
     try {
-      
       await approveRoute({ routeId: routeId, userId: data.author.id });
       await refetch();
       dispatch(setApproveRoute({ routeId: routeId, userId: data.author.id }));
@@ -104,8 +99,8 @@ function BottomSheetContent({
     }
   }
 
-  if(!isFetching && !data) {
-    return <RouteNotFound theme={theme} />
+  if (!isFetching && !data) {
+    return <RouteNotFound theme={theme} />;
   }
 
   return (
@@ -143,26 +138,27 @@ function BottomSheetContent({
                 mark={mark}
               />
             </View>
-            <View style={[
-                styles.images,
-                { backgroundColor: theme.colors.card },
-              ]}>
-            <ScrollView
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.imagesContainer}
-              horizontal>
-              {data.images.map((image, index) => (
-                <ImageBox
-                  path={image.path}
-                  key={image.path}
-                  images={data.images}
-                  clickedId={index}
-                />
-              ))}
-            </ScrollView>
+            <View
+              style={[styles.images, { backgroundColor: theme.colors.card }]}>
+              <ScrollView
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.imagesContainer}
+                horizontal>
+                {data.images.map((image, index) => (
+                  <ImageBox
+                    path={image.path}
+                    key={image.path}
+                    images={data.images}
+                    clickedId={index}
+                  />
+                ))}
+              </ScrollView>
             </View>
-            
-            <BottomSheetDescription theme={theme} description={data.description} />
+
+            <BottomSheetDescription
+              theme={theme}
+              description={data.description}
+            />
           </View>
         </View>
       ) : (
@@ -170,7 +166,7 @@ function BottomSheetContent({
           <ActivityIndicator
             size="large"
             color={theme.colors.activity}
-            style={{ marginTop: 50 }}
+            style={styles.activity}
           />
         </View>
       )}
@@ -215,12 +211,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+
   modalText: {
     marginBottom: 15,
     paddingLeft: 2,
     fontSize: 16,
     color: colors.black,
   },
-  
-  
+
+  activity: {
+    marginTop: 50,
+  },
 });

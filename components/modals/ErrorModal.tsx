@@ -1,6 +1,5 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
 import React, { useEffect } from 'react';
-import Modal, { ModalRefProps } from './Modal';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -10,9 +9,12 @@ import Animated, {
   withDelay,
   Easing,
 } from 'react-native-reanimated';
-import { colors } from '../../utils/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
 import { useAppSelector } from '../../hooks/redux-hooks';
+import { colors } from '../../utils/colors';
+
+import Modal, { ModalRefProps } from './Modal';
 
 type Props = {
   modalRef: React.RefObject<ModalRefProps>;
@@ -35,19 +37,41 @@ export default function ErrorModal({ modalRef, error }: Props) {
   });
 
   useEffect(() => {
-    progress.value = withRepeat(withDelay(1300, withSequence(
-      withTiming(1.2, { duration: 800 }),
-      withDelay(250, withTiming(1, { duration: 400 })))
-    ), -1, true);
+    progress.value = withRepeat(
+      withDelay(
+        1300,
+        withSequence(
+          withTiming(1.2, { duration: 800 }),
+          withDelay(250, withTiming(1, { duration: 400 })),
+        ),
+      ),
+      -1,
+      true,
+    );
     rotation.value = withRepeat(
       withDelay(
         2000,
         withSequence(
-          withTiming(-20, { duration: 150, easing: Easing.bezier(0.25, 0.1, 0.25, 1) }),
-          withTiming(20, { duration: 150, easing: Easing.bezier(0.25, 0.1, 0.25, 1) }),
-          withTiming(-20, { duration: 150, easing: Easing.bezier(0.25, 0.1, 0.25, 1) }),
-          withTiming(10, { duration: 150, easing: Easing.bezier(0.25, 0.1, 0.25, 1) }),
-          withTiming(0, { duration: 150, easing: Easing.bezier(0.25, 0.1, 0.25, 1) })
+          withTiming(-20, {
+            duration: 150,
+            easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+          }),
+          withTiming(20, {
+            duration: 150,
+            easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+          }),
+          withTiming(-20, {
+            duration: 150,
+            easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+          }),
+          withTiming(10, {
+            duration: 150,
+            easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+          }),
+          withTiming(0, {
+            duration: 150,
+            easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+          }),
         ),
       ),
       -1,
@@ -62,20 +86,24 @@ export default function ErrorModal({ modalRef, error }: Props) {
             <Icon name="error-outline" size={80} color={colors.red} />
           </Animated.View>
         </View>
-        <View style={styles.text}>
+        <View style={styles.textWrapper}>
           <Text
-            style={{ color: theme.colors.text, fontSize: 18, textAlign: 'center' }}>
+            style={[
+              styles.text,
+              {
+                color: theme.colors.text,
+              },
+            ]}>
             Error: {error}
           </Text>
         </View>
         <Pressable
           onPress={() => modalRef.current?.setActive(false)}
-          style={({pressed}) => [
+          style={({ pressed }) => [
             {
               ...styles.cancelBtn,
-              backgroundColor: pressed ? colors.eyePress : 'transparent'
-
-            }
+              backgroundColor: pressed ? colors.eyePress : 'transparent',
+            },
           ]}>
           <Text style={{ color: theme.colors.text }}>DISMISS</Text>
         </Pressable>
@@ -95,9 +123,12 @@ const styles = StyleSheet.create({
   },
   deleteIcon: {
     padding: 20,
-    
   },
   text: {
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  textWrapper: {
     padding: 20,
     flex: 2,
     justifyContent: 'center',

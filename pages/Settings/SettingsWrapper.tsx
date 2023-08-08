@@ -1,12 +1,14 @@
-import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Settings from './Settings';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
+
+import BackButton from '../../components/BackButton';
+import { useAppSelector } from '../../hooks/redux-hooks';
+
 import Languages from './Languages';
 import PushNotifications from './PushNotifications';
-import { useAppSelector } from '../../hooks/redux-hooks';
-import BackButton from '../../components/BackButton';
-import { StyleSheet, View } from 'react-native';
-import { useTranslation } from 'react-i18next';
+import Settings from './Settings';
 
 export enum screens {
   Settings = 'Settings',

@@ -1,5 +1,6 @@
-import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
 import { ThemesType } from '../../../types/Themes';
 
 type RouteNotFoundProps = {
@@ -9,7 +10,9 @@ type RouteNotFoundProps = {
 export default function RouteNotFound({ theme }: RouteNotFoundProps) {
   return (
     <View style={styles.wrapper}>
-      <Text style={[styles.text, {color: theme.colors.text}]}>Route Not Found :(</Text>
+      <Text style={[styles.text, { color: theme.colors.text }]}>
+        Route Not Found :(
+      </Text>
     </View>
   );
 }

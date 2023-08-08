@@ -1,8 +1,10 @@
-import { View, StyleSheet, Pressable, Appearance, Switch } from 'react-native';
-import React from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
-import { setTheme } from '../../store/slices/theme.slice';
+import messaging from '@react-native-firebase/messaging';
 import { useFocusEffect } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import i18next from 'i18next';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { View, StyleSheet, Appearance } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Animated, {
   interpolateColor,
@@ -10,19 +12,20 @@ import Animated, {
   useDerivedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
 import BackButton from '../../components/BackButton';
-import messaging from '@react-native-firebase/messaging';
-import { useLogoutMutation } from '../../store/api/auth.api';
-import { LightTheme, DarkTheme, colors } from '../../utils/colors';
-import { useTranslation } from 'react-i18next';
-import { SettingsStackParamList, screens } from './SettingsWrapper';
-import i18next from 'i18next';
-import languagesList from '../../utils/translations/languagesList';
 import Section from '../../components/Section';
-import SwitchSelector from 'react-native-switch-selector';
-import { themeOptions } from '../../constants/themeOptions';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
+import { useLogoutMutation } from '../../store/api/auth.api';
+import { setTheme } from '../../store/slices/theme.slice';
+import { LightTheme, DarkTheme, colors } from '../../utils/colors';
+import languagesList from '../../utils/translations/languagesList';
+
+import LinkOption from './components/LinkOption';
+import SwitchOption from './components/SwitchOption';
+import ThemeSwitch from './components/ThemeSwitch';
+import { SettingsStackParamList, screens } from './SettingsWrapper';
 
 type Props = NativeStackScreenProps<SettingsStackParamList, screens.Settings>;
 
@@ -126,73 +129,39 @@ export default function Settings({ navigation }: Props) {
   return (
     <Animated.ScrollView style={[styles.wrapper, rWrapperStyle]}>
       <Section header="App">
-        <View style={styles.themes}>
-          <Animated.Text style={[styles.text, rTextStyle]}>
-            {t('Theme')}
-          </Animated.Text>
-          <SwitchSelector
-            options={themeOptions}
-            initial={themeOptions.findIndex(item => item.value === theme.name)}
-            onPress={toggleSwitch}
-            textColor={theme.colors.text}
-            hasPadding
-            valuePadding={1}
-            borderRadius={10}
-            buttonColor={theme.colors.card}
-            backgroundColor={theme.colors.background}
-            selectedColor={theme.colors.text}
-            borderColor={theme.colors.border}
-            animationDuration={250}
-            buttonMargin={1}
-          />
-        </View>
-
-        <Pressable
-          style={styles.item}
-          onPress={() => navigation.navigate(screens.Languages)}>
-          <Animated.Text style={[styles.text, rTextStyle]}>
-            {t('language')}
-          </Animated.Text>
-          <View style={styles.subItem}>
-            <Animated.Text style={[styles.subText]}>
-              {languagesList[i18next.language].nativeName}
-            </Animated.Text>
-            <AnimatedIcon name="chevron-right" size={25} style={[rTextStyle]} />
-          </View>
-        </Pressable>
-        <View style={styles.item}>
-          <Animated.Text style={[styles.text, rTextStyle]}>
-            {t('PushNotifications')}
-          </Animated.Text>
-        </View>
+        <ThemeSwitch
+          title={t('Theme')}
+          rTextStyle={rTextStyle}
+          theme={theme}
+          toggleSwitch={toggleSwitch}
+        />
+        <LinkOption
+          title={t('language')}
+          subTitle={languagesList[i18next.language].nativeName}
+          onPress={() => navigation.navigate(screens.Languages)}
+          rTextStyle={rTextStyle}
+        />
+        <LinkOption
+          title={t('PushNotifications')}
+          onPress={() => navigation.navigate(screens.Languages)}
+          rTextStyle={rTextStyle}
+        />
       </Section>
       <Section header="map">
-        <Pressable
-          style={styles.item}
-          onPress={() => navigation.navigate(screens.Languages)}>
-          <Animated.Text style={[styles.text, rTextStyle]}>
-            {t('language')}
-          </Animated.Text>
-          <View style={styles.subItem}>
-            <Animated.Text style={[styles.subText]}>
-              {languagesList[i18next.language].nativeName}
-            </Animated.Text>
-            <AnimatedIcon name="chevron-right" size={25} style={[rTextStyle]} />
-          </View>
-        </Pressable>
-        <View style={styles.item}>
-          <Animated.Text style={[styles.text, rTextStyle]}>
-            {t('nightMode')}
-          </Animated.Text>
-          <Switch
-            trackColor={{ false: '#8a8a8a', true: '#c0c0c0' }}
-            thumbColor={theme.dark ? '#e9e9e9' : '#a7a7a7'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={console.log}
-            value={theme.dark}
-            style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
-          />
-        </View>
+        <LinkOption
+          title={t('language')}
+          subTitle={languagesList[i18next.language].nativeName}
+          onPress={() => navigation.navigate(screens.Languages)}
+          rTextStyle={rTextStyle}
+        />
+        <SwitchOption
+          title={t('nightMode')}
+          rTextStyle={rTextStyle}
+          onValueChange={(value: boolean) =>
+            toggleSwitch(value ? 'dark' : 'light')
+          }
+          theme={theme}
+        />
       </Section>
       <Section header="account">
         <View style={styles.item}>
