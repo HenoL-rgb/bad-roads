@@ -4,9 +4,14 @@ import React from 'react';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 
+export enum authScreens {
+  Login = 'Login',
+  Register = 'Register',
+}
+
 export type AuthStack = {
-  Login: undefined;
-  Register: undefined;
+  [authScreens.Login]: undefined;
+  [authScreens.Register]: undefined;
 };
 const Stack = createNativeStackNavigator<AuthStack>();
 
@@ -18,9 +23,9 @@ export default function AuthContainer() {
         animation: 'fade',
         animationDuration: 600,
       }}
-      initialRouteName="Register">
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Register" component={Register} />
+      initialRouteName={authScreens.Login}>
+      <Stack.Screen name={authScreens.Login} component={Login} />
+      <Stack.Screen name={authScreens.Register} component={Register} />
     </Stack.Navigator>
   );
 }

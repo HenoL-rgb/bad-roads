@@ -7,10 +7,9 @@ import Form from '../components/Form';
 import ErrorModal from '../components/modals/ErrorModal';
 import { ModalRefProps } from '../components/modals/Modal';
 import { useAppSelector } from '../hooks/redux-hooks';
+import { IError } from '../navigation/AppWrapper';
 import { AuthStack } from '../navigation/AuthContainer';
 import { useRegisterMutation } from '../store/api/auth.api';
-
-import { IError } from './AppWrapper';
 
 type Props = NativeStackScreenProps<AuthStack, 'Register'>;
 

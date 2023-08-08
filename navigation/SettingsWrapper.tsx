@@ -3,12 +3,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import BackButton from '../../components/BackButton';
-import { useAppSelector } from '../../hooks/redux-hooks';
-
-import Languages from './Languages';
-import PushNotifications from './PushNotifications';
-import Settings from './Settings';
+import BackButton from '../components/BackButton';
+import { useAppSelector } from '../hooks/redux-hooks';
+import Languages from '../pages/Settings/Languages';
+import PushNotifications from '../pages/Settings/PushNotifications';
+import Settings from '../pages/Settings/Settings';
 
 export enum screens {
   Settings = 'Settings',

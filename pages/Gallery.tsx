@@ -14,14 +14,13 @@ import Animated from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import GalleryImage from '../components/GalleryImage';
+import { StackParamList, rootScreens } from '../navigation/AppWrapper';
 import { colors } from '../utils/colors';
-
-import { StackParamList } from './AppWrapper';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-type GalleryProps = NativeStackScreenProps<StackParamList, 'Gallery'>;
+type GalleryProps = NativeStackScreenProps<StackParamList, rootScreens.Gallery>;
 
 export default function Gallery({ navigation, route }: GalleryProps) {
   const { images, clickedId } = route.params;

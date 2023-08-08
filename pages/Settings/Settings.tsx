@@ -17,6 +17,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import BackButton from '../../components/BackButton';
 import Section from '../../components/Section';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
+import {
+  SettingsStackParamList,
+  screens,
+} from '../../navigation/SettingsWrapper';
 import { useLogoutMutation } from '../../store/api/auth.api';
 import { setTheme } from '../../store/slices/theme.slice';
 import { LightTheme, DarkTheme, colors } from '../../utils/colors';
@@ -25,7 +29,6 @@ import languagesList from '../../utils/translations/languagesList';
 import LinkOption from './components/LinkOption';
 import SwitchOption from './components/SwitchOption';
 import ThemeSwitch from './components/ThemeSwitch';
-import { SettingsStackParamList, screens } from './SettingsWrapper';
 
 type Props = NativeStackScreenProps<SettingsStackParamList, screens.Settings>;
 

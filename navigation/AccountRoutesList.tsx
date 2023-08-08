@@ -3,23 +3,32 @@ import { Theme } from '@react-navigation/native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useAppSelector } from '../../../hooks/redux-hooks';
+import { useAppSelector } from '../hooks/redux-hooks';
+import AllRoutes from '../pages/Account/components/AllRoutes';
+import DangerRoutes from '../pages/Account/components/DangerRoutes';
+import MyRoutes from '../pages/Account/components/MyRoutes';
+import RoutesToApprove from '../pages/Account/components/RoutesToApprove';
 
-import AllRoutes from './AllRoutes';
-import DangerRoutes from './DangerRoutes';
-import MyRoutes from './MyRoutes';
-import RoutesToApprove from './RoutesToApprove';
+export enum tabNavScreens {
+  MyRoutes = 'MyRoutes',
+}
+
+export enum adminRoutesScreens {
+  Routes = 'Routes',
+  RoutesToApprove = 'RoutesToApprove',
+  DangerRoutes = 'DangerRoutes',
+}
 
 export type RoutesTabNavParamList = {
-  MyRoutes: {
+  [tabNavScreens.MyRoutes]: {
     userId: number;
   };
 };
 
 export type AdminRoutesTabNavParamList = {
-  Routes: undefined;
-  RoutesToApprove: undefined;
-  DangerRoutes: undefined;
+  [adminRoutesScreens.Routes]: undefined;
+  [adminRoutesScreens.RoutesToApprove]: undefined;
+  [adminRoutesScreens.DangerRoutes]: undefined;
 };
 
 const Tab = createMaterialTopTabNavigator<RoutesTabNavParamList>();
@@ -29,7 +38,7 @@ function AdminNavigator({ theme }: { theme: Theme }) {
   const { t } = useTranslation();
   return (
     <AdminTab.Navigator
-      initialRouteName="Routes"
+      initialRouteName={adminRoutesScreens.Routes}
       screenOptions={{
         tabBarStyle: {
           backgroundColor: theme.colors.background,
@@ -37,21 +46,21 @@ function AdminNavigator({ theme }: { theme: Theme }) {
         tabBarActiveTintColor: theme.colors.text,
       }}>
       <AdminTab.Screen
-        name="Routes"
+        name={adminRoutesScreens.Routes}
         component={AllRoutes}
         options={{
           title: t('routes'),
         }}
       />
       <AdminTab.Screen
-        name="RoutesToApprove"
+        name={adminRoutesScreens.RoutesToApprove}
         component={RoutesToApprove}
         options={{
           title: t('approve'),
         }}
       />
       <AdminTab.Screen
-        name="DangerRoutes"
+        name={adminRoutesScreens.DangerRoutes}
         component={DangerRoutes}
         options={{
           title: t('danger'),
@@ -65,7 +74,7 @@ function UserNavigator({ userId, theme }: { userId: number; theme: Theme }) {
   const { t } = useTranslation();
   return (
     <Tab.Navigator
-      initialRouteName="MyRoutes"
+      initialRouteName={tabNavScreens.MyRoutes}
       screenOptions={{
         tabBarStyle: {
           backgroundColor: theme.colors.background,
@@ -73,7 +82,7 @@ function UserNavigator({ userId, theme }: { userId: number; theme: Theme }) {
         tabBarActiveTintColor: theme.colors.text,
       }}>
       <Tab.Screen
-        name="MyRoutes"
+        name={tabNavScreens.MyRoutes}
         component={MyRoutes}
         options={{
           title: t('myRoutes'),

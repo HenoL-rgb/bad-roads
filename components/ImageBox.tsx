@@ -3,7 +3,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
 import { Image, Pressable, StyleSheet } from 'react-native';
 
-import { StackParamList } from '../pages/AppWrapper';
+import { StackParamList } from '../navigation/AppWrapper';
 
 type ImageBoxProps = {
   path: string;

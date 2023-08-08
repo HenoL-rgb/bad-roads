@@ -5,9 +5,9 @@ import { Image, Pressable, StyleSheet } from 'react-native';
 import Animated, { FadeOutLeft, Layout, ZoomIn } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+import { StackParamList, rootScreens } from '../../../navigation/AppWrapper';
 import { ImageOrVideoType } from '../../../types/ImageType';
 import { colors } from '../../../utils/colors';
-import { StackParamList } from '../../AppWrapper';
 
 type ModalImageProps = {
   images: ImageOrVideoType[];
@@ -35,7 +35,7 @@ export default function ModalImage({
       layout={Layout.delay(120)}
       style={styles.pressable}
       onPress={() =>
-        navigation.navigate('Gallery', {
+        navigation.navigate(rootScreens.Gallery, {
           images: images,
           clickedId: clickedId,
         })

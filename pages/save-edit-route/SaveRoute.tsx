@@ -10,6 +10,7 @@ import {
 
 import { ModalRefProps } from '../../components/modals/Modal';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
+import { rootScreens, StackParamList } from '../../navigation/AppWrapper';
 import {
   useSaveRouteMutation,
   useGetObstaclesQuery,
@@ -22,7 +23,6 @@ import { ImageType } from '../../types/ImageType';
 import { Obstacle } from '../../types/SaveRouteQuery';
 import { getUrl } from '../../utils/getUrl';
 import { transformRoute } from '../../utils/transformRoute';
-import { StackParamList } from '../AppWrapper';
 
 import * as assets from './assets';
 import Controls from './components/Controls';
@@ -32,7 +32,10 @@ import ObstaclesDropDown from './components/ObstacleType/ObstaclesDropDown';
 import ObstacleType from './components/ObstacleType/ObstacleType';
 import TopIcon from './components/TopIcon';
 
-type SaveRouteProps = NativeStackScreenProps<StackParamList, 'SaveRoute'>;
+type SaveRouteProps = NativeStackScreenProps<
+  StackParamList,
+  rootScreens.SaveRoute
+>;
 
 export type Info = {
   obstacle: {
@@ -126,7 +129,7 @@ export default function SaveRoute({ navigation, route }: SaveRouteProps) {
       dispatch(saveRouteAction(transformRoute(response.data)));
       dispatch(setInitialState());
     }
-    navigation.navigate('Home', {
+    navigation.navigate(rootScreens.Home, {
       screen: 'Map',
     });
   }

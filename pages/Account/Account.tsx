@@ -4,10 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet } from 'react-native';
 
 import { useAppSelector } from '../../hooks/redux-hooks';
+import AccountRoutesList from '../../navigation/AccountRoutesList';
 import { useGetRoutesByUserIdQuery } from '../../store/api/routes.api';
 import { UserData } from '../../store/slices/user.slice';
-
-import AccountRoutesList from './components/AccountRoutesList';
 
 export default function Account() {
   const userData: UserData = useAppSelector(state => state.userReducer);

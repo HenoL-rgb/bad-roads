@@ -6,7 +6,7 @@ import { Pressable } from 'react-native';
 import Animated from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import { StackParamList } from '../pages/AppWrapper';
+import { StackParamList } from '../navigation/AppWrapper';
 import { colors } from '../utils/colors';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);

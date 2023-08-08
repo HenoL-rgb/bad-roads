@@ -34,7 +34,7 @@ import {
 import { Point } from '../../types/Point';
 import { RouteSection } from '../../types/Route';
 import { RouteEvent } from '../../types/RouteEvent';
-import { StackParamList } from '../AppWrapper';
+import { StackParamList } from '../../navigation/AppWrapper';
 import { HomeScreens, TabNavParamList } from '../Home';
 
 import MapButtons from './components/MapButtons';

@@ -3,7 +3,7 @@ import type { BaseQueryFn, FetchArgs } from '@reduxjs/toolkit/query';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
-import { IError } from '../../pages/AppWrapper';
+import { IError } from '../../navigation/AppWrapper';
 import { LoginResponse, Login, Register } from '../../types/LoginQuery';
 import { Logout } from '../../types/Logout';
 import { RegisterDevice } from '../../types/RegisterDevice';

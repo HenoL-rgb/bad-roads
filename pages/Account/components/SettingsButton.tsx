@@ -4,8 +4,8 @@ import React from 'react';
 import { Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+import { StackParamList, rootScreens } from '../../../navigation/AppWrapper';
 import { colors } from '../../../utils/colors';
-import { StackParamList } from '../../AppWrapper';
 
 type RootProp = NativeStackNavigationProp<StackParamList>;
 
@@ -17,7 +17,7 @@ export default function SettingsButton(props: {
   const navigation = useNavigation<RootProp>();
   return (
     <Pressable
-      onPress={() => navigation.navigate('SettingsWrapper')}
+      onPress={() => navigation.navigate(rootScreens.SettingsWrapper)}
       style={({ pressed }) => [
         {
           marginRight: 15,
